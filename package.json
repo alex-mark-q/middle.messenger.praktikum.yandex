@@ -4,8 +4,8 @@
   "description": "About messenger",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel ./src/pages/home/home.hbs --no-cache",
-    "build": "parcel ./src/pages/home/home.hbs"
+    "dev": "parcel index.hbs  --no-cache && parcel watch ./*",
+    "build": "parcel build index.hbs  --no-cache --public-url ./"
   },
   "author": "Aleksey Kripakov",
   "license": "ISC",
