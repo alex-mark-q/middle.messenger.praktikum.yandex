@@ -4,13 +4,17 @@
   "description": "About messenger",
   "main": "index.js",
   "scripts": {
-    "dev": "parcel index.hbs",
-    "build": "parcel build index.hbs"
+    "dev": "parcel ./src/pages/home/home.hbs --no-cache",
+    "build": "parcel ./src/pages/home/home.hbs"
   },
   "author": "Aleksey Kripakov",
   "license": "ISC",
   "devDependencies": {
     "@anikin/parcel-transformer-handlebars": "^1.0.9",
     "parcel": "^2.8.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "handlebars": "^4.7.7"
   }
 }
