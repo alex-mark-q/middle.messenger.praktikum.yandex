@@ -1,0 +1,10 @@
+/* require global css styles */
+@import url('./variables.scss');
+@import url('./normalize.scss');
+@import url('./fonts.scss');
+@import url('./common.scss');
+
+
+/* require local css styles */
+@import url('../components/login/login.scss');
+@import url('../components/button/button.scss');

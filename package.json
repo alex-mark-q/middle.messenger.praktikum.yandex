@@ -2,18 +2,22 @@
   "name": "messenger",
   "version": "1.0.0",
   "description": "About messenger",
-  "main": "index.js",
   "scripts": {
-    "dev": "parcel index.hbs  --no-cache && parcel watch ./*",
-    "build": "parcel build index.hbs  --no-cache --public-url ./"
+    "dev": "parcel index.hbs --no-cache && -p --open 3005 && watch ./",
+    "build": "parcel build index.hbs  --no-cache --public-url ./",
+    "server": "node app.js"
   },
   "author": "Aleksey Kripakov",
   "license": "ISC",
   "devDependencies": {
     "@anikin/parcel-transformer-handlebars": "^1.0.9",
-    "parcel": "^2.8.0"
+    "@parcel/transformer-sass": "^2.8.0",
+    "parcel": "^2.8.0",
+    "path": "^0.12.7",
+    "sass": "^1.56.1"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "handlebars": "^4.7.7"
   }

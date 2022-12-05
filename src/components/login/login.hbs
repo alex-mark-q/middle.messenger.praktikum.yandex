@@ -1,1 +1,19 @@
-<button>Hello</button>
+<section class="login">
+  <form action="" class="form">
+    <div class="form-login__content">
+
+      <label for="email-input" class="form__label form__label--offset">Логин</label>
+      <input id="email-input" class="form__text-input" type="email"/>
+
+      <label for="password-input" class="form__label form__label--offset">Пароль</label>
+      <input id="password-input" class="form__text-input" type="password"/>
+      
+    </div>
+    <footer class="form-login__footer">
+      {{> components/button/button label="Авторизоваться" }}
+      <div class="form__links">
+        <a href="#" class="form__link">Нет аккаунта?</a>
+      </div>
+    </footer>
+  </form>  
+</section>

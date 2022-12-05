@@ -1,0 +1,14 @@
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0px;
+  padding: 0px;
+  min-height: 100vh;
+}
+
+.page__center {
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
