@@ -1,0 +1,21 @@
+.form {
+  &__text-input {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 12px;
+    border: none;
+    border-bottom: 1px solid #3369F3;
+    color: #999999;
+    margin-bottom: 20px;
+    height: 20px;
+    width: 100%;
+    background: none;
+    &:focus {
+      outline: none;
+    }
+    &--error {
+      border-color: #E31415;
+      border: none;
+    }
+  }
+}

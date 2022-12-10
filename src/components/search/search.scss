@@ -1,0 +1,17 @@
+@import '../../vendor/variables.scss';
+
+.search {
+  margin: 23px 0px 14px;
+  &__input {
+    background-color: $color;
+    border: none;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    padding: 0px 0px 0px 30px;
+    border-radius: 5px;
+    color: $color;
+    height: 32px;
+    box-sizing: border-box;
+    width:100%;
+  }
+}

@@ -1,0 +1,12 @@
+@import '../../vendor/variables.scss';
+
+.profile {
+  text-align: right;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 12px;
+  &__link {
+      text-decoration: none;
+      color: $color;
+  }
+}

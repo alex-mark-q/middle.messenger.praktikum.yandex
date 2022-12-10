@@ -5,6 +5,14 @@
 @import url('./common.scss');
 
 
-/* require local css styles */
+/* require components css styles */
 @import url('../components/login/login.scss');
+@import url('../components/signin/signin.scss');
 @import url('../components/button/button.scss');
+@import url('../components/profile/profile.scss');
+@import url('../components/search/search.scss');
+
+/* require pages css styles */
+@import url('../layout/chat/chat.scss');
+//@import url('../pages/home/home.scss');
+@import url('../layout/main/main.scss');
