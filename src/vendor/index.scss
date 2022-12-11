@@ -7,10 +7,12 @@
 
 /* require components css styles */
 @import url('../components/login/login.scss');
+@import url('../components/input/input.scss');
 @import url('../components/signin/signin.scss');
 @import url('../components/button/button.scss');
 @import url('../components/profile/profile.scss');
 @import url('../components/search/search.scss');
+@import url('../components/message/message.scss');
 
 /* require pages css styles */
 @import url('../layout/chat/chat.scss');

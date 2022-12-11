@@ -4,7 +4,11 @@
   margin-left: auto;
   margin-right: auto;
   border-radius: 10px;
-  border: 5px solid #eeeeee;
+  border: 2px solid #eee;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   box-shadow: 0 0 10px 1px rgb(0 0 0 / 50%);
   background-color: #ffffff;
 }
@@ -14,6 +18,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 40px;
   &__label {
     display: block;
     color: #222222;
@@ -32,8 +37,7 @@
     line-height: 12px;
     border: none;
     border-bottom: 1px solid #3369F3;
-    color: #999999;
-    margin-bottom: 20px;
+    margin: 7px 0 20px;
     height: 20px;
     width: 100%;
     background: none;
@@ -65,7 +69,6 @@
     width: 300px;
     padding: 10px;
     margin-top: 10px;
-    box-shadow: 0 -2px 2px -1px #eeeeee;
     text-align: center;
   }
 }

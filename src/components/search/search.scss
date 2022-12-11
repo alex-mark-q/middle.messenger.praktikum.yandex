@@ -1,10 +1,11 @@
 @import '../../vendor/variables.scss';
 
 .search {
-  margin: 23px 0px 14px;
+  margin: 25px 0px 15px;
   &__input {
-    background-color: $color;
+    background-color: #EFEFEF;
     border: none;
+    background-image: url(./image/search.svg);
     background-repeat: no-repeat;
     background-position: 10px center;
     padding: 0px 0px 0px 30px;
@@ -12,6 +13,9 @@
     color: $color;
     height: 32px;
     box-sizing: border-box;
-    width:100%;
+    width: 290px;
+  }
+  &__input::placeholder {
+    text-align: center;
   }
 }

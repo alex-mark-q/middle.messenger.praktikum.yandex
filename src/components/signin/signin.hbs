@@ -1,45 +1,44 @@
 <section class="signin">
   <form action="/" method="post" class="form">
-    <h1>Регистрация</h1>
+    <span>Регистрация</span>
+    <form action="" class="form">
+      <div class="form-signin__content">
+        <div class="form-signin__row">
+          <label for="input-email" class="form__label form__label--offset">Почта</label>
+          {{> components/input/input type="email" id="input-username" class="form__text-input" placeholder="pochta@yandex.ru" }}
+        </div>
+        <div class="form-signin__row">
+          <label for="input-username" class="form__label form__label--offset">Логин</label>
+          {{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="ivanivanov" }}
+        </div>
+        <div class="form-signin__row">
+          <label for="input-name" class="form__label form__label--offset">Имя</label>
+          {{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="Иван" }}
+        </div>
+        <div class="form-signin__row">
+          <label for="input-surname" class="form__label form__label--offset">Фамилия</label>
+          {{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="Иванов" }}
+        </div>
 
-    <div class="grid-row">
-      <div class="grid-row__col grid-row__col--sm-6">
-        <label for="input-email" class="form__label">Почта</label>
-        {{> components/input/input type="email" id="input-username" class="form__text-input" placeholder="pochta@yandex.ru" }}
+        <div class="form-signin__row">
+          <label for="input-tel" class="form__label form__label--offset">Телефон</label>
+          {{> components/input/input type="text" id="phone" placeholder="+7 (909) 967 30 30" id="input-tel" class="form__text-input" }}
+        </div>
+        <div class="form-signin__row">
+          <label for="password-input" class="form__label form__label--offset">Пароль</label>
+          {{> components/input/input type="password" id="password-input" class="form__text-input" }}
+        </div>
+        <div class="form-signin__row">
+          <label for="password-input" class="form__label form__label--offset">Пароль еще раз</label>
+          {{> components/input/input type="password" id="password-input" class="form__text-input" }}
+        </div>
       </div>
-      <div class="grid-row__col grid-row__col--sm-6">
-        <label for="input-username" class="form__label form__label--offset">Логин</label>
-        {{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="ivanivanov" }}
-      </div>
-      <div class="grid-row__col grid-row__col--sm-6">
-        <label for="input-name" class="form__label">Имя</label>
-        {{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="Иван" }}
-      </div>
-      <div class="grid-row__col grid-row__col--sm-6">
-        <label for="input-surname" class="form__label">Фамилия</label>
-        {{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="Иванов" }}
-      </div>
-
-      <div class="grid-row__col grid-row__col--sm-6">
-        <label for="input-tel" class="form__label">Телефон</label>
-        {{> components/input/input type="text" id="phone" placeholder="+7 (909) 967 30 30" id="input-tel" class="form__text-input" }}
-      </div>
-      <div class="grid-row__col grid-row__col--sm-6">
-        <label for="password-input" class="form__label form__label--offset">Пароль</label>
-        {{> components/input/input type="password" id="password-input" class="form__text-input" }}
-      </div>
-      <div class="grid-row__col grid-row__col--sm-6">
-        <label for="password-input" class="form__label form__label--offset">Пароль еще раз</label>
-        {{> components/input/input type="password" id="password-input" class="form__text-input" }}
-      </div>
-    </div>
-    
-    <footer class="form-login__footer">
-      {{> components/button/button label="Зарегистрироваться" }}
-      <div class="form__links">
-        <a href="#" class="form__link">Войти</a>
-      </div>
-    </footer>
-    
-  </form>
+      
+      <footer class="form-login__footer">
+        {{> components/button/button label="Зарегистрироваться" }}
+        <div class="form__links">
+          <a href="#" class="form__link">Войти</a>
+        </div>
+      </footer>
+    </form>
 </section>

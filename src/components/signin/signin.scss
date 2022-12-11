@@ -1,21 +1,24 @@
-.form {
-  &__text-input {
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 12px;
-    border: none;
-    border-bottom: 1px solid #3369F3;
-    color: #999999;
-    margin-bottom: 20px;
-    height: 20px;
-    width: 100%;
-    background: none;
-    &:focus {
-      outline: none;
-    }
-    &--error {
-      border-color: #E31415;
-      border: none;
-    }
+.signin {
+  width: 400px;
+  height: 90vh;
+  background-color: #fff;
+  border: 2px solid #eee;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  box-shadow: 0 0 10px 1px #00000080;
+}
+.form-signin {
+  &__content {
+    width: 300px;
+    margin: 0 auto;
+  }
+  &__row {
+    margin: 0;
+    padding: 0;
   }
 }
