@@ -192,6 +192,11 @@ body {
   display: flex;
 }
 
+.page__chat {
+  flex-direction: row;
+  display: flex;
+}
+
 .login {
   width: 400px;
   height: 500px;
@@ -356,6 +361,20 @@ input::placeholder {
   text-align: center;
 }
 
+.search__input_message {
+  color: #999;
+  height: 32px;
+  box-sizing: border-box;
+  width: 100%;
+  background-color: #efefef;
+  border: none;
+  border-radius: 30px;
+  padding-left: 25px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+}
+
 .message {
   width: 100%;
   height: 70px;
@@ -414,10 +433,114 @@ input::placeholder {
   padding: 0;
 }
 
+.attach {
+  position: relative;
+}
+
+.attach__modal {
+  width: 160px;
+  height: 130px;
+  background-color: #fff;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  flex-direction: column;
+  gap: 25px;
+  padding: 15px;
+  display: flex;
+  position: absolute;
+  bottom: 60px;
+  box-shadow: 0 0 10px 1px #00000080;
+}
+
+.attach__modal img {
+  margin-right: 10px;
+}
+
+.attach__modal-file {
+  cursor: pointer;
+  align-items: center;
+  display: flex;
+}
+
+.attach__modal-foto, .attach__modal-location {
+  cursor: pointer;
+}
+
+.dialog {
+  background: #000c;
+  transition: opacity .25s;
+  position: absolute;
+  inset: 0;
+}
+
+.dialog__body {
+  width: 340px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  left: 100%;
+  transform: translateX(100%);
+  box-shadow: 0 0 50px #00000080;
+}
+
+.kebab {
+  position: relative;
+}
+
+.kebab__element {
+  cursor: pointer;
+  padding: 0 16px;
+  position: relative;
+}
+
+.kebab figure {
+  width: 6px;
+  height: 6px;
+  background: #555;
+  border-radius: 5px;
+  margin: 3px 0;
+}
+
+.kebab__modal {
+  width: 210px;
+  height: 90px;
+  background-color: #fff;
+  border: 2px solid #eee;
+  border-radius: 12px;
+  flex-direction: column;
+  gap: 25px;
+  padding: 15px;
+  display: flex;
+  position: absolute;
+  top: 75px;
+  right: 15px;
+  box-shadow: 0 0 10px 1px #00000080;
+}
+
+.kebab__modal-plus, .kebab__modal-minus {
+  cursor: pointer;
+  align-items: center;
+  font-size: 12px;
+  display: flex;
+}
+
+.kebab__modal-plus img, .kebab__modal-minus img {
+  width: 12px;
+  height: 12px;
+  color: #fff;
+  text-align: center;
+  border: 2px solid #3369f3;
+  border-radius: 50%;
+  padding: 8px;
+  font-size: 11px;
+}
+
 .chat {
   max-width: 1500px;
   background: #fff;
+  flex-direction: row;
   margin: 0 auto;
+  display: flex;
 }
 
 .chat-list {
@@ -435,6 +558,12 @@ input::placeholder {
   list-style-type: none;
 }
 
+
+
+.chat-body {
+  width: 100%;
+}
+
 .chat-body__container {
   min-height: 100vh;
   flex-direction: column;
@@ -444,11 +573,68 @@ input::placeholder {
 }
 
 .chat-body__header {
-  border-bottom: 2px solid #555;
+  border-bottom: 1px solid #555;
+  align-items: center;
   padding: 20px;
+  display: flex;
 }
 
+.chat-body__header .message__name {
+  flex-grow: 1;
+}
 
+.chat-body__header img {
+  margin-right: 20px;
+}
+
+.chat-body__history {
+  height: 575px;
+  border-bottom: 2px solid #fff;
+  flex-grow: 4;
+  padding: 30px 20px 20px;
+  overflow-y: scroll;
+}
+
+.chat-body__send {
+  border-top: 1px solid #555;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 0;
+  display: flex;
+}
+
+.chat-body__message {
+  width: 400px;
+  background-color: #f8f8f8;
+  border-radius: 0 10px 10px;
+  margin-bottom: 10px;
+  padding: 11px;
+  font-size: 12px;
+}
+
+.chat-body__message span {
+  text-align: right;
+  font-size: 9px;
+  display: block;
+}
+
+.chat-body__message_my {
+  background-color: #e4edfd;
+  border-radius: 10px 10px 0;
+  margin-left: auto;
+}
+
+.chat-body__button {
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+  background: linear-gradient(#3395ff, #007aff);
+  border: 1px solid #007aff;
+  border-radius: 50%;
+  margin: 5px;
+}
 
 
 

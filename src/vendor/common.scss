@@ -4,10 +4,15 @@ body {
   padding: 0px;
   min-height: 100vh;
 }
-
-.page__center {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.page {
+  &__center {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__chat {
+    display: flex;
+    flex-direction: row;
+  }
 }

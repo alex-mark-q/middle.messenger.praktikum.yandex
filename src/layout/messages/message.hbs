@@ -1,0 +1,45 @@
+<div class="chat-body">
+	<div class="chat-body__container">
+		<div class="chat-body__header">
+			<img src="../components/message/images/1.png" alt="avatar" />
+			<div class="message__name">Вадим</div>
+			{{> components/kebab/kebab }}
+		</div>
+
+		<div class="chat-body__history">
+			{{#each messages}}
+				{{#if label.myMessage}}
+					<div class="chat-body__message chat-body__message_my">
+						{{ label.text }}
+						<span>{{ label.time }}</span>
+					</div>
+				{{/if}}
+					<div class="chat-body__message">
+						{{ label.text }}
+						<span>{{ label.time }}</span>
+					</div>
+			{{/each}}
+		</div>
+		<div class="chat-body__send">
+			<div class="attach">
+				{{> components/attach/attach class="attach__image" }}
+				<div class="attach__modal">
+					<div class="attach__modal-file">
+						<img src="../components/attach/images/foto.png" alt="avatar" />
+						Фото или видео
+					</div>
+					<div class="attach__modal-foto">
+						<img src="../components/attach/images/file.png" alt="avatar" />
+						Файл
+					</div>
+					<div class="attach__modal-location">
+						<img src="../components/attach/images/location.png" alt="avatar" />
+						Локация
+					</div>
+				</div>
+			</div>
+			{{> components/input/input type="text" placeholder="Сообщение" class="search__input_message" }}
+			{{> components/button/button class="chat-body__button" label="→"}}
+		</div>
+	</div>
+</div>

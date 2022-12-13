@@ -13,8 +13,12 @@
 @import url('../components/profile/profile.scss');
 @import url('../components/search/search.scss');
 @import url('../components/message/message.scss');
+@import url('../components/attach/attach.scss');
+@import url('../components/dialog/dialog.scss');
+@import url('../components/kebab/kebab.scss');
 
 /* require pages css styles */
 @import url('../layout/chat/chat.scss');
 //@import url('../pages/home/home.scss');
 @import url('../layout/main/main.scss');
+@import url('../layout/messages/message.scss');

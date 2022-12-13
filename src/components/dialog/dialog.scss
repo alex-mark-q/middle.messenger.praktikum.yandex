@@ -1,0 +1,19 @@
+.dialog {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	background: rgba(0, 0, 0, 0.8);
+	transition: opacity 250ms;
+	&__body {
+    width: 340px;
+    padding: 20px;
+		border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 0 50px rgb(0 0 0 / 50%);
+    transform: translateX(100%);
+    left: 100%;
+	}
+}

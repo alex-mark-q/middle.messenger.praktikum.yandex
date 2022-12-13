@@ -18,4 +18,17 @@
   &__input::placeholder {
     text-align: center;
   }
+  &__input_message {
+    background-color: #EFEFEF;
+    border-radius: 30px;
+    color: #999999;
+    height: 32px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 12px;
+    box-sizing: border-box;
+    width: 100%;
+    border: none;
+    padding-left: 25px;
+  }
 }

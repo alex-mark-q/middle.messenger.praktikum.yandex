@@ -3,23 +3,10 @@
 		{{> components/profile/profile }}
 		{{> components/search/search }}
 		<ul class="chat-list__message">
-			{{#each messagesList}}
+			{{#each listMessage}}
 			{{> components/message/message message }}
 			{{/each}}
 		</ul>
 		<div>{{data.title}}</div>
-	</div>
-	<div class="chat-body">
-		<div class="chat-body__container">
-			<div class="chat-body__header">
-
-			</div>
-			<div class="chat-body__history">
-					
-			</div>
-			<div class="chat-body__input">
-					
-			</div>
-		</div>
 	</div>
 </div>

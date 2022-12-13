@@ -1,4 +1,6 @@
 .chat {
+  display: flex;
+  flex-direction: row;
   margin: 0 auto;
   max-width: 1500px;
   background: #FFFFFF;
@@ -13,24 +15,5 @@
   }
   &__message li {
     list-style-type: none;
-  }
-}
-.chat-body {
-  &__container {
-    padding: 0px 20px;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    justify-content: space-between;
-  }
-  &__header {
-    padding: 20px;
-    border-bottom: 2px solid #555555;
-  }
-  &__history {
-
-  }
-  &__input {
-    
   }
 }

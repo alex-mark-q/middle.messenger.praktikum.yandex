@@ -1,6 +1,6 @@
 ---
 
-messagesList: [
+listMessage: [
   {
     message: {
       name: 'Андрей',
@@ -84,6 +84,25 @@ messagesList: [
   }
 ]
 
+messages: [
+  {
+    label: {
+      name: 'Андрей',
+      url: '../components/message/images/1.png',
+      text: 'Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то момент попросила Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты летали с моделью 500 EL — и к слову говоря, все тушки этих камер все еще находятся на поверхности Луны, так как астронавты с собой забрали только кассеты с пленкой. Хассельблад в итоге адаптировал SWC для космоса, но что-то пошло не так и на ракету они так никогда и не попали. Всего их было произведено 25 штук, одну из них недавно продали на аукционе за 45000 евро.',
+      time: '12 июня 2022',
+    }
+  },
+  {
+    label: {
+      name: 'GG',
+      url: '../components/message/images/1.png',
+      text: 'Круто!!!',
+      myMessage: true,
+    }
+  }
+]
+
 ---
 
 <!doctype html>
@@ -97,6 +116,7 @@ messagesList: [
 </head>
 <body>
   <main class="page__chat">
-    {{> layout/chat/chat data=messagesList }}
+    {{> layout/chat/chat data=listMessage }}
+    {{> layout/messages/message data=messages }}
   </main>
 </body>
