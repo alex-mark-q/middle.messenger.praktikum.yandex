@@ -197,6 +197,16 @@ body {
   display: flex;
 }
 
+.link {
+  color: #3369f3;
+  cursor: pointer;
+}
+
+.alarm {
+  color: red;
+  cursor: pointer;
+}
+
 .login {
   width: 400px;
   height: 500px;
@@ -329,14 +339,30 @@ input::placeholder {
 
 .profile {
   text-align: right;
+  flex-direction: row;
   font-size: 12px;
   font-weight: 500;
   line-height: 12px;
+  display: flex;
 }
 
 .profile__link {
   color: #999;
   text-decoration: none;
+}
+
+.profile__sidebar {
+  height: 100vh;
+  width: 65px;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.profile__sidebar img {
+  width: 30px;
+  height: 30px;
 }
 
 .search {
@@ -533,6 +559,99 @@ input::placeholder {
   border-radius: 50%;
   padding: 8px;
   font-size: 11px;
+}
+
+.avatar__text {
+  opacity: 0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 14px;
+  transition: opacity .3s;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.avatar-change__input {
+  display: none;
+}
+
+.avatar-change__label {
+  cursor: pointer;
+  margin-bottom: 20px;
+  display: inline-block;
+  position: relative;
+}
+
+.avatar-change__label:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background-color: #00000080;
+  border-radius: 50%;
+  transition: opacity .3s;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
+
+.profile-main {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+}
+
+.profile-main__form {
+  text-align: center;
+  width: 500px;
+  height: 90vh;
+  flex-direction: column;
+  justify-content: center;
+  margin: 60px auto 0;
+  display: flex;
+}
+
+.profile-main__label {
+  width: 150px;
+  text-align: left;
+  font-size: 13px;
+}
+
+.profile-main__info {
+  height: 300px;
+  flex-direction: column;
+  justify-content: center;
+  display: flex;
+}
+
+.profile-main__info-field {
+  height: 30px;
+  border-bottom: 1px solid #eaeaea;
+  align-items: end;
+  line-height: 30px;
+  display: flex;
+}
+
+.profile-main__info_profile {
+  height: 30px;
+  text-align: right;
+  border: none;
+  margin: 0;
+  padding: 0;
+  line-height: 30px;
+}
+
+.profile-main__change {
+  height: 120px;
+  flex-direction: column;
+  justify-content: end;
+  display: flex;
 }
 
 .chat {

@@ -1,0 +1,38 @@
+.avatar {
+	&__text {
+		opacity: 0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 14px;
+    transition: opacity .3s;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+	}
+}
+.avatar-change {
+	&__input {
+		display: none;
+	}
+	&__label {
+		cursor: pointer;
+    margin-bottom: 20px;
+    display: inline-block;
+    position: relative;
+    &:before {
+			content: "";
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			background-color: #00000080;
+			border-radius: 50%;
+			transition: opacity .3s;
+			display: inline-block;
+			position: absolute;
+			top: 0;
+			left: 0;
+    }
+	}
+}

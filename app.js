@@ -44,5 +44,9 @@ app.get('/dialog', (req, res) => {
   res.sendFile(path.join(__dirname, '/dist/dialog.html'))
 });
 
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, '/dist/profile.html'))
+});
+
 const { PORT = 3000 } = process.env
 app.listen(PORT, () => console.log(`http://localhost:${PORT}`))

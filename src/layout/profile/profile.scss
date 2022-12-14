@@ -1,0 +1,48 @@
+.profile-main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  &__form {
+  	text-align: center;
+    width: 500px;
+    margin: 60px auto 0;
+
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  &__label {
+    width: 150px;
+    text-align: left;
+
+    font-size: 13px;
+  }
+  &__info {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    justify-content: center;
+  }
+  &__info-field {
+    display: flex;
+    align-items: end;
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px solid #EAEAEA;
+  }
+  &__info_profile {
+    border: none;
+    margin: 0;
+    padding: 0;
+    height: 30px;
+    line-height: 30px;
+    text-align: right;
+  }
+  &__change {
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+  }
+}

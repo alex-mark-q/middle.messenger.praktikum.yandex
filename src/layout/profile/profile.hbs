@@ -1,0 +1,30 @@
+<div class="profile">
+	<div class="profile__sidebar">
+		<img src="../layout/profile/images/left.png">
+	</div>
+	<div class="profile-main">
+		<form class="profile-main__form">
+			{{> components/avatar/avatar }}
+			<h3>Иван</h3>
+			<div class="profile-main__info">
+				{{> components/field/field text="Почта" class="form__text-input profile-main__info_profile" placeholder="pochta@yandex.ru" }}
+				{{> components/field/field text="Логин" class="form__text-input profile-main__info_profile" placeholder="ivanivanov" }}
+				{{> components/field/field text="Имя" class="form__text-input profile-main__info_profile" placeholder="Иван" }}
+				{{> components/field/field text="Фамилия" class="form__text-input profile-main__info_profile"  placeholder="Иванов" }}
+				{{> components/field/field text="Имя в чате" class="form__text-input profile-main__info_profile" placeholder="Имя в чате" }}
+				{{> components/field/field text="Телефон" class="form__text-input profile-main__info_profile" placeholder="+7(909)9673030" }}
+			</div>
+			<div class="profile-main__change">
+				<div class="profile-main__info-field">
+					<span class="profile-main__label link">Изменить данные</span>
+				</div>
+				<div class="profile-main__info-field">
+					<span class="profile-main__label link">Изменить пароль</span>
+				</div>
+				<div class="profile-main__info-field">
+					<span class="profile-main__label alarm">Выйти</span>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
