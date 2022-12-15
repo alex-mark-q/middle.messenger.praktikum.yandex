@@ -1,0 +1,26 @@
+---
+
+mistake: {
+  context: {
+    title: '404',
+    message: 'Не туда попали',
+    backToChat: 'Назад к чатам',
+    url: '/chat',
+  }
+}
+
+---
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>
+    Messenger
+  </title>
+  <link rel='stylesheet' href='../vendor/index.scss' />
+</head>
+<body>
+  <main class="page__disconnect">
+    {{> components/disconnect/disconnect mistake }}
+  </main>
+</body>

@@ -11,7 +11,7 @@ var chatRouter = require('./routes/chat');
 
 var app = express();
 
-hbs.registerPartials(path.join(__dirname, 'src/components'), (err) => {});
+hbs.registerPartials(path.join(__dirname, 'src/views'), (err) => {});
 for (let helper in helpers) {
   hbs.registerHelper(helper, helpers[helper]);
 }
@@ -46,6 +46,14 @@ app.get('/dialog', (req, res) => {
 
 app.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, '/dist/profile.html'))
+});
+
+app.get('/500', (req, res) => {
+  res.sendFile(path.join(__dirname, '/dist/500.html'))
+});
+
+app.get('/404', (req, res) => {
+  res.sendFile(path.join(__dirname, '/dist/404.html'))
 });
 
 const { PORT = 3000 } = process.env

@@ -1,0 +1,29 @@
+.disconnect {
+	text-align: center;
+	display: flex;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	&__title {
+		color: #1E1E1E;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 40px;
+    margin: 0px 0px 20px;
+	}
+	&__subtitle {
+		color: #1E1E1E;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 20px;
+    margin: 0px 0px 69px;
+	}
+	&__back {
+		font-weight: 500;
+    font-size: 11px;
+    color: #3369F3;
+    line-height: 11px;
+    text-decoration: underline;
+	}
+}

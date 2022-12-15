@@ -1,12 +1,17 @@
 <div class="dialog" role="dialog">
 	<div class="dialog__body">
-		<h2>Добавить пользователя</h2>	
+		<h3>{{ header }}</h3>	
 		<div class="dialog__content">
-			<label for="input-username" class="form__label form__label--offset">Логин</label>
-			{{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="ivanivanov" }}
+			
+			{{#if label}}
+      	<label for="input-username" class="form__label form__label--offset">Логин</label>
+      	{{> components/input/input type=type id="input-username" class="form__text-input" placeholder="ivanivanov" }}
+      {{/if}}
+		
+			
 		</div>
 		<footer class="form-login__footer">
-      {{> components/button/button class="button" label="Добавить" }}
+      {{> components/button/button class="button" label=text }}
     </footer>
 	</div>
 </div>

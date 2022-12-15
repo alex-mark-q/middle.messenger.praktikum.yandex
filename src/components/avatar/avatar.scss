@@ -36,3 +36,10 @@
     }
 	}
 }
+
+.avatar-change__label:hover > .avatar__text {
+	opacity: 1;
+}
+.avatar-change__label:hover::before {
+	opacity: 1;
+}

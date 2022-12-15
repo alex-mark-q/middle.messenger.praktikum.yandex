@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "parcel ./src/views/*.hbs --no-cache && parcel watch ./*",
-    "build": "parcel build ./src/views/index.hbs  --no-cache --public-url ./",
+    "build": "parcel build ./src/views/*.hbs  --no-cache --public-url ./",
     "server": "node app.js"
   },
   "author": "Aleksey Kripakov",
