@@ -1,3 +1,10 @@
-# Структура проекта https://practicum.yandex.ru/learn/middle-frontend/courses/ffa9b8a4-c7b2-4d4c-bb1e-18b6a5db7d8a/sprints/92348/topics/31396d76-9856-44f6-b8cd-fc821aacbaa2/lessons/97ad64f2-627e-4022-b8e7-1bbc05af39f3/
+# 1. Собираем проект командой npm run build
+# 2. Запускаем сборку npm run start
 
-# Kebab menu https://codepen.io/mildrenben/pen/MwezWG?editors=1100
+# Ресты для проверки 
+
+1. http://localhost:3000/ - Страница Login
+2. http://localhost:3000/signin - Страница регистрации
+3. http://localhost:3000/chat - Страница чата
+4. http://localhost:3000/profile - Страница пользователя
+5. http://localhost:3000/dialog - Страница "модальное окно"

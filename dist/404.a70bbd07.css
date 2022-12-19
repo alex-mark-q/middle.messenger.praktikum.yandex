@@ -205,6 +205,8 @@ body {
 .alarm {
   color: red;
   cursor: pointer;
+  margin: 10px 0;
+  font-size: 11px;
 }
 
 .login {
@@ -501,6 +503,7 @@ input::placeholder {
 
 .dialog__body {
   width: 340px;
+  text-align: center;
   background: #fff;
   border-radius: 12px;
   padding: 20px;
@@ -509,6 +512,24 @@ input::placeholder {
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 50px #00000080;
+}
+
+.dialog__content input {
+  opacity: 0;
+  text-align: center;
+  z-index: 99;
+  cursor: pointer;
+  margin: 0 auto;
+  position: relative;
+}
+
+.dialog__file {
+  color: #3369f3;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bolder;
+  position: relative;
+  top: -23px;
 }
 
 .kebab {
