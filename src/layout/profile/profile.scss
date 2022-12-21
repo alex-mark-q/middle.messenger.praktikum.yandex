@@ -1,3 +1,5 @@
+@import '../../vendor/variables.scss';
+
 .profile-main {
   width: 100%;
   display: flex;
@@ -6,7 +8,6 @@
   	text-align: center;
     width: 500px;
     margin: 60px auto 0;
-
     height: 90vh;
     display: flex;
     flex-direction: column;
@@ -15,7 +16,6 @@
   &__label {
     width: 150px;
     text-align: left;
-
     font-size: 13px;
   }
   &__info {

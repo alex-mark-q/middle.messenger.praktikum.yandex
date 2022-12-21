@@ -1,16 +1,17 @@
+@import '../../vendor/variables.scss';
 .login {
   width: 400px;
   margin-top: 5%;
   margin-left: auto;
   margin-right: auto;
   border-radius: 10px;
-  border: 2px solid #eee;
+  border: 2px solid $border-color;
   height: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 0 10px 1px rgb(0 0 0 / 50%);
-  background-color: #ffffff;
+  background-color: $main;
 }
 .form {
   height: 350px;
@@ -21,7 +22,7 @@
   gap: 40px;
   &__label {
     display: block;
-    color: #222222;
+    color: $color-text;
     cursor: pointer;
     vertical-align: middle;
     &--offset {
@@ -36,7 +37,7 @@
     font-size: 12px;
     line-height: 12px;
     border: none;
-    border-bottom: 1px solid #3369F3;
+    border-bottom: 1px solid $border-bottom-color;
     margin: 7px 0 20px;
     height: 20px;
     width: 100%;
@@ -45,7 +46,7 @@
       outline: none;
     }
     &--error {
-      border-color: #E31415;
+      border-color: $border-alarm-color;
       border: none;
     }
   }

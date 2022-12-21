@@ -1,3 +1,4 @@
+@import '../../vendor/variables.scss';
 .chat-body {
   width: 100%;
   &__container {
@@ -11,7 +12,7 @@
     display: flex;
     align-items: center;
     padding: 20px;
-    border-bottom: 1px solid #555555;
+    border-bottom: 1px solid $color-chat-top;
     .message__name {
       flex-grow: 1;
     }
@@ -29,12 +30,12 @@
   &__send {
     display: flex;
     padding: 10px 0px;
-    border-top: 1px solid #555555;
+    border-top: 1px solid $color-chat-top;
     flex-direction: row;
     align-items: center;
   }
   &__message {
-    background-color: #F8F8F8;
+    background-color: $my-message-bg-color;
     border-radius: 0px 10px 10px 10px;
     margin-bottom: 10px;
     padding: 11px;
@@ -49,16 +50,16 @@
   &__message_my {
     margin-left: auto;
     border-radius: 10px 10px 0px 10px;
-    background-color: #E4EDFD;
+    background-color: $my-message-color;
   }
   &__button {
     width: 30px;
     height: 30px;
-    color: #fff;
+    color: $main;
     text-align: center;
     cursor: pointer;
-    background: linear-gradient(#3395ff, #007aff);
-    border: 1px solid #007aff;
+    background: linear-gradient($border-bottom-color, $button-color);
+    border: 1px solid $button-color;
     border-radius: 50%;
     margin: 5px;
   }

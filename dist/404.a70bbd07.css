@@ -376,7 +376,7 @@ input::placeholder {
   height: 32px;
   box-sizing: border-box;
   width: 290px;
-  background-color: #efefef;
+  background-color: #f8f8f8;
   background-image: url("search.0a694c4c.svg");
   background-position: 10px;
   background-repeat: no-repeat;
@@ -394,7 +394,7 @@ input::placeholder {
   height: 32px;
   box-sizing: border-box;
   width: 100%;
-  background-color: #efefef;
+  background-color: #f8f8f8;
   border: none;
   border-radius: 30px;
   padding-left: 25px;
@@ -691,7 +691,6 @@ input::placeholder {
 }
 
 .disconnect__title {
-  color: #1e1e1e;
   margin: 0 0 20px;
   font-size: 40px;
   font-weight: 500;
@@ -699,7 +698,6 @@ input::placeholder {
 }
 
 .disconnect__subtitle {
-  color: #1e1e1e;
   margin: 0 0 69px;
   font-size: 20px;
   font-weight: 500;
@@ -809,7 +807,7 @@ input::placeholder {
   color: #fff;
   text-align: center;
   cursor: pointer;
-  background: linear-gradient(#3395ff, #007aff);
+  background: linear-gradient(#3369f3, #007aff);
   border: 1px solid #007aff;
   border-radius: 50%;
   margin: 5px;

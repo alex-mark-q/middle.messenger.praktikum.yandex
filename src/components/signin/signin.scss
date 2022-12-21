@@ -1,8 +1,9 @@
+@import '../../vendor/variables.scss';
 .signin {
   width: 400px;
   height: 90vh;
-  background-color: #fff;
-  border: 2px solid #eee;
+  background-color: $main;
+  border: 2px solid $border-color;
   border-radius: 10px;
   justify-content: center;
   align-items: center;
