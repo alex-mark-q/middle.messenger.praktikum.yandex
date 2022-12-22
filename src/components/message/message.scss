@@ -1,7 +1,8 @@
+@import '../../vendor/variables.scss';
 .message {
 	width: 100%;
 	height: 70px;
-	border-top: 1px solid #555555;
+	border-top: 1px solid $color-chat-top;
 	display: flex;
 	flex-direction: row;
 	padding: 12px 0px;
@@ -20,7 +21,7 @@
 		font-size: 12px;
 		line-height: 12px;
 		margin: 0px;
-		color: #999999;
+		color: $color;
 	}
 	&__status {
 		display: flex;
@@ -41,7 +42,7 @@
 		color: #fff;
 		text-align: center;
 		font-size: 11px;
-		background: #3369F3;
+		background: $blue;
 	}
 	&__time {
 		margin: 0;

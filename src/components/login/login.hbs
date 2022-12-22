@@ -2,11 +2,11 @@
   <form action="" class="form">
     <div class="form-login__content">
 
-      <label for="email-input" class="form__label form__label--offset">Логин</label>
-      <input id="email-input" class="form__text-input" type="email"/>
+      <label for="input-username" class="form__label form__label--offset">Логин</label>
+      {{> components/input/input name="login" type="text" id="input-username" class="form__text-input" placeholder="ivanivanov" }}
 
       <label for="password-input" class="form__label form__label--offset">Пароль</label>
-      <input id="password-input" class="form__text-input" type="password"/>
+      {{> components/input/input name="password" type="password" id="password-input" class="form__text-input" }}
       
     </div>
     <footer class="form-login__footer">

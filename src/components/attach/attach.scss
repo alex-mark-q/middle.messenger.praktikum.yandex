@@ -1,3 +1,5 @@
+@import '../../vendor/variables.scss';
+
 .attach {
 	position: relative;
 	&__image {
@@ -10,7 +12,7 @@
 		bottom: 60px;
     padding: 15px;
     border-radius: 12px;
-    background-color: #FFFFFF;
+    background-color: $main;
     display: flex;
     flex-direction: column;
     gap: 25px;

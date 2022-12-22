@@ -1,7 +1,8 @@
-<!doctype html>
-  <html>
+<!doctype >
+  <html lang="ru">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
       Messenger
     </title>
@@ -15,26 +16,39 @@
     	<div class="profile-main">
     		<form class="profile-main__form">
     			<div class="avatar">
-    				<input type="file" name="uname" class="avatar-change__input" id="input__file">
+    				<input type="file" name="avatar" class="avatar-change__input" id="input__file">
     				<label class="avatar-change__label" for="input__file">
     					<img src="/avatar.8ffc5e1d.png" alt="default">
     					<span class="avatar__text">Поменять аватар</span>
     				</label>
-    			</div>			<h3>Иван</h3>
+    			</div>
+    			<h3>Иван</h3>
     			<div class="profile-main__info">
     				<div class="profile-main__info-field">
     					<span class="profile-main__label">Почта</span>
-    					<input class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="pochta@yandex.ru"></div>				<div class="profile-main__info-field">
+    					<input name="{{name}}" class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="pochta@yandex.ru">
+    				</div>
+    				<div class="profile-main__info-field">
     					<span class="profile-main__label">Логин</span>
-    					<input class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="ivanivanov"></div>				<div class="profile-main__info-field">
+    					<input name="{{name}}" class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="ivanivanov">
+    				</div>
+    				<div class="profile-main__info-field">
     					<span class="profile-main__label">Имя</span>
-    					<input class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="Иван"></div>				<div class="profile-main__info-field">
+    					<input name="{{name}}" class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="Иван">
+    				</div>
+    				<div class="profile-main__info-field">
     					<span class="profile-main__label">Фамилия</span>
-    					<input class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="Иванов"></div>				<div class="profile-main__info-field">
+    					<input name="{{name}}" class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="Иванов">
+    				</div>
+    				<div class="profile-main__info-field">
     					<span class="profile-main__label">Имя в чате</span>
-    					<input class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="Имя" в="" чате=""></div>				<div class="profile-main__info-field">
+    					<input name="{{name}}" class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="Имя" в="" чате="">
+    				</div>
+    				<div class="profile-main__info-field">
     					<span class="profile-main__label">Телефон</span>
-    					<input class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="+7(909)9673030"></div>			</div>
+    					<input name="{{name}}" class="form__text-input profile-main__info_profile" label="" id="" type="email" placeholder="+7(909)9673030">
+    				</div>
+    			</div>
     			<div class="profile-main__change">
     				<div class="profile-main__info-field">
     					<span class="profile-main__label link">Изменить данные</span>
@@ -48,5 +62,6 @@
     			</div>
     		</form>
     	</div>
-    </div>  <script src="/profile.740b2ad3.js"></script></body>
+    </div>
+  <script src="/profile.740b2ad3.js"></script></body>
 </html>

@@ -1,9 +1,10 @@
+@import '../../vendor/variables.scss';
 .button {
   margin: 5px;
   padding: 5px 15px;
-  border: 1px solid #007aff;
-  background: linear-gradient(lighten(#007aff,10), #007aff);
-  color: rgba(#ffffff, 0.9);
+  border: 1px solid $button-color;
+  background: linear-gradient(lighten($button-color,10), $button-color);
+  color: rgba($main, 0.9);
   font-size: 16px;
   font-weight: 500;
   line-height: 12px;
@@ -12,6 +13,6 @@
   border-radius: 10px;
   cursor: pointer;
   &:active {
-    background: linear-gradient(#007aff, lighten(#007aff,10));
+    background: linear-gradient($button-color, lighten($button-color,10));
   }
 }

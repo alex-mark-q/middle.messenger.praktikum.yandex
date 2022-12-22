@@ -5,32 +5,32 @@
       <div class="form-signin__content">
         <div class="form-signin__row">
           <label for="input-email" class="form__label form__label--offset">Почта</label>
-          {{> components/input/input type="email" id="input-username" class="form__text-input" placeholder="pochta@yandex.ru" }}
+          {{> components/input/input name="email" type="email" id="input-username" class="form__text-input" placeholder="pochta@yandex.ru" }}
         </div>
         <div class="form-signin__row">
           <label for="input-username" class="form__label form__label--offset">Логин</label>
-          {{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="ivanivanov" }}
+          {{> components/input/input name="login" type="text" id="input-username" class="form__text-input" placeholder="ivanivanov" }}
         </div>
         <div class="form-signin__row">
           <label for="input-name" class="form__label form__label--offset">Имя</label>
-          {{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="Иван" }}
+          {{> components/input/input name="first_name" type="text" id="input-username" class="form__text-input" placeholder="Иван" }}
         </div>
         <div class="form-signin__row">
           <label for="input-surname" class="form__label form__label--offset">Фамилия</label>
-          {{> components/input/input type="text" id="input-username" class="form__text-input" placeholder="Иванов" }}
+          {{> components/input/input name="second_name" type="text" id="input-username" class="form__text-input" placeholder="Иванов" }}
         </div>
 
         <div class="form-signin__row">
           <label for="input-tel" class="form__label form__label--offset">Телефон</label>
-          {{> components/input/input type="text" id="phone" placeholder="+7 (909) 967 30 30" id="input-tel" class="form__text-input" }}
+          {{> components/input/input name="phone" type="text" id="phone" placeholder="+7 (909) 967 30 30" id="input-tel" class="form__text-input" }}
         </div>
         <div class="form-signin__row">
           <label for="password-input" class="form__label form__label--offset">Пароль</label>
-          {{> components/input/input type="password" id="password-input" class="form__text-input" }}
+          {{> components/input/input name="password" type="password" id="password-input" class="form__text-input" }}
         </div>
         <div class="form-signin__row">
           <label for="password-input" class="form__label form__label--offset">Пароль еще раз</label>
-          {{> components/input/input type="password" id="password-input" class="form__text-input" }}
+          {{> components/input/input name="password" type="password" id="password-input" class="form__text-input" }}
         </div>
       </div>
       

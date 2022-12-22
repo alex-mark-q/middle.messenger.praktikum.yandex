@@ -3,7 +3,7 @@
 .search {
   margin: 25px 0px 15px;
   &__input {
-    background-color: #EFEFEF;
+    background-color: $my-message-bg-color;
     border: none;
     background-image: url(./image/search.svg);
     background-repeat: no-repeat;
@@ -19,9 +19,9 @@
     text-align: center;
   }
   &__input_message {
-    background-color: #EFEFEF;
+    background-color: $my-message-bg-color;
     border-radius: 30px;
-    color: #999999;
+    color: $color;
     height: 32px;
     font-weight: 500;
     font-size: 12px;
