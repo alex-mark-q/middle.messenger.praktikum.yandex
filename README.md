@@ -9,4 +9,4 @@
 4. http://localhost:3000/profile - Страница пользователя
 5. http://localhost:3000/dialog - Страница "модальное окно"
 
-
+Ссылка на netlify https://jazzy-griffin-f83301.netlify.app/
