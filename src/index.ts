@@ -3,7 +3,7 @@ require("babel-core/register");
 import { renderDOM, registerComponent }  from './core';
 import Login from './views/login';
 
-//import './vendor/index.css';
+import './vendor/index.scss';
 
 import Button from './components/button';
 

@@ -1,4 +1,3 @@
-console.log('login require');
 import Block from '../../core/Block';
 import template from 'bundle-text:./template.hbs';
 
