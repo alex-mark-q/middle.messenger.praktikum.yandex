@@ -1,0 +1,19 @@
+<section class="login">
+  <form action="" class="form">
+    <div class="form-login__content">
+
+      <label for="input-username" class="form__label form__label--offset">Логин</label>
+      {{> components/input/input name="login" type="text" id="input-username" class="form__text-input" placeholder="ivanivanov" }}
+
+      <label for="password-input" class="form__label form__label--offset">Пароль</label>
+      {{> components/input/input name="password" type="password" id="password-input" class="form__text-input" }}
+
+    </div>
+    <footer class="form-login__footer">
+      {{> components/button/button class="button" label="Авторизоваться" }}
+      <div class="form__links">
+        <a href="#" class="form__link">Нет аккаунта?</a>
+      </div>
+    </footer>
+  </form>
+</section>

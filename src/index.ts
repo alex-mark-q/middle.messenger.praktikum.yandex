@@ -1,19 +1,24 @@
 require("babel-core/register");
 
 import { renderDOM, registerComponent }  from './core';
-import Login from './views/login';
+import Main from './pages/main';
 
 import './vendor/index.scss';
 
 import Button from './components/button';
+import Login from './components/login';
+import Input from './components/input';
 
 registerComponent(Button);
+registerComponent(Login);
+registerComponent(Input);
+
 
 const App = () => {
 	const path = window.location.pathname
 	switch (path) {
     case '/':
-      return new Login();
+      return new Main();
       break;
     case '/400':
       return Page400;
