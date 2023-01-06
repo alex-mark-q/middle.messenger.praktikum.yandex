@@ -5,6 +5,8 @@ interface InputProps {
   type?: 'text' | 'password' | 'email';
 	name: string;
 	id?: string;
+	class?: string;
+	label?: string;
   placeholder?: string;
   value?: string;
   error?: string;
@@ -12,8 +14,8 @@ interface InputProps {
 
 export class Input extends Block {
 
-  constructor({type, name, id, placeholder, value, error}: InputProps) {
-    super({type, name, id, placeholder, value, error})
+  constructor({ type, name, id, placeholder, value, error}: InputProps) {
+    super({ type, name, id, placeholder, value, error})
   }
 
   render() {

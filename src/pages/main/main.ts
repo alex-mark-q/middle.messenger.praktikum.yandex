@@ -12,9 +12,6 @@ export class Main extends Block {
   }
 
   render() {
-    return `
-    	{{#Login}}
-    	{{/Login}}
-    `;
+    return template;
   }
 }

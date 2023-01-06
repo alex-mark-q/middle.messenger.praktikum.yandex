@@ -3,14 +3,14 @@
     <div class="form-login__content">
 
       <label for="input-username" class="form__label form__label--offset">Логин</label>
-      {{> components/input/input name="login" type="text" id="input-username" class="form__text-input" placeholder="ivanivanov" }}
+      {{{ Input name="login" type="text" id="input-username"  placeholder="ivanivanov" }}}
 
       <label for="password-input" class="form__label form__label--offset">Пароль</label>
-      {{> components/input/input name="password" type="password" id="password-input" class="form__text-input" }}
+      {{{ Input name="password" type="password" id="password-input" placeholder="password" }}}
 
     </div>
     <footer class="form-login__footer">
-      {{> components/button/button class="button" label="Авторизоваться" }}
+      {{{ Button label="Авторизоваться" }}}
       <div class="form__links">
         <a href="#" class="form__link">Нет аккаунта?</a>
       </div>
