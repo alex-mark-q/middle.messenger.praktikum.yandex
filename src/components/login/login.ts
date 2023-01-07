@@ -1,4 +1,5 @@
-import Block from '../../core/Block';
+import Block from 'core/Block';
+import Button from '../button';
 import template from 'bundle-text:./template.hbs';
 
 export class Login extends Block {
@@ -6,8 +7,9 @@ export class Login extends Block {
     super()
 
     this.setProps({
-      onButtonClick: () => console.log('button is clicked')
+      onButtonSubmit: (e: InputEvent) => this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
     })
+
   }
 
   protected render(): string {

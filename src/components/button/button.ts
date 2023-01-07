@@ -1,14 +1,14 @@
 import Block from '../../core/Block';
 import template from 'bundle-text:./template.hbs';
 
-interface ButtonProps {
+interface IButtonProps {
 	label: string;
 	onClick: () => void;
 }
 
 export class Button extends Block {
 
-	constructor({label, onClick}: ButtonProps) {
+	constructor({label, onClick}: IButtonProps) {
 		super({label, events: {click: onClick}});
 	}
 

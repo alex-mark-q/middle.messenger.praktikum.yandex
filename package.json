@@ -8,6 +8,11 @@
     "build": "parcel build ./src/views/*.hbs --no-source-maps --no-cache --public-url ./",
     "server": "node app.js"
   },
+  "alias": {
+  	"core": "./src/core",
+  	"components": "./src/components",
+  	"pages": "./src/pages"
+  },
   "author": "Aleksey Kripakov",
   "license": "MIT",
   "engines": {

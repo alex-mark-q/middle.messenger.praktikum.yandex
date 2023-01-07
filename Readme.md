@@ -32,3 +32,6 @@ yarn run dev
 
 ## Запуск Eslint
 # yarn run eslint .eslintrc.json
+
+## Дорожная карта спринта
+# https://code.s3.yandex.net/frontend-developer/middleFrontend/roadmaps/sprint2/print_map_2.pdf
