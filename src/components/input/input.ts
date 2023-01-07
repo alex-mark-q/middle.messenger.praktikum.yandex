@@ -2,6 +2,9 @@ import Block from '../../core/Block';
 import template from 'bundle-text:./template.hbs';
 
 interface InputProps {
+	onInput?: () => {};
+	onBlur?: () => {};
+	onFocus?: () => {};
   type?: 'text' | 'password' | 'email';
 	name: string;
 	id?: string;
@@ -14,8 +17,8 @@ interface InputProps {
 
 export class Input extends Block {
 
-  constructor({ type, name, id, placeholder, value, error}: InputProps) {
-    super({ type, name, id, placeholder, value, error})
+  constructor({ onInput, onBlur, onFocus, ...props }: InputProps) {
+    super({ ...props, events: { input:onInput, blur:onBlur, focus:onFocus} })
   }
 
   render() {

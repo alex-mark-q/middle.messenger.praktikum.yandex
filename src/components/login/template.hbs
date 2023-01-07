@@ -3,14 +3,31 @@
     <div class="form-login__content">
 
       <label for="input-username" class="form__label form__label--offset">Логин</label>
-      {{{ Input name="login" type="text" id="input-username"  placeholder="ivanivanov" }}}
+      {{{
+      		ControledInput
+      		onInput=onInput
+					onFocus=onFocus
+      		name="login"
+      		type="text"
+      		id="input-username"
+      		placeholder="ivanivanov"
+      }}}
 
       <label for="password-input" class="form__label form__label--offset">Пароль</label>
-      {{{ Input name="password" type="password" id="password-input" placeholder="password" }}}
+      {{{
+      		Input
+      		name="password"
+      		type="password"
+      		id="password-input"
+      		placeholder="password"
+      }}}
 
     </div>
     <footer class="form-login__footer">
-      {{{ Button label="Авторизоваться" onClick=onButtonSubmit }}}
+      {{{
+	      	Button label="Авторизоваться"
+	      	onClick=onSubmit
+    	}}}
       <div class="form__links">
         <a href="#" class="form__link">Нет аккаунта?</a>
       </div>

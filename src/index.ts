@@ -8,11 +8,14 @@ import './vendor/index.scss';
 import Button from './components/button';
 import Login from './components/login';
 import Input from './components/input';
+import ControledInput from './components/controledInput';
+import ErrorComponent from './components/ErrorComponent';
 
 registerComponent(Button);
 registerComponent(Login);
 registerComponent(Input);
-
+registerComponent(ControledInput);
+registerComponent(ErrorComponent);
 
 const App = () => {
 	const path = window.location.pathname

@@ -14,6 +14,9 @@ export default class Block<P = any> {
     FLOW_CDM: 'flow:component-did-mount',
     FLOW_CDU: 'flow:component-did-update',
     FLOW_RENDER: 'flow:render',
+    INPUT_CHANGED: 'form:input-did-change',
+    INPUT_BLURRED: 'form:input-did-blur',
+    INPUT_FOCUSED: 'form:input-did-focus',
   } as const;
 
   public id = nanoid(6);
@@ -51,6 +54,9 @@ export default class Block<P = any> {
     eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
     eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
     eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
+    eventBus.on(Block.EVENTS.INPUT_CHANGED, this._render.bind(this));
+    eventBus.on(Block.EVENTS.INPUT_BLURRED, this._render.bind(this));
+    eventBus.on(Block.EVENTS.INPUT_FOCUSED, this._render.bind(this));
     eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
   }
 
@@ -75,6 +81,7 @@ export default class Block<P = any> {
   }
 
   _componentDidUpdate(oldProps: P, newProps: P) {
+  	//console.log('_componentDidUpdate');
     const response = this.componentDidUpdate(oldProps, newProps);
     if (!response) {
       return;
