@@ -1,18 +1,15 @@
 import Block from '../../core/Block';
 import template from 'bundle-text:./template.hbs';
+import './input.scss';
 
 interface InputProps {
-	onInput?: () => {};
-	onBlur?: () => {};
-	onFocus?: () => {};
-  type?: 'text' | 'password' | 'email';
+	onInput?: () => void;
+	onBlur?: () => void;
+	onFocus?: () => void;
+  type?: string;
 	name: string;
-	id?: string;
-	class?: string;
 	label?: string;
   placeholder?: string;
-  value?: string;
-  error?: string;
 }
 
 export class Input extends Block {

@@ -1,11 +1,11 @@
 import Block from 'core/Block';
 import template from 'bundle-text:./template.hbs';
+import Validation, { validationFieldType} from 'core/validation';
 
 interface ControledInputProps {
 	onInput?: () => {};
-	onBlur?: () => {};
 	onFocus?: () => {};
-  type?: 'text' | 'password' | 'email';
+  type?: string;
 	name: string;
 	id?: string;
 	class?: string;
@@ -17,19 +17,29 @@ interface ControledInputProps {
 
 export class ControledInput extends Block {
 
-  constructor({ onBlur, ...props }: ControledInputProps) {
+  constructor({ ...props}:ControledInputProps) {
     super({
     	...props,
     	onBlur: (e: FocusEvent) => {
     		const input = e.target as HTMLInputElement;
-    		console.log(input.value);
+    		console.log(this.refs);
 
-    		// this.refs.errorRef.setProps({
-    		// 	text: input.value
-    		// })
+    		// this.refs.error.setProps({
+    		// 	text: ''
+    		// }) // --> почему не получается через setProps?
+
+				const login = this.element?.querySelector('input[name="login"]') as HTMLInputElement;
+      	const password = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
+
+    		const errorMessage = new Validation().validate([
+    			{type: validationFieldType.Login, value: login.value},
+      		{type: validationFieldType.Password, value: password.value}
+      	]);
+    		this.refs.error.innerHTML = errorMessage;
 
     	}
   	})
+
   }
 
   render() {

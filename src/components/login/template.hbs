@@ -7,21 +7,26 @@
       		ControledInput
       		onInput=onInput
 					onFocus=onFocus
+					ref="loginInputRef"
       		name="login"
       		type="text"
       		id="input-username"
       		placeholder="ivanivanov"
+      		label="login"
       }}}
-
+      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
       <label for="password-input" class="form__label form__label--offset">Пароль</label>
       {{{
-      		Input
+      		ControledInput
+      		onInput=onInput
+					onFocus=onFocus
+					ref="passInputRef"
       		name="password"
       		type="password"
       		id="password-input"
       		placeholder="password"
       }}}
-
+      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
     </div>
     <footer class="form-login__footer">
       {{{
