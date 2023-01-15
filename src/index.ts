@@ -2,6 +2,7 @@ require("babel-core/register");
 
 import { renderDOM, registerComponent }  from './core';
 import Main from './pages/main';
+import Chat from './pages/chat';
 
 import './vendor/index.scss';
 
@@ -10,12 +11,15 @@ import Login from './components/login';
 import Input from './components/input';
 import ControledInput from './components/controledInput';
 import ErrorComponent from './components/ErrorComponent';
+import store  from './store/index.json';
 
 registerComponent(Button);
 registerComponent(Login);
 registerComponent(Input);
 registerComponent(ControledInput);
 registerComponent(ErrorComponent);
+registerComponent(Chat);
+
 
 const App = () => {
 	const path = window.location.pathname
@@ -23,6 +27,9 @@ const App = () => {
     case '/':
       return new Main();
       break;
+    case '/chat':
+    	return new Chat(store);
+    	break;
     case '/400':
       return Page400;
       break;

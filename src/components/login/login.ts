@@ -11,10 +11,8 @@ export class Login extends Block {
     super()
 
     this.setProps({
-			values: {
-        login: '',
-        password: '',
-      },
+      loginValue: '',
+      passwordValue: '',
       errors: {
         login: '',
         password: '',
@@ -28,13 +26,19 @@ export class Login extends Block {
 
       	const login = this.element?.querySelector('input[name="login"]') as HTMLInputElement;
       	const password = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
-      	console.log(login, "login");
+
       	const errorMessage = new Validation().validate([
       		{type: validationFieldType.Login, value: login.value},
       		{type: validationFieldType.Password, value: password.value}
       	]);
 				//debugger;
-				console.log('action/login', login, password);
+
+				if(errorMessage) {
+					this.setProps({
+						loginValue: login.value,
+						passwordValue: password.value,
+					})
+				}
 
       	this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
       }

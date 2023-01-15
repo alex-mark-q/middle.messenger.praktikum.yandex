@@ -32,8 +32,8 @@ export class ControledInput extends Block {
       	const password = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
 
     		const errorMessage = new Validation().validate([
-    			{type: validationFieldType.Login, value: login.value},
-      		{type: validationFieldType.Password, value: password.value}
+    			{type: validationFieldType.Login, value: login?.value},
+      		{type: validationFieldType.Password, value: password?.value}
       	]);
     		this.refs.error.innerHTML = errorMessage;
 

@@ -38,7 +38,7 @@
     line-height: 12px;
     border: none;
     border-bottom: 1px solid $border-bottom-color;
-    margin: 7px 0 20px;
+    margin: 7px 0 5px;
     height: 20px;
     width: 100%;
     background: none;
@@ -72,4 +72,7 @@
     margin-top: 10px;
     text-align: center;
   }
+}
+label[for="password-input"] {
+	margin-top: 12px;
 }

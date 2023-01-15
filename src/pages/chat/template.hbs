@@ -1,0 +1,15 @@
+<main class="page__chat">
+	<div class="chat">
+		<div class="chat-list">
+			{{{ Profile }}}
+			{{{ Search }}}
+			<ul class="chat-list__message">
+				{{#each this}}
+				{{{ Message messageStore=this }}}
+				{{/each}}
+			</ul>
+			{{!-- <div>{{data.title}}</div> --}}
+		</div>
+	</div>
+	{{{ MessagesList }}}
+</main>
