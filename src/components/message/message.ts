@@ -7,9 +7,8 @@ interface MessageProps {
 }
 
 export class Message extends Block<MessageProps> {
-	constructor(messageStore:MessengerProps) {
-		console.log(messageStore);
-		super(messageStore);
+	constructor() {
+		super();
 	}
 
 	render(): string {

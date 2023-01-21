@@ -11,7 +11,8 @@
   "alias": {
   	"core": "./src/core",
   	"components": "./src/components",
-  	"pages": "./src/pages"
+  	"pages": "./src/pages",
+  	"controllers": "./src/controllers"
   },
   "author": "Aleksey Kripakov",
   "license": "MIT",

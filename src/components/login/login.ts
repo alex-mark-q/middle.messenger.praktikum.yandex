@@ -3,8 +3,7 @@ import { Validation, validationFieldType} from 'core/validation';
 import Button from '../button';
 import template from 'bundle-text:./template.hbs';
 import ControledInput from 'components/controledInput';
-
-// TODO: не забыть включить стили в компонент
+import './login.scss';
 
 export class Login extends Block {
   constructor() {

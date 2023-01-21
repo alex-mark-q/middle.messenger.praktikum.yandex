@@ -6,6 +6,22 @@
 		padding: 0 16px;
 		position: relative;
 	}
+	&__element-reset {
+		background: none repeat scroll 0 0 transparent;
+		border: medium none;
+		border-spacing: 0;
+		color: #26589F;
+		font-family: 'PT Sans Narrow',sans-serif;
+		font-size: 16px;
+		font-weight: normal;
+		line-height: 1.42rem;
+		list-style: none outside none;
+		margin: 0;
+		padding: 0;
+		text-align: left;
+		text-decoration: none;
+		text-indent: 0;
+	}
   figure {
 	  width: 6px;
 	  height: 6px;
@@ -27,6 +43,7 @@
     display: flex;
     position: absolute;
     box-shadow: 0 0 10px 1px #00000080;
+    display: none;
 	}
 	&__modal-plus, &__modal-minus {
 		font-size: 12px;
@@ -45,3 +62,7 @@
 		border: 2px solid $border-bottom-color;
 	}
 }
+.show {
+	display: block;
+}
+

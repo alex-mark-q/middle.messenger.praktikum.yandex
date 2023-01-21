@@ -3,13 +3,13 @@ import template from 'bundle-text:./template.hbs';
 import './messagesList.scss';
 
 import { registerComponent }  from '../../core';
-import Kebab from '../../components/kebab';
+import reducerChatModal from '../../components/reducerChatModal';
 import Attach from '../../components/attach';
 
 import Input from '../../components/input';
 import Button from '../../components/button';
 
-registerComponent(Kebab);
+registerComponent(reducerChatModal);
 registerComponent(Attach);
 
 registerComponent(Input);

@@ -21,38 +21,36 @@ registerComponent(ErrorComponent);
 registerComponent(Chat);
 
 
-const App = () => {
-	const path = window.location.pathname
-	switch (path) {
-    case '/':
-      return new Main();
-      break;
-    case '/chat':
-    	return new Chat(store);
-    	break;
-    case '/400':
-      return Page400;
-      break;
-    case '/500':
-      return Page500;
-      break;
-    default:
-      return Page400;
+class App {
+  main() {
+		return new Main();
+  }
+  chat() {
+  	return new Chat(store);
+  }
+  error404() {
+  	return Page400;
+  }
+  error500() {
+  	return Page500;
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-	// DEV: Расскоментировать нужно страницу для отображения
+const pages = new App();
 
-	//const App = new LoginPage();
-	// const App = new OnboardingPage({
-	//   links: [
-	//     {to: '#signup', text: 'signup'},
-	//     {to: '#login', text: 'login'},
-	//   ]
-	// });
+function render(query: string, block: Block) {
+  const root = document.querySelector(query);
+  if (root && block) {
+    root.appendChild(block.getContent());
+  }
+  return root;
+}
 
-	//console.log(App());
+const checkPage = () => {
+  const pathname = window.location.pathname.slice(1);
+  return pathname in pages ? pathname : 'error404';
+};
 
-	renderDOM(App());
+document.addEventListener('DOMContentLoaded', () => {
+  render('#app', pages[checkPage() as keyof typeof pages]());
 });

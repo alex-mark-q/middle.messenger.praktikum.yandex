@@ -4,9 +4,6 @@ import './attach.scss';
 
 import { registerComponent }  from '../../core';
 
-// import Kebab from '../../components/kebab';
-// registerComponent(Kebab);
-
 
 export class Attach extends Block {
 	constructor(messageStore: MessageProps) {

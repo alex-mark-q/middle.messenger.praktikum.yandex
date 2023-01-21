@@ -4,6 +4,7 @@ import template from 'bundle-text:./template.hbs';
 interface IButtonProps {
 	label: string;
 	onClick: () => void;
+	events: Record<string, Record<string, (event: Event) => void> | undefined>;
 }
 
 export class Button extends Block {

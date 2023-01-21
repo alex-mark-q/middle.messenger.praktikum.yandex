@@ -98,3 +98,7 @@ class HTTPTransport {
 	  });
 	};
 }
+
+const transport = new HTTPTransport();
+
+export default transport;
