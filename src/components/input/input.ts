@@ -10,6 +10,7 @@ interface InputProps {
 	name: string;
 	label?: string;
   placeholder?: string;
+  class: string;
 }
 
 export class Input extends Block {

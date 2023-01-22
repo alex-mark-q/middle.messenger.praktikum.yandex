@@ -7,7 +7,7 @@ interface IButtonProps {
 	events: Record<string, Record<string, (event: Event) => void> | undefined>;
 }
 
-export class buttonToogle extends Block {
+export class buttonToogle extends Block<IButtonProps> {
 
 	constructor({label, onClick}: IButtonProps) {
 		super({label, events: {click: onClick}});

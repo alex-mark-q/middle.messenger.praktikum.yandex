@@ -13,15 +13,22 @@ export class reducerChatModal extends Block<Props> {
   constructor({id}: Props) {
     super({id});
 
-		// window.addEventListener('click', (event) => {
-    //   console.log("window");
-    //   if (event.target instanceof Element && !event.target.closest('.kebab__element')) {
-    //     const myDropdown = document.getElementById('modalShow');
-    //     if (myDropdown && myDropdown.classList.contains('show')) {
-    //       myDropdown.classList.remove('show');
-    //     }
-    //   }
-    // });
+		window.addEventListener('click', (event) => {
+
+      if (event.target instanceof Element && !event.target.closest('.kebab__element')) {
+        const myDropdown = document.getElementById('modalShowUser');
+        if (myDropdown && myDropdown.classList.contains('show')) {
+          myDropdown.classList.remove('show');
+        }
+      }
+			if (event.target instanceof Element && !event.target.closest('.kebab__element-reset')) {
+        const myDropdown = document.getElementById('modalShowOther');
+        if (myDropdown && myDropdown.classList.contains('show')) {
+          myDropdown.classList.remove('show');
+        }
+      }
+
+    });
 
     this.setProps({
 			buttonAddUser:(event:Event) => {
@@ -33,9 +40,8 @@ export class reducerChatModal extends Block<Props> {
 	    },
 			onClick: (event: Event) => {
         event.preventDefault();
-        const myDropdown = document.getElementById('modalShow');
+        const myDropdown = document.getElementById('modalShowUser');
         if (myDropdown) {
-          console.log("gg");
           myDropdown.classList.toggle('show');
         }
       }

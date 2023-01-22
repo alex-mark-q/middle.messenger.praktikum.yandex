@@ -1,0 +1,10 @@
+[
+	{
+			"context": {
+			"title": "500",
+			"message": "Мы уже фиксим",
+			"backToChat": "Назад к чатам",
+			"url": "/chat",
+		}
+	}
+]

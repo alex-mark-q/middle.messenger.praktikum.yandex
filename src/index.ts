@@ -3,6 +3,7 @@ require("babel-core/register");
 import { renderDOM, registerComponent }  from './core';
 import Main from './pages/main';
 import Chat from './pages/chat';
+import fourHundredFour from './pages/404';
 
 import './vendor/index.scss';
 
@@ -11,7 +12,9 @@ import Login from './components/login';
 import Input from './components/input';
 import ControledInput from './components/controledInput';
 import ErrorComponent from './components/ErrorComponent';
-import store  from './store/index.json';
+import storeChatRoom  from './store/chatRoom.json';
+import store404  from './store/404.json';
+import store500  from './store/500.json';
 
 registerComponent(Button);
 registerComponent(Login);
@@ -26,13 +29,13 @@ class App {
 		return new Main();
   }
   chat() {
-  	return new Chat(store);
+  	return new Chat(storeChatRoom);
   }
   error404() {
-  	return Page400;
+  	return new fourHundredFour(store404);
   }
   error500() {
-  	return Page500;
+  	return new Page500(store500);
   }
 }
 

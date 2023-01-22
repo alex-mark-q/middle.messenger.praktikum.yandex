@@ -2,7 +2,7 @@ import Block from 'core/Block';
 import template from 'bundle-text:./template.hbs';
 import './chat.scss';
 import ChatControllers from 'controllers/chatControllers';
-console.log(ChatControllers);
+import messages from './pages/404';
 
 import { registerComponent }  from '../../core';
 import Profile from '../../components/profile';

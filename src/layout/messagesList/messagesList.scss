@@ -13,6 +13,7 @@
     align-items: center;
     padding: 20px;
     border-bottom: 1px solid $color-chat-top;
+    height: 100px;
     .message__name {
       flex-grow: 1;
     }
@@ -62,5 +63,14 @@
     border: 1px solid $button-color;
     border-radius: 50%;
     margin: 5px;
+  }
+  &__empty-message {
+  	text-align: center;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+		width: 100%;
   }
 }
