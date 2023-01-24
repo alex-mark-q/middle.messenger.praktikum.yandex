@@ -4,8 +4,11 @@ console.log(HTTPTransport);
 
 class chatController {
 
-	addUserToChat(id: number, userId: number) {
-		HTTPTransport.put(id, [userId]);
+	addUserToChat(id: number, userId: number): Promise<unknown> {
+		HTTPTransport.put('/users', {id, userId});
+	}
+	delUserToChat(id: number, userId: number): Promise<unknown> {
+		HTTPTransport.delete('/users', {id, userId});
 	}
 
 }

@@ -3,7 +3,9 @@ require("babel-core/register");
 import { renderDOM, registerComponent }  from './core';
 import Main from './pages/main';
 import Chat from './pages/chat';
+import Profile from './pages/profile'
 import fourHundredFour from './pages/404';
+import fiveHundred from './pages/500'
 
 import './vendor/index.scss';
 
@@ -22,6 +24,8 @@ registerComponent(Input);
 registerComponent(ControledInput);
 registerComponent(ErrorComponent);
 registerComponent(Chat);
+registerComponent(Profile);
+registerComponent(fiveHundred);
 
 
 class App {
@@ -30,6 +34,9 @@ class App {
   }
   chat() {
   	return new Chat(storeChatRoom);
+  }
+  profile() {
+  	return new Profile();
   }
   error404() {
   	return new fourHundredFour(store404);

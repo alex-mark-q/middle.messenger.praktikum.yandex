@@ -1,1 +1,1 @@
-export { Login as default } from './login';
+export { actionChatModal as default } from './actionChatModal';

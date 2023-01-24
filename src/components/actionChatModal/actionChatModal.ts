@@ -3,33 +3,35 @@ import { Validation, validationFieldType} from 'core/validation';
 import template from 'bundle-text:./template.hbs';
 import './reducer.scss';
 
-interface Props {
-
+interface IActionProps {
+	type: string;
+	action: (event: Event) => void;
 }
 
-export class actionChatModal extends Block<Props> {
-  constructor() {
-    super({...props});
+export class actionChatModal extends Block<IActionProps> {
+  constructor({type, action}: IActionProps) {
+    super({type, events: {click: action}});
   }
 
   render(): string {
     switch (this.props.type) {
   	  case 'addUser':
-      // language=hbs
+
 	      return `
-	        <div class="kebab__modal-plus" id="modalAddUser">
+	        <div class="modal__plus">
 						<img src="../components/kebab/images/plus.png" alt="avatar" />
 						Добавить пользователя
 					</div>`;
     	case 'delUser':
-      // language=hbs
+
       	return `
-					<div class="kebab__modal-minus"  id="modalDelUser">
+					<div class="modal__minus"  id="modalDelUser">
 						<img src="../components/kebab/images/minus.png" alt="avatar" />
 						Удалить пользователя
 					</div>`
       default:
         return '<div>default</div>';
     }
+
   }
 }

@@ -5,12 +5,12 @@ import ChatControllers from 'controllers/chatControllers';
 import messages from './pages/404';
 
 import { registerComponent }  from '../../core';
-import Profile from '../../components/profile';
+import ProfileLink from '../../components/ProfileLink';
 import Search from '../../components/search';
 import Message from '../../components/message';
 import MessagesList from '../../layout/messagesList';
 
-registerComponent(Profile);
+registerComponent(ProfileLink);
 registerComponent(Search);
 registerComponent(Message);
 registerComponent(MessagesList);
