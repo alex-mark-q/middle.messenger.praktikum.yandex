@@ -4,6 +4,7 @@ import { renderDOM, registerComponent }  from './core';
 import Main from './pages/main';
 import Chat from './pages/chat';
 import Profile from './pages/profile'
+import Signin from './pages/signin'
 import fourHundredFour from './pages/404';
 import fiveHundred from './pages/500'
 
@@ -25,6 +26,7 @@ registerComponent(ControledInput);
 registerComponent(ErrorComponent);
 registerComponent(Chat);
 registerComponent(Profile);
+registerComponent(Signin);
 registerComponent(fiveHundred);
 
 
@@ -34,6 +36,9 @@ class App {
   }
   chat() {
   	return new Chat(storeChatRoom);
+  }
+  signin() {
+  	return new Signin();
   }
   profile() {
   	return new Profile();

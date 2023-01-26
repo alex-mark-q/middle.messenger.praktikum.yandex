@@ -1,0 +1,114 @@
+<section class="signin">
+  <form action="/" method="post" class="form">
+    <span>Регистрация</span>
+    <form action="" class="form">
+      <div class="form-signin__content">
+        <div class="form-signin__row">
+          <label for="input-email" class="form__label form__label--offset">Почта</label>
+          {{{
+	      		ControledInput
+	      		onInput=onInput
+						onFocus=onFocus
+						ref="emailInputRef"
+	      		name="email"
+	      		type="text"
+	      		id="input-username"
+	      		placeholder="pochta@yandex.ru"
+		      }}}
+          {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
+        </div>
+        <div class="form-signin__row">
+          <label for="input-username" class="form__label form__label--offset">Логин</label>
+					{{{
+	      		ControledInput
+	      		onInput=onInput
+						onFocus=onFocus
+						ref="loginInputRef"
+	      		name="login"
+	      		type="text"
+	      		id="input-username"
+	      		placeholder="ivanivanov"
+		      }}}
+          {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
+        </div>
+        <div class="form-signin__row">
+          <label for="input-name" class="form__label form__label--offset">Имя</label>
+					{{{
+	      		ControledInput
+	      		onInput=onInput
+						onFocus=onFocus
+						ref="nameInputRef"
+	      		name="first_name"
+	      		type="text"
+	      		id="input-username"
+	      		placeholder="Иван"
+		      }}}
+          {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
+        </div>
+        <div class="form-signin__row">
+          <label for="input-surname" class="form__label form__label--offset">Фамилия</label>
+					{{{
+	      		ControledInput
+	      		onInput=onInput
+						onFocus=onFocus
+						ref="secondInputRef"
+	      		name="second_name"
+	      		type="text"
+	      		id="input-username"
+	      		placeholder="Иванов"
+		      }}}
+          {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
+        </div>
+
+        <div class="form-signin__row">
+          <label for="input-tel" class="form__label form__label--offset">Телефон</label>
+					{{{
+	      		ControledInput
+	      		onInput=onInput
+						onFocus=onFocus
+						ref="telInputRef"
+	      		name="phone"
+	      		type="text"
+	      		id="input-tel"
+	      		placeholder="+7 (909) 967 30 30"
+		      }}}
+          {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
+        </div>
+        <div class="form-signin__row">
+          <label for="password-input" class="form__label form__label--offset">Пароль</label>
+					{{{
+	      		ControledInput
+	      		onInput=onInput
+						onFocus=onFocus
+						ref="passInputRef"
+	      		name="password"
+	      		type="password"
+	      		id="password-input"
+	      		placeholder="******"
+		      }}}
+          {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
+        </div>
+        <div class="form-signin__row">
+          <label for="password-input" class="form__label form__label--offset">Пароль еще раз</label>
+					{{{
+	      		ControledInput
+	      		onInput=onInput
+						onFocus=onFocus
+						ref="repeatInputRef"
+	      		name="password"
+	      		type="password"
+	      		id="password-input"
+	      		placeholder="******"
+		      }}}
+          {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
+        </div>
+      </div>
+
+      <footer class="form-login__footer">
+        {{{ Button class="button" label="Зарегистрироваться" onClick=onSubmit }}}
+        <div class="form__links">
+          <a href="#" class="form__link">Войти</a>
+        </div>
+      </footer>
+    </form>
+</section>

@@ -22,13 +22,13 @@ export class Login extends Block {
 			},
 			onFocus: (e: InputEvent) => console.log("focus"),
       onSubmit: (e: InputEvent) => {
-
+				event.preventDefault();
       	const login = this.element?.querySelector('input[name="login"]') as HTMLInputElement;
       	const password = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
 
       	const errorMessage = new Validation().validate([
-      		{type: validationFieldType.Login, value: login.value},
-      		{type: validationFieldType.Password, value: password.value}
+      		{type: validationFieldType.Login, value: login?.value},
+      		{type: validationFieldType.Password, value: password?.value}
       	]);
 				//debugger;
 

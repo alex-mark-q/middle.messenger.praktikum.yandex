@@ -9,11 +9,13 @@ import ProfileLink from '../../components/ProfileLink';
 import Search from '../../components/search';
 import Message from '../../components/message';
 import MessagesList from '../../layout/messagesList';
+import actionChatModal from '../../components/actionChatModal';
 
 registerComponent(ProfileLink);
 registerComponent(Search);
 registerComponent(Message);
 registerComponent(MessagesList);
+registerComponent(actionChatModal);
 
 
 interface MessengerProps {

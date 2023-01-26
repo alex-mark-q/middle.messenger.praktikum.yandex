@@ -18,7 +18,7 @@ export class actionChatModal extends Block<IActionProps> {
   	  case 'addUser':
 
 	      return `
-	        <div class="modal__plus">
+	        <div class="modal__plus"  id="modalAddUser">
 						<img src="../components/kebab/images/plus.png" alt="avatar" />
 						Добавить пользователя
 					</div>`;

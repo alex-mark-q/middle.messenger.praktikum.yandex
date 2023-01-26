@@ -3,7 +3,6 @@ import template from 'bundle-text:./template.hbs';
 import './reducer.scss';
 import { registerComponent }  from '../../core';
 import buttonToogle from '../buttonToogle';
-import actionChatModal from '../actionChatModal';
 import controllerChat from '../../controllers/chatControllers';
 interface Props {
   id?: string;
@@ -11,7 +10,7 @@ interface Props {
 
 
 registerComponent(buttonToogle);
-registerComponent(actionChatModal);
+
 
 export class reducerChatModal extends Block<Props> {
   constructor({id}: Props) {
@@ -43,6 +42,7 @@ export class reducerChatModal extends Block<Props> {
 
     this.setProps({
 			buttonAddUser:(event:Event) => {
+				console.log("click buttonAddUser");
 				event.preventDefault();
 				events: {
 					click: () => {
@@ -57,12 +57,12 @@ export class reducerChatModal extends Block<Props> {
 			onClick: (event: Event) => {
         event.preventDefault();
         const myDropdownShow = document.getElementById('modalShowUser');
-        const myDropdownAdd = document.getElementById('modalAddUser');
+        const myDropdownAdd = document.querySelector('.modal__plus');
         if (myDropdownShow) {
           myDropdownShow.classList.toggle('show');
         }
         if(myDropdownAdd) {
-        	myDropdownAdd.classList.toggle('show');
+        	myDropdownAdd.style.display = 'block';
         }
       }
 
