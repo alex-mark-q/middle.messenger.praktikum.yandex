@@ -1,0 +1,16 @@
+<main class="page__chat">
+	<div class="chat">
+		<div class="chat-list">
+			{{{ ProfileLink }}}
+			{{{ Search }}}
+			<ul class="chat-list__message">
+				{{#each this}}
+				{{{ Message messageStore=this }}}
+				{{/each}}
+			</ul>
+			{{!-- <div>{{data.title}}</div> --}}
+		</div>
+	</div>
+	{{{ MessagesList messageStore=this }}}
+	{{{actionChatModal type="addUser" action=buttonAddUser onClick=onClick}}}
+</main>

@@ -1,0 +1,42 @@
+{{#if getChat}}
+	<div class="chat-body">
+		<div class="chat-body__container">
+
+			<div class="chat-body__header">
+				<div class="message__circle">
+					<div class="message__circle-user">
+						{{!-- <img src="{{messageStore.message.url}}" alt="avatar" /> --}}
+					</div>
+				</div>
+				<div class="message__name">{{messageStore.message.name}}</div>
+				{{{ reducerChatModal id="modalShowUser" }}}
+			</div>
+
+			<div class="chat-body__history">
+
+					{{#each messageStore }}
+							<div class="chat-body__message chat-body__message_my">
+								{{ message.text }}
+								<span>{{ message.time }}</span>
+							</div>
+
+							<div class="chat-body__message">
+								{{ message.text }}
+								<span>{{ message.time }}</span>
+							</div>
+					{{/each}}
+
+			</div>
+			<div class="chat-body__send">
+				{{{ Attach id="modalShowOther" class="attach__image" onClick=onClick }}}
+				{{{ Input type="text" placeholder="Сообщение" class="search__input_message" }}}
+				{{{ Button class="chat-body__button" label="→"}}}
+			</div>
+
+		</div>
+	</div>
+{{else}}
+    <div class="chat-body__empty-message">
+        <p>Выберите чат чтобы отправить сообщение</p>
+    </div>
+{{/if}}

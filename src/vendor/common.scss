@@ -1,0 +1,28 @@
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0px;
+  padding: 0px;
+  min-height: 100vh;
+}
+.page {
+  &__center {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__chat {
+    display: flex;
+    flex-direction: row;
+  }
+}
+.link {
+  color: #3369F3;
+  cursor: pointer;
+}
+.alarm {
+  color: #FF0000;
+  cursor: pointer;
+  margin: 10px 0;
+  font-size: 11px
+}

@@ -1,0 +1,41 @@
+<section class="login">
+  <form action="" class="form">
+    <div class="form-login__content">
+
+      <label for="input-username" class="form__label form__label--offset">Логин</label>
+      {{{
+      		ControledInput
+      		onInput=onInput
+					onFocus=onFocus
+					ref="loginInputRef"
+      		name="login"
+      		type="text"
+      		id="input-username"
+      		placeholder="ivanivanov"
+      		label="login"
+      }}}
+      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
+      <label for="password-input" class="form__label form__label--offset">Пароль</label>
+      {{{
+      		ControledInput
+      		onInput=onInput
+					onFocus=onFocus
+					ref="passInputRef"
+      		name="password"
+      		type="password"
+      		id="password-input"
+      		placeholder="password"
+      }}}
+      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}
+    </div>
+    <footer class="form-login__footer">
+      {{{
+	      	Button label="Авторизоваться"
+	      	onClick=onSubmit
+    	}}}
+      <div class="form__links">
+        <a href="#" class="form__link">Нет аккаунта?</a>
+      </div>
+    </footer>
+  </form>
+</section>

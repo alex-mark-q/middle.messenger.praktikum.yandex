@@ -1,0 +1,49 @@
+@import '../../vendor/variables.scss';
+
+.attach {
+	position: relative;
+	svg {
+		cursor: pointer;
+	}
+	&__image {
+
+	}
+	&__modal {
+		position: absolute;
+		width: 160px;
+		height: 130px;
+		bottom: 60px;
+    padding: 15px;
+    border-radius: 12px;
+    background-color: $main;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    border: 2px solid #eee;
+    box-shadow: 0 0 10px 1px #00000080;
+    display: none;
+	}
+	&__modal img {
+		margin-right: 10px;
+	}
+	&__modal-file {
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+	}
+	&__modal-foto{
+		cursor: pointer;
+		display: flex;
+	}
+	&__modal-location {
+		cursor: pointer;
+		display: flex;
+	}
+	&__wrapper{
+		display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    height: 100%;
+	}
+}

@@ -1,0 +1,21 @@
+<div class="dialog" role="dialog">
+	<div class="dialog__body">
+		<h3>{{ header }}</h3>	
+		<div class="dialog__content">
+			
+			{{#if label}}
+      	<label for="input-username" class="form__label form__label--offset">Логин</label>
+      	{{> components/input/input type=type id="input-username" class="form__text-input" placeholder="ivanivanov" }}
+      {{else}}
+      	{{> components/input/input type=type }}
+      	<span class="dialog__file">Выбрать файл на компьютере</span>
+      {{/if}}
+		
+			
+		</div>
+		<footer class="form-login__footer">
+      {{> components/button/button class="button" label=text }}
+      <span class="alarm">Нужно выбрать файл</span>
+    </footer>
+	</div>
+</div>

@@ -1,0 +1,24 @@
+<li class="message">
+	<a class="{{#if (theActiveChat messageStore.message.id)}}active{{/if}}" href="chat?id={{messageStore.message.id}}">
+		<div class="message__circle">
+			<div class="message__circle-user">
+				{{!-- <img src="{{messageStore.message.url}}" alt="avatar" /> --}}
+			</div>
+		</div>
+	  <div class="message__about">
+	    <div class="message__name">{{ messageStore.message.name }}</div>
+	    <div class="message__text">
+	      {{#if messageStore.message.myMessage}}
+	      <span class="message__direction">Вы:</span>
+	      {{/if}}
+	      {{ text }}
+	    </div>
+	  </div>
+	  <div class="message__status">
+	    <span class="message__time">{{ messageStore.message.time }}</span>
+	    {{#if messageStore.message.count}}
+	      <span class="message__amount">{{ messageStore.message.count }}</span>
+	    {{/if}}
+	  </div>
+	</a>
+</li>
