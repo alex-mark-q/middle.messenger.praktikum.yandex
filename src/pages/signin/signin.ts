@@ -32,7 +32,7 @@ export class Signin extends Block<unknown> {
       	const phone = this.element?.querySelector('input[name="phone"]') as HTMLInputElement;
       	const RepeatPassword = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
 
-      	console.log(email, login, password, firstName, secondName, phone);
+      	console.log(email.value, login.value, password.value, firstName.value, secondName.value, phone.value);
 
       }
     })

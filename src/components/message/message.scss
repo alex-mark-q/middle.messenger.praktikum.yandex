@@ -22,6 +22,8 @@
     margin: 0px 0px 4px;
 	}
 	&__text {
+		overflow: hidden;
+    height: 50px;
 		font-weight: 500;
 		font-size: 12px;
 		line-height: 12px;

@@ -43,8 +43,30 @@ export class MessagesList extends Block<IMessageProps> {
           myDropdown.classList.toggle('show');
         }
       },
-      onSendMessage: () => {
-
+      onSendMessage: (event: Event) => {
+      	event.preventDefault();
+      	const form = document.getElementById('sendMessage') as HTMLFormElement;
+        const input = form.elements.namedItem('message') as HTMLInputElement;
+        if(input.value) {
+        	const message = input.value;
+        	console.log(input.value);
+        	const chat = document.querySelector('.chat-body__history') as HTMLElement;
+        	const div = document.createElement('div');
+        	const date = new Date();
+          const time = `${date.getHours()}:${date.getMinutes()}`;
+          div.classList.add('chat-body__message');
+          div.classList.add('chat-body__message_my');
+          div.innerHTML = `
+            <div class="message-content">
+                <p>${message}</p>
+            </div>
+            <span>
+                ${time}
+            </span>
+        	`;
+          chat.appendChild(div);
+        	input.value = '';
+        }
       }
 
     });

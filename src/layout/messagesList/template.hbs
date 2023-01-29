@@ -29,8 +29,10 @@
 			</div>
 			<div class="chat-body__send">
 				{{{ Attach id="modalShowOther" class="attach__image" onClick=onClick }}}
-				{{{ Input type="text" placeholder="Сообщение" class="search__input_message" }}}
-				{{{ Button class="chat-body__button" label="→"}}}
+				<form id="sendMessage">
+					{{{ Input type="text" name="message" placeholder="Сообщение" class="search__input_message" }}}
+					{{{ Button class="chat-body__button" onClick=onSendMessage label="→"}}}
+				</form>
 			</div>
 
 		</div>
