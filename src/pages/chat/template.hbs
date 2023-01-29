@@ -12,5 +12,44 @@
 		</div>
 	</div>
 	{{{ MessagesList messageStore=this }}}
-	{{{actionChatModal type="addUser" action=buttonAddUser onClick=onClick}}}
+	<div id="modalPlusUser" class="dialog" role="dialog">
+		<div class="dialog__body">
+			{{{actionChatModal type="addUser" action=buttonAddUser onClick=onClick}}}
+			<form id="modalForm">
+			  <div>
+					<label class="text-field__label">
+					<span>Логин</span>
+						{{{ Input name="login" type="text" class="form__text-input" placeholder="логин" }}}
+					</label>
+				</div>
+				{{{
+		      	Button
+		      	id="ActionModalPlusUser"
+		      	class="button"
+		      	label="Добавить"
+		      	onClick=onSubmitAddUser
+	    	}}}
+			</form>
+		</div>
+	</div>
+	<div id="modalMinusUser" class="dialog" role="dialog">
+		<div class="dialog__body">
+			{{{actionChatModal type="delUser" action=buttonAddUser onClick=onClick}}}
+			<form id="modalForm">
+			  <div>
+					<label class="text-field__label">
+					<span>Логин</span>
+						{{{ Input name="login" type="text" class="form__text-input" placeholder="логин" }}}
+					</label>
+				</div>
+				{{{
+		      	Button
+		      	id="ActionModalPlusUser"
+		      	class="button"
+		      	label="Добавить"
+		      	onClick=onSubmit
+	    	}}}
+			</form>
+		</div>
+	</div>
 </main>

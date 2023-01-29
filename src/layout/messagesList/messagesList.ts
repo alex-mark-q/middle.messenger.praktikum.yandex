@@ -26,7 +26,7 @@ interface ISearchProps {
 export class MessagesList extends Block<IMessageProps> {
 
   constructor({ messageStore }: IMessageProps) {
-  	console.log("messageStore___", messageStore);
+  	//console.log("messageStore___", messageStore);
     super({ messageStore });
     this.setProps({
     	getChat: () => {
@@ -42,6 +42,9 @@ export class MessagesList extends Block<IMessageProps> {
         if (myDropdown) {
           myDropdown.classList.toggle('show');
         }
+      },
+      onSendMessage: () => {
+
       }
 
     });
