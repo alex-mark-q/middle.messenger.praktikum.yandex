@@ -34,7 +34,7 @@ const expressions = {
 	EMAIL: /.+@.+\..+/i,
 	PHONE: /^[+]?[0-9]{10,15}$/
 }
-// Проверка первого и второго поля
+
 function validateField (val: string, exp: RegExp) {
 	return exp.test(val);
 }
@@ -47,7 +47,7 @@ class Validation<MakeValidator> {
 			const { type, value } = rules[i];
 			if(type && value) {
 				if(type === validationFieldType.Login) {
-					console.log("validateField ",validateField(value, expressions.LOGIN));
+					console.log("validateField ");
 					if(!validateField(value, expressions.LOGIN)) {
 						errorMessage = message.login;
 						break;

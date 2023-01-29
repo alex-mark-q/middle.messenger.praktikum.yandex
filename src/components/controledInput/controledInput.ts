@@ -23,11 +23,6 @@ export class ControledInput extends Block {
     	onBlur: (e: FocusEvent) => {
     		const input = e.target as HTMLInputElement;
     		console.log(this.refs);
-
-    		// this.refs.error.setProps({
-    		// 	text: ''
-    		// }) // --> почему не получается через setProps?
-
 				const login = this.element?.querySelector('input[name="login"]') as HTMLInputElement;
       	const password = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
       	const firstName = this.element?.querySelector('input[name="first_name"]') as HTMLInputElement;
