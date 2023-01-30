@@ -44,8 +44,6 @@
     display: none;
 	}
 	&__modal-plus, &__modal-minus {
-		display: flex;
-    justify-content: center;
 		font-size: 12px;
     display: flex;
     align-items: center;
@@ -76,7 +74,7 @@
 	}
 }
 .show {
-	display: block !important;
+	display: block;
 }
 .modal__plus, .modal__minus {
 	display: none;

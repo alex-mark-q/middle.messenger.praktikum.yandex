@@ -17,7 +17,7 @@ export class Login extends Block {
         password: '',
       },
 			onInput: (e: InputEvent) => {
-				console.log("input");
+				console.log("input", this.refs);
 				//this.refs.loginInputRef.refs.errorRef.setProps({text: ""})
 			},
 			onFocus: (e: InputEvent) => console.log("focus"),

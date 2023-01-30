@@ -2,7 +2,6 @@ import Block from '../../core/Block';
 import template from 'bundle-text:./template.hbs';
 
 interface IButtonProps {
-	id?: string;
 	class: string;
 	label: string;
 	onClick: () => void;

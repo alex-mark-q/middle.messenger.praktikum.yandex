@@ -21,4 +21,8 @@
 @import url('../layout/profile/profile.scss');
 @import url('../components/disconnect/disconnect.scss');
 
+/* require pages css styles */
+@import url('../layout/chat/chat.scss');
+//@import url('../pages/home/home.scss');
+@import url('../layout/main/main.scss');
 @import url('../layout/messagesList/messagesList.scss');
