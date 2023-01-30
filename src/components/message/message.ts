@@ -16,7 +16,7 @@ interface MessageProps {
 
 export class Message extends Block<MessageProps> {
 	constructor(messageStore:MessageProps) {
-		//console.log(messageStore, "messageStore");
+		console.log(messageStore, "messageStore");
 		super(messageStore);
 	}
 

@@ -17,7 +17,7 @@ export class Signin extends Block<unknown> {
     super();
     this.setProps({
 			onInput: (e: InputEvent) => {
-				console.log("input");
+				console.log("input", this.refs);
 			},
 			onFocus: (e: InputEvent) => console.log("focus"),
       onSubmit: (event: Event) => {
@@ -32,7 +32,26 @@ export class Signin extends Block<unknown> {
       	const phone = this.element?.querySelector('input[name="phone"]') as HTMLInputElement;
       	const RepeatPassword = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
 
-      	console.log(email.value, login.value, password.value, firstName.value, secondName.value, phone.value);
+      	console.log(email, login, password, firstName, secondName, phone);
+
+      	// const errorMessage = new Validation().validate([
+
+      	// 	{type: validationFieldType.Login, value: login?.value},
+      	// 	{type: validationFieldType.Password, value: password?.value},
+      	// 	{type: validationFieldType.FirstName, value: firstName?.value},
+      	// 	{type: validationFieldType.SecondName, value: secondName?.value},
+
+      	// 	{type: validationFieldType.Email, value: email.value},
+
+      	// 	{type: validationFieldType.Phone, value: phone?.value},
+      	// 	{type: validationFieldType.RepeatPassword, value: RepeatPassword?.value}
+      	// ]);
+
+				// if(errorMessage) {
+        //   const formData = new FormData(form);
+        //   const data = Object.fromEntries(formData.entries());
+        //   console.log(data);
+				// }
 
       }
     })
