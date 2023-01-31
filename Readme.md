@@ -25,7 +25,7 @@
 - шаблонизатор handlebars
 - node-сервер express
 
-Ссылка на netlify https://jazzy-griffin-f83301.netlify.app/
+Ссылка на netlify [https://jazzy-griffin-f83301.netlify.app/](https://lambent-treacle-2f562b.netlify.app/)
 ## Основные функции папки core
 
 ## Запуск Eslint
