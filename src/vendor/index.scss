@@ -10,7 +10,7 @@
 @import url('../components/input/input.scss');
 @import url('../components/signin/signin.scss');
 @import url('../components/button/button.scss');
-@import url('../components/profile/profile.scss');
+// @import url('../components/profile/profile.scss');
 @import url('../components/search/search.scss');
 @import url('../components/message/message.scss');
 @import url('../components/attach/attach.scss');
@@ -21,8 +21,4 @@
 @import url('../layout/profile/profile.scss');
 @import url('../components/disconnect/disconnect.scss');
 
-/* require pages css styles */
-@import url('../layout/chat/chat.scss');
-//@import url('../pages/home/home.scss');
-@import url('../layout/main/main.scss');
-@import url('../layout/messages/message.scss');
+@import url('../layout/messagesList/messagesList.scss');

@@ -36,6 +36,9 @@
 			left: 0;
     }
 	}
+	&__label svg {
+		width: 89px;
+	}
 }
 
 .avatar-change__label:hover > .avatar__text {

@@ -1,0 +1,98 @@
+[
+  {
+    "message": {
+    	"id": 101,
+      "name": "Андрей",
+      "url": "../components/message/images/1.png",
+      "text": "Привет",
+      "time": "11:12",
+      "count": 6,
+			"label": [{
+	      "name": "Андрей",
+	      "url": "../components/message/images/1.png",
+	      "text": "Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то момент попросила Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты летали с моделью 500 EL — и к слову говоря, все тушки этих камер все еще находятся на поверхности Луны, так как астронавты с собой забрали только кассеты с пленкой. Хассельблад в итоге адаптировал SWC для космоса, но что-то пошло не так и на ракету они так никогда и не попали. Всего их было произведено 25 штук, одну из них недавно продали на аукционе за 45000 евро.",
+	      "time": "12 июня 2022",
+	    }]
+    }
+  },
+  {
+    "message": {
+    	"id": 102,
+      "name": "Илья",
+      "url": "../components/message/images/1.png",
+      "text": "Друзья, у меня для вас особенный выпуск новостей!...",
+      "time": "5 Мая 2020",
+      "myMessage": true,
+    }
+  },
+  {
+    "message": {
+    	"id": 103,
+      "name": "Вадим",
+      "url": "../components/message/images/1.png",
+      "text": "Вы: Круто!",
+      "time": "00:23",
+      "count": 4,
+    }
+  },
+  {
+    "message": {
+    	"id": 104,
+      "name": "тет-а-тет",
+      "url": "../components/message/images/1.png",
+      "text": "И Human Interface Guidelines и Material Design рекомендуют...",
+      "time": "13:44",
+      "myMessage": true,
+    }
+  },
+  {
+    "message": {
+    	"id": 105,
+      "name": "тет-а-тет",
+      "url": "../components/message/images/1.png",
+      "text": "И Human Interface Guidelines и Material Design рекомендуют...",
+      "time": "13:44",
+      "myMessage": true,
+    }
+  },
+  {
+    "message": {
+    	"id": 106,
+      "name": "Повернутые Z",
+      "url": "../components/message/images/1.png",
+      "text": "И Human Interface Guidelines и Material Design рекомендуют...",
+      "time": "13:44",
+      "myMessage": true,
+    }
+  },
+  {
+    "message": {
+    	"id": 107,
+      "name": "тет-а-тет",
+      "url": "../components/message/images/1.png",
+      "text": "Также даны разделы 1.10.32 и 1.10.33 de Finibus Bonorum et Malorum...",
+      "time": "1 Мая 2020",
+      "myMessage": true,
+    }
+  },
+  {
+    "message": {
+    	"id": 108,
+      "name": "Design",
+      "url": "../components/message/images/1.png",
+      "text": "И Human Interface Guidelines и Material Design рекомендуют...",
+      "time": "13:44",
+      "myMessage": true,
+    }
+  },
+  {
+    "message": {
+    	"id": 109,
+      "name": "тет-а-тет",
+      "url": "../components/message/images/1.png",
+      "text": "Есть много вариантов Lorem Ipsum, но большинство из них имеет не всегда приемлемые модификации....",
+      "time": "13:44",
+      "myMessage": true,
+    }
+  }
+]

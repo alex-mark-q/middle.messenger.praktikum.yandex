@@ -1,0 +1,55 @@
+<main class="page__chat">
+	<div class="chat">
+		<div class="chat-list">
+			{{{ ProfileLink }}}
+			{{{ Search }}}
+			<ul class="chat-list__message">
+				{{#each this}}
+				{{{ Message messageStore=this }}}
+				{{/each}}
+			</ul>
+			{{!-- <div>{{data.title}}</div> --}}
+		</div>
+	</div>
+	{{{ MessagesList messageStore=this }}}
+	<div id="modalPlusUser" class="dialog" role="dialog">
+		<div class="dialog__body">
+			{{{actionChatModal type="addUser" action=buttonAddUser onClick=onClick}}}
+			<form id="modalForm">
+			  <div>
+					<label class="text-field__label">
+					<span>Логин</span>
+						{{{ Input name="login" type="text" class="form__text-input" placeholder="логин" }}}
+					</label>
+				</div>
+				{{{
+		      	Button
+		      	id="ActionModalPlusUser"
+		      	class="button"
+		      	label="Добавить"
+		      	onClick=onSubmitAddUser
+	    	}}}
+			</form>
+		</div>
+	</div>
+	<div id="modalMinusUser" class="dialog" role="dialog">
+		<div class="dialog__body">
+			{{{actionChatModal type="delUser" action=buttonAddUser onClick=onClick}}}
+			<form id="modalForm">
+			  <div>
+					<label class="text-field__label">
+					<span>Логин</span>
+						{{{ Input name="login" type="text" class="form__text-input" placeholder="логин" }}}
+					</label>
+				</div>
+				{{{
+		      	Button
+		      	id="ActionModalPlusUser"
+		      	class="button"
+		      	label="Удалить"
+		      	onClick=onSubmit
+	    	}}}
+			</form>
+		</div>
+	</div>
+</main>
