@@ -1,1 +1,1 @@
-declare module '*.hbs';
+declare module '*.hbs'; // необходим для обработки hbs шаблонов

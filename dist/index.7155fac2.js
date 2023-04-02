@@ -563,7 +563,6 @@ var _404Json = require("./store/404.json");
 var _404JsonDefault = parcelHelpers.interopDefault(_404Json);
 var _500Json = require("./store/500.json");
 var _500JsonDefault = parcelHelpers.interopDefault(_500Json);
-require("babel-core/register");
 (0, _core.registerComponent)((0, _buttonDefault.default));
 (0, _core.registerComponent)((0, _loginDefault.default));
 (0, _core.registerComponent)((0, _inputDefault.default));
@@ -573,41 +572,70 @@ require("babel-core/register");
 (0, _core.registerComponent)((0, _profileDefault.default));
 (0, _core.registerComponent)((0, _signinDefault.default));
 (0, _core.registerComponent)((0, _500Default.default));
-class App {
-    main() {
-        return new (0, _mainDefault.default)();
-    }
-    chat() {
-        return new (0, _chatDefault.default)((0, _chatRoomJsonDefault.default));
-    }
-    signin() {
-        return new (0, _signinDefault.default)();
-    }
-    profile() {
-        return new (0, _profileDefault.default)();
-    }
-    error404() {
-        return new (0, _404Default.default)((0, _404JsonDefault.default));
-    }
-    error500() {
-        return new Page500((0, _500JsonDefault.default));
-    }
-}
-const pages = new App();
-function render(query, block) {
-    const root = document.querySelector(query);
-    if (root && block) root.appendChild(block.getContent());
-    return root;
-}
+const MainPage = new (0, _mainDefault.default)();
+const SigninPage = new (0, _signinDefault.default)();
+const ChatPage = new (0, _chatDefault.default)((0, _chatRoomJsonDefault.default));
+const ProfilePage = new (0, _profileDefault.default)();
+const FourHundredFourPage = new (0, _404Default.default)((0, _404JsonDefault.default));
+const FiveHundredPage = new (0, _500Default.default)((0, _500JsonDefault.default));
 const checkPage = ()=>{
     const pathname = window.location.pathname.slice(1);
     return pathname in pages ? pathname : "error404";
 };
+const routes = [
+    {
+        path: "/",
+        view: MainPage
+    },
+    {
+        path: "/auth",
+        view: SigninPage
+    },
+    {
+        path: "/chat",
+        view: ChatPage
+    },
+    {
+        path: "/profile",
+        view: ProfilePage
+    },
+    {
+        path: "/error404",
+        view: FourHundredFourPage
+    },
+    {
+        path: "/error500",
+        view: FiveHundredPage
+    }, 
+];
+let resultPath = routes.map((path)=>path["path"]);
+const pathname = window.location.pathname.slice(1);
+let page = null;
+switch(pathname){
+    case "":
+        page = routes.find(({ path  })=>path === "/");
+        break;
+    case "auth":
+        page = routes.find(({ path  })=>path === "/auth");
+        break;
+    case "chat":
+        page = routes.find(({ path  })=>path === "/chat");
+        break;
+    case "profile":
+        page = routes.find(({ path  })=>path === "/profile");
+        break;
+    case "error500":
+        page = routes.find(({ path  })=>path === "/error500");
+        break;
+    default:
+        page = routes.find(({ path  })=>path === "/error404");
+}
+console.log(page);
 document.addEventListener("DOMContentLoaded", ()=>{
-    render("#app", pages[checkPage()]());
+    (0, _core.renderDOM)(page.view);
 });
 
-},{"./core":"9qbGm","./pages/main":"dgjed","./pages/chat":"92lNP","./pages/profile":"glT1D","./pages/signin":"jSCQq","./pages/404":"gPaCj","./pages/500":"2EiPR","./vendor/index.scss":"cBdn8","./components/button":"83hYd","./components/login":"6wqya","./components/input":"jnHpm","./components/controledInput":"c8UUW","./components/ErrorComponent":"dtDez","./store/chatRoom.json":"lMM3Q","./store/404.json":"babx5","./store/500.json":"b129i","babel-core/register":"lLu7D","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9qbGm":[function(require,module,exports) {
+},{"./core":"9qbGm","./pages/main":"dgjed","./pages/chat":"92lNP","./pages/profile":"glT1D","./pages/signin":"jSCQq","./pages/404":"gPaCj","./pages/500":"2EiPR","./vendor/index.scss":"cBdn8","./components/button":"83hYd","./components/login":"6wqya","./components/input":"jnHpm","./components/controledInput":"c8UUW","./components/ErrorComponent":"dtDez","./store/chatRoom.json":"lMM3Q","./store/404.json":"babx5","./store/500.json":"b129i","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9qbGm":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Block", ()=>(0, _blockDefault.default));
@@ -687,7 +715,9 @@ class Block {
     componentDidUpdate(oldProps, newProps) {
         return true;
     }
-    setProps = (nextProps)=>{
+    /*
+  	Через метод setProps мы сможем перерендерить компонент
+  */ setProps = (nextProps)=>{
         if (!nextProps) return;
         Object.assign(this.props, nextProps);
     };
@@ -700,9 +730,11 @@ class Block {
     }
     _render() {
         const fragment = this._compile();
-        this._removeEvents();
-        const newElement = fragment.firstElementChild;
-        this._element.replaceWith(newElement);
+        const newElement = fragment.firstElementChild; // поэтому соседний уровень вложенности в шаблоне hbs будет удален
+        if (this._element) {
+            this._removeEvents(); // удаляем все события для предотвращения утечек
+            this._element.replaceWith(newElement); // заменяет одни элементы другими.
+        }
         this._element = newElement;
         this._addEvents();
     }
@@ -720,7 +752,11 @@ class Block {
         // Можно и так передать this
         // Такой способ больше не применяется с приходом ES6+
         const self = this;
-        return new Proxy(props, {
+        /*
+			Метод Proxy перехвает события, например чтение/запись
+			В конструктор передается объект с ловушками: методами, которые перехватывают разные операции,
+			например, ловушка get – для чтения свойства из target, ловушка set – для записи свойства в target и так далее.
+    */ return new Proxy(props, {
             get (target, prop) {
                 const value = target[prop];
                 return typeof value === "function" ? value.bind(target) : value;
@@ -785,7 +821,7 @@ class Block {
             if (layoutContent && stubChilds.length) layoutContent.append(...stubChilds);
         });
         /**
-     * Возвращаем фрагмент
+     * Возвращаем фрагмент, который затем подхватывает функция _render
      */ return fragment.content;
     }
     show() {
@@ -13228,6 +13264,7 @@ class Login extends (0, _blockDefault.default) {
                     passwordValue: password.value
                 });
                 this.eventBus.emit((0, _blockDefault.default).EVENTS.FORM_SUBMIT);
+                AuthController.signup(data);
             }
         });
     }
@@ -13270,16 +13307,6 @@ module.exports = JSON.parse('[{"context":{"title":"404","message":"Не туда
 
 },{}],"b129i":[function(require,module,exports) {
 module.exports = JSON.parse('[{"context":{"title":"500","message":"Мы уже фиксим","backToChat":"Назад к чатам","url":"/chat"}}]');
-
-},{}],"lLu7D":[function(require,module,exports) {
-/* eslint max-len: 0 */ // TODO: eventually deprecate this console.trace("use the `babel-register` package instead of `babel-core/register`");
-module.exports = require("babel-register");
-
-},{"babel-register":"2PE3z"}],"2PE3z":[function(require,module,exports) {
-"use strict";
-exports.__esModule = true;
-exports.default = function() {};
-module.exports = exports["default"];
 
 },{}]},["45FMs","57jqn"], "57jqn", "parcelRequire938d")
 

@@ -40,6 +40,9 @@ export class Login extends Block {
 				}
 
       	this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
+
+      	AuthController.signup(data as unknown as SignupData)
+
       }
     })
 

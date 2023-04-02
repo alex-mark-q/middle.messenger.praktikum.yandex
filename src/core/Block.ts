@@ -9,6 +9,7 @@ interface BlockMeta<P = any> {
 type Events = Values<typeof Block.EVENTS>;
 
 export default class Block<P = any> {
+
   static EVENTS = {
     INIT: 'init',
     FLOW_CDM: 'flow:component-did-mount',
@@ -93,6 +94,9 @@ export default class Block<P = any> {
     return true;
   }
 
+  /*
+  	Через метод setProps мы сможем перерендерить компонент
+  */
   setProps = (nextProps: P) => {
     if (!nextProps) {
       return;
@@ -113,19 +117,22 @@ export default class Block<P = any> {
     return this._element;
   }
 
-  _render() {
+  _render() { // приватный метод
     const fragment = this._compile();
 
-    this._removeEvents();
-    const newElement = fragment.firstElementChild!;
 
-    this._element!.replaceWith(newElement);
+    const newElement = fragment.firstElementChild!; // поэтому соседний уровень вложенности в шаблоне hbs будет удален
+    if(this._element)
+    {
+			this._removeEvents(); // удаляем все события для предотвращения утечек
+    	this._element!.replaceWith(newElement); // заменяет одни элементы другими.
+    }
 
     this._element = newElement as HTMLElement;
     this._addEvents();
   }
 
-  protected render(): string {
+  protected render(): string { // метод в компонентах переопределяется
     return '';
   };
 
@@ -147,6 +154,11 @@ export default class Block<P = any> {
     // Такой способ больше не применяется с приходом ES6+
     const self = this;
 
+    /*
+			Метод Proxy перехвает события, например чтение/запись
+			В конструктор передается объект с ловушками: методами, которые перехватывают разные операции,
+			например, ловушка get – для чтения свойства из target, ловушка set – для записи свойства в target и так далее.
+    */
     return new Proxy(props as unknown as object, {
       get(target: Record<string, unknown>, prop: string) {
         const value = target[prop];
@@ -236,7 +248,7 @@ export default class Block<P = any> {
     });
 
     /**
-     * Возвращаем фрагмент
+     * Возвращаем фрагмент, который затем подхватывает функция _render
      */
     return fragment.content;
   }

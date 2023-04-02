@@ -36,6 +36,7 @@ function queryStringify(data: Data<unknown>) {
 }
 
 class HTTPTransport {
+
 	get = (url, options = {}) => {
 		return this.request(url, {...options, method: METHODS.GET}, options?.timeout);
 	};
@@ -60,7 +61,7 @@ class HTTPTransport {
 				reject(rejectMessage.EmptyMethod);
 				return;
 			}
-			if (!url) {
+			if (!this.url) {
         reject(rejectMessage.EmptyUrl);
         return;
       }
@@ -70,9 +71,7 @@ class HTTPTransport {
 
 	    xhr.open(
 				method,
-				isGet && !!data
-					? `${url}${queryStringify(data)}`
-					: url,
+				isGet && !!data ? `${process.env.API_ENDPOINT}${queryStringify(data)}` : process.env.API_ENDPOINT,
 			);
 
 			Object.keys(headers).forEach(key => {
