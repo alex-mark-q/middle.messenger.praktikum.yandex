@@ -1,0 +1,1 @@
+export { getScreenComponent } from './screenList';

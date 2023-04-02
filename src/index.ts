@@ -1,5 +1,5 @@
 
-import { renderDOM, registerComponent }  from "./core";
+import { renderDOM, registerComponent, PathRouter }  from "./core";
 import Main from "./pages/main";
 import Chat from "./pages/chat";
 import Profile from "./pages/profile"
@@ -17,6 +17,8 @@ import ErrorComponent from "./components/ErrorComponent";
 import storeChatRoom  from "./store/chatRoom.json";
 import store404  from "./store/404.json";
 import store500  from "./store/500.json";
+
+import { initRouter } from "./router"
 
 registerComponent(Button);
 registerComponent(Login);
@@ -76,8 +78,12 @@ switch (pathname) {
     page = routes.find(({ path }) => path === "/error404");
 }
 
-console.log(page);
-
 document.addEventListener("DOMContentLoaded", () => {
-  renderDOM(page.view);
+  // renderDOM(page.view); // метод перенесется в router.ts
+  const router = new PathRouter();
+
+
+
+  // Первое что делаем иницилизируем роутер
+  initRouter(router);
 });
