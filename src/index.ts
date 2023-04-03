@@ -1,5 +1,5 @@
 
-import { renderDOM, registerComponent, PathRouter }  from "./core";
+import { renderDOM, registerComponent, PathRouter, Store }  from "./core";
 import Main from "./pages/main";
 import Chat from "./pages/chat";
 import Profile from "./pages/profile"
@@ -18,7 +18,8 @@ import storeChatRoom  from "./store/chatRoom.json";
 import store404  from "./store/404.json";
 import store500  from "./store/500.json";
 
-import { initRouter } from "./router"
+import { initRouter } from "./router";
+import { defaultState } from './store';
 
 registerComponent(Button);
 registerComponent(Login);
@@ -53,9 +54,9 @@ const routes = [
 ];
 
 
-let resultPath = routes.map(( path ) => path["path"])
+let resultPath = routes.map(( path ) => path["path"]);
 
-const pathname = window.location.pathname.slice(1)
+const pathname = window.location.pathname.slice(1);
 let page: Nullable<Block<object>> = null;
 
 switch (pathname) {
@@ -81,7 +82,8 @@ switch (pathname) {
 document.addEventListener("DOMContentLoaded", () => {
   // renderDOM(page.view); // метод перенесется в router.ts
   const router = new PathRouter();
-
+  // передадим defaultState в коструктор Store
+  const store = new Store(defaultState);
 
 
   // Первое что делаем иницилизируем роутер

@@ -19,6 +19,7 @@ export function initRouter(router)
 	// })
 
 	// const Page = getScreenComponent("signin");
+	// передадим название компонента для рендера
 	renderDOM(new getScreenComponent("signin"));
 
 }
