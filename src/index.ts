@@ -1,4 +1,5 @@
 
+
 import { renderDOM, registerComponent, PathRouter, Store }  from "./core";
 import Main from "./pages/main";
 import Chat from "./pages/chat";
@@ -79,6 +80,12 @@ switch (pathname) {
     page = routes.find(({ path }) => path === "/error404");
 }
 
+declare global {
+  interface Window {
+    store: Store<AppState>;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // renderDOM(page.view); // метод перенесется в router.ts
   const router = new PathRouter();
@@ -86,6 +93,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const store = new Store(defaultState);
 
 
-  // Первое что делаем иницилизируем роутер
-  initRouter(router);
+   /**
+   * Помещаем роутер и стор в глобальную область для доступа в хоках with*
+   * @warning Не использовать такой способ на реальный проектах
+   */
+  window.router = router;
+  window.store = store;
+
+  // 1. Первое что делаем иницилизируем роутер
+  // 2. Передадим объект store
+  initRouter(router, store);
 });

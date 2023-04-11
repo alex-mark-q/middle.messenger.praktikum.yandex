@@ -23,9 +23,8 @@ export default class EventBus<E extends string = string, M extends { [K in E]: u
 
   emit(event: E, ...args: M[E]) {
   	console.log(
-  		'emit event',
-      'background: #222;
-      color: #bada55',
+  		"emit event",
+      "background: #222; color: #bada55",
       );
     if (!this.listeners[event]) {
       return;

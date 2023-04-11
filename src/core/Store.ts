@@ -7,9 +7,11 @@ export class Store extends EventBus
 	private state: State = {} as State;
 
 	// передадим в конструктор объект defaultState с которым будем работать
-	constructor(defaultState: State) {
+	constructor(defaultState: State)
+	{
 		super();
 		this.state = defaultState;
+		this.setState(defaultState);
 	}
 	// определим методы для работы с объектом State
 	public getState()
@@ -19,9 +21,10 @@ export class Store extends EventBus
 	// передаем новое состояние через объект nextState
 	public setState(nextState)
 	{
+		console.log("current and next state ",this.state, nextState);
 		const prevState = this.state;
-		this.state = {this.state, nextState};
-		emit("change state", this.state);
+		this.state = {...this.state, ...nextState};
+		this.emit("change state", this.state);
 	}
 
 	public dispatch(nextStateOrAction)
