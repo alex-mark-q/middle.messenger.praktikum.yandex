@@ -39,7 +39,7 @@ function validateField (val: string, exp: RegExp) {
 	return exp.test(val);
 }
 
-class Validation<MakeValidator> {
+export class Validation<MakeValidator> {
 	validate(rules: validationField): string  {
 		let errorMessage = '';
 		console.log(rules, "value");
@@ -88,5 +88,3 @@ class Validation<MakeValidator> {
 		return errorMessage;
 	}
 }
-
-export default Validation;

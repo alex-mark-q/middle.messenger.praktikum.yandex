@@ -549,8 +549,6 @@ var _500Default = parcelHelpers.interopDefault(_500);
 var _indexScss = require("./vendor/index.scss");
 var _button = require("./components/button");
 var _buttonDefault = parcelHelpers.interopDefault(_button);
-var _login = require("./components/login");
-var _loginDefault = parcelHelpers.interopDefault(_login);
 var _input = require("./components/input");
 var _inputDefault = parcelHelpers.interopDefault(_input);
 var _controledInput = require("./components/controledInput");
@@ -566,7 +564,6 @@ var _500JsonDefault = parcelHelpers.interopDefault(_500Json);
 var _router = require("./router");
 var _store = require("./store");
 (0, _core.registerComponent)((0, _buttonDefault.default));
-(0, _core.registerComponent)((0, _loginDefault.default));
 (0, _core.registerComponent)((0, _inputDefault.default));
 (0, _core.registerComponent)((0, _controledInputDefault.default));
 (0, _core.registerComponent)((0, _errorComponentDefault.default));
@@ -647,7 +644,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
     (0, _router.initRouter)(router, store);
 });
 
-},{"./core":"9qbGm","./pages/main":"dgjed","./pages/chat":"92lNP","./pages/profile":"glT1D","./pages/signin":"jSCQq","./pages/404":"gPaCj","./pages/500":"2EiPR","./vendor/index.scss":"cBdn8","./components/button":"83hYd","./components/login":"6wqya","./components/input":"jnHpm","./components/controledInput":"c8UUW","./components/ErrorComponent":"dtDez","./store/chatRoom.json":"lMM3Q","./store/404.json":"babx5","./store/500.json":"b129i","./router":"9ks70","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","./store":"hgR4b"}],"9qbGm":[function(require,module,exports) {
+},{"./core":"9qbGm","./pages/main":"dgjed","./pages/chat":"92lNP","./pages/profile":"glT1D","./pages/signin":"jSCQq","./pages/404":"gPaCj","./pages/500":"2EiPR","./vendor/index.scss":"cBdn8","./components/button":"83hYd","./components/input":"jnHpm","./components/controledInput":"c8UUW","./components/ErrorComponent":"dtDez","./store/chatRoom.json":"lMM3Q","./store/404.json":"babx5","./store/500.json":"b129i","./router":"9ks70","./store":"hgR4b","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9qbGm":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Block", ()=>(0, _blockDefault.default));
@@ -664,7 +661,7 @@ var _renderDOMDefault = parcelHelpers.interopDefault(_renderDOM);
 var _pathRouter = require("./PathRouter");
 var _store = require("./Store");
 
-},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./PathRouter":"guXlI","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","./Store":"7b9cm"}],"aWH7T":[function(require,module,exports) {
+},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./PathRouter":"guXlI","./Store":"7b9cm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"aWH7T":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _eventBus = require("./EventBus");
@@ -12362,6 +12359,13 @@ var _block = require("core/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _templateHbs = require("bundle-text:./template.hbs");
 var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _core = require("../../core");
+var _login = require("../../components/login");
+var _loginDefault = parcelHelpers.interopDefault(_login);
+var _button = require("../../components/button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+(0, _core.registerComponent)((0, _loginDefault.default));
+(0, _core.registerComponent)((0, _buttonDefault.default));
 class Main extends (0, _blockDefault.default) {
     constructor(){
         super();
@@ -12374,8 +12378,303 @@ class Main extends (0, _blockDefault.default) {
     }
 }
 
-},{"core/Block":"aWH7T","bundle-text:./template.hbs":"j9oDL","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"j9oDL":[function(require,module,exports) {
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"j9oDL","../../core":"9qbGm","../../components/login":"6wqya","../../components/button":"83hYd","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"j9oDL":[function(require,module,exports) {
 module.exports = "<body  class=\"page\">\r\n  <main class=\"page__center\">\r\n    <div class=\"page__form\">\r\n      {{#Login}}\r\n    \t{{/Login}}\r\n    </div>\r\n  </main>\r\n</body>\r\n\r\n";
+
+},{}],"6wqya":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _login.Login));
+var _login = require("./login");
+
+},{"./login":"jUY4P","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"jUY4P":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Login", ()=>Login);
+var _block = require("core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _validation = require("core/validation");
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _loginScss = require("./login.scss");
+var _authControllers = require("../../controllers/authControllers");
+var _authControllersDefault = parcelHelpers.interopDefault(_authControllers);
+class Login extends (0, _blockDefault.default) {
+    constructor(){
+        super();
+        this.setProps({
+            loginValue: "",
+            passwordValue: "",
+            errors: {
+                login: "",
+                password: ""
+            },
+            onInput: (e)=>{
+                console.log("input");
+            //this.refs.loginInputRef.refs.errorRef.setProps({text: ""})
+            },
+            onFocus: (e)=>console.log("focus"),
+            onSubmit: (e)=>{
+                event.preventDefault();
+                const login = this.element?.querySelector('input[name="login"]');
+                const password = this.element?.querySelector('input[name="password"]');
+                const errorMessage = new (0, _validation.Validation)().validate([
+                    {
+                        type: (0, _validation.validationFieldType).Login,
+                        value: login?.value
+                    },
+                    {
+                        type: (0, _validation.validationFieldType).Password,
+                        value: password?.value
+                    }
+                ]);
+                //debugger;
+                if (errorMessage) this.setProps({
+                    loginValue: login.value,
+                    passwordValue: password.value
+                });
+                const loginData = {
+                    login: login.value,
+                    password: password.value
+                };
+                // this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
+                console.log("loginData", login.value, password.value);
+                (0, _authControllersDefault.default).auth(loginData);
+            }
+        });
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"core/Block":"aWH7T","core/validation":"bEseP","bundle-text:./template.hbs":"7eMJU","./login.scss":"6SbUD","../../controllers/authControllers":"khdRE","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"bEseP":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "validationFieldType", ()=>validationFieldType);
+parcelHelpers.export(exports, "Validation", ()=>Validation);
+let validationFieldType;
+(function(validationFieldType) {
+    validationFieldType[validationFieldType["Login"] = 0] = "Login";
+    validationFieldType[validationFieldType["string"] = 1] = "string";
+    validationFieldType[validationFieldType["Password"] = 2] = "Password";
+    validationFieldType[validationFieldType["string"] = 3] = "string";
+    validationFieldType[validationFieldType["FirstName"] = 4] = "FirstName";
+    validationFieldType[validationFieldType["string"] = 5] = "string";
+    validationFieldType[validationFieldType["SecondName"] = 6] = "SecondName";
+    validationFieldType[validationFieldType["string"] = 7] = "string";
+    validationFieldType[validationFieldType["Email"] = 8] = "Email";
+    validationFieldType[validationFieldType["string"] = 9] = "string";
+    validationFieldType[validationFieldType["RepeatPassword"] = 10] = "RepeatPassword";
+    validationFieldType[validationFieldType["string"] = 11] = "string";
+    validationFieldType[validationFieldType["Phone"] = 12] = "Phone";
+    validationFieldType[validationFieldType["string"] = 13] = "string";
+})(validationFieldType || (validationFieldType = {}));
+// Сообщения при возникновении ошибки
+const message = {
+    login: "Логин должен состояить из латинских букв и цифр, также допустимы символы _ и -.",
+    password: "Пароль должен содержать одну заглавную букву или цифру.",
+    fullName: "Допустимы символы латиницы и кириллицы, а также дефис.",
+    phone: "Телефон включает от 10 до 15 символов, состоит из цифр, начинается с плюса.",
+    email: "Включает цифры и спецсимволы вроде дефиса, должна быть \xabсобака\xbb (@) и точка после неё, перед точкой должны быть буквы"
+};
+// Правила:
+const expressions = {
+    LOGIN: /^[a-zA-Z][a-zA-Z0-9-_.]{3,20}$/,
+    PASSWORD: /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,40}$/,
+    FULL_NAME: /^[А-ЯA-Z][а-яА-ЯёЁa-zA-Z]+$/,
+    EMAIL: /.+@.+\..+/i,
+    PHONE: /^[+]?[0-9]{10,15}$/
+};
+function validateField(val, exp) {
+    return exp.test(val);
+}
+class Validation {
+    validate(rules) {
+        let errorMessage = "";
+        console.log(rules, "value");
+        for(let i = 0; i < rules.length; i++){
+            const { type , value  } = rules[i];
+            if (type && value) {
+                if (type === validationFieldType.Login) {
+                    console.log("validateField ");
+                    if (!validateField(value, expressions.LOGIN)) {
+                        errorMessage = message.login;
+                        break;
+                    }
+                } else if (type === validationFieldType.Password) {
+                    if (!validateField(value, expressions.PASSWORD)) {
+                        errorMessage = message.password;
+                        break;
+                    }
+                } else if (type === validationFieldType.FirstName) {
+                    if (!validateField(value, expressions.FULL_NAME)) {
+                        errorMessage = message.fullName;
+                        break;
+                    }
+                } else if (type === validationFieldType.SecondName) {
+                    if (!validateField(value, expressions.FULL_NAME)) {
+                        errorMessage = message.fullName;
+                        break;
+                    }
+                } else if (type === validationFieldType.Email) {
+                    if (!validateField(value, expressions.EMAIL)) {
+                        errorMessage = message.email;
+                        break;
+                    }
+                } else if (type === validationFieldType.RepeatPassword) {
+                    if (!validateField(value, expressions.PASSWORD)) {
+                        errorMessage = message.password;
+                        break;
+                    }
+                } else if (type === validationFieldType.Phone) {
+                    if (!validateField(value, expressions.PHONE)) {
+                        errorMessage = message.phone;
+                        break;
+                    }
+                }
+            }
+        }
+        return errorMessage;
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7eMJU":[function(require,module,exports) {
+module.exports = "<section class=\"login\">\r\n  <form action=\"\" class=\"form\">\r\n    <div class=\"form-login__content\">\r\n\r\n      <label for=\"input-username\" class=\"form__label form__label--offset\">Логин</label>\r\n      {{{\r\n      \t\tControledInput\r\n      \t\tonInput=onInput\r\n\t\t\t\t\tonFocus=onFocus\r\n\t\t\t\t\tref=\"loginInputRef\"\r\n      \t\tname=\"login\"\r\n      \t\ttype=\"text\"\r\n      \t\tid=\"input-username\"\r\n      \t\tplaceholder=\"ivanivanov\"\r\n      \t\tlabel=\"login\"\r\n      }}}\r\n      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\r\n      <label for=\"password-input\" class=\"form__label form__label--offset\">Пароль</label>\r\n      {{{\r\n      \t\tControledInput\r\n      \t\tonInput=onInput\r\n\t\t\t\t\tonFocus=onFocus\r\n\t\t\t\t\tref=\"passInputRef\"\r\n      \t\tname=\"password\"\r\n      \t\ttype=\"password\"\r\n      \t\tid=\"password-input\"\r\n      \t\tplaceholder=\"password\"\r\n      }}}\r\n      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\r\n    </div>\r\n    <footer class=\"form-login__footer\">\r\n      {{{\r\n\t      \tButton\r\n\t      \tclass=\"button\"\r\n\t      \tlabel=\"Авторизоваться\"\r\n\t      \tonClick=onSubmit\r\n    \t}}}\r\n      <div class=\"form__links\">\r\n        <a href=\"#\" class=\"form__link\">Нет аккаунта?</a>\r\n      </div>\r\n    </footer>\r\n  </form>\r\n</section>\r\n";
+
+},{}],"6SbUD":[function() {},{}],"khdRE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _httptransport = require("core/HTTPTransport");
+var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
+class authControllers {
+    auth(data) {
+        (0, _httptransportDefault.default).post("/auth/signin", data);
+    }
+}
+const controllerAuth = new authControllers();
+exports.default = controllerAuth;
+
+},{"core/HTTPTransport":"3s5Eb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"3s5Eb":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const METHODS = {
+    GET: "GET",
+    POST: "POST",
+    PUT: "PUT",
+    DELETE: "DELETE"
+};
+let rejectMessage;
+(function(rejectMessage) {
+    rejectMessage["EmptyMethod"] = "не передан метод";
+    rejectMessage["EmptyUrl"] = "не передан метод";
+    rejectMessage["IsObject"] = "поле data должно быть объектом";
+    rejectMessage["RejectRequest"] = "запрос отменен";
+    rejectMessage["RejectError"] = "запрос упал с ошибкой";
+    rejectMessage["RejectTimeout"] = "запрос превысил таймаут";
+})(rejectMessage || (rejectMessage = {}));
+function queryStringify(data) {
+    if (typeof data !== "object") throw new Error("Data must be object");
+    // Здесь достаточно и [object Object] для объекта
+    const keys = Object.keys(data);
+    return keys.reduce((result, key, index)=>{
+        return `${result}${key}=${data[key]}${index < keys.length - 1 ? "&" : ""}`;
+    }, "?");
+}
+let headers = {
+    "Content-Type": "application/json"
+};
+class HTTPTransport {
+    get(url, data = {}) {
+        return this.request(url, {
+            data,
+            method: METHODS.GET
+        }, data?.timeout);
+    }
+    post(url, data = {}) {
+        console.log("Login Data", data);
+        return this.request(url, {
+            data,
+            method: METHODS.POST,
+            headers
+        }, data?.timeout);
+    }
+    put(url, data = {}) {
+        return this.request(url, {
+            data,
+            method: METHODS.PUT
+        }, data?.timeout);
+    }
+    del(url, data = {}) {
+        return this.request(url, {
+            data,
+            method: METHODS.DELETE
+        }, data?.timeout);
+    }
+    request(url, options, timeout = 5000) {
+        console.log("options ", options);
+        const { headers ={} , method , data  } = options;
+        return new Promise(function(resolve, reject) {
+            if (!method) {
+                reject(rejectMessage.EmptyMethod);
+                return;
+            }
+            if (!url) {
+                reject(rejectMessage.EmptyUrl);
+                return;
+            }
+            const xhr = new XMLHttpRequest();
+            const isGet = method === METHODS.GET;
+            xhr.open(method, `${"https://ya-praktikum.tech/api/v2"}${url}`);
+            Object.keys(headers).forEach((key)=>{
+                xhr.setRequestHeader(key, headers[key]);
+            });
+            xhr.onload = function() {
+                resolve(xhr);
+            };
+            xhr.onabort = reject(rejectMessage.RejectRequest);
+            xhr.onerror = reject(rejectMessage.RejectError);
+            xhr.timeout = timeout;
+            xhr.ontimeout = reject(rejectMessage.RejectTimeout);
+            if (isGet || !data) xhr.send();
+            else // @ts-ignore
+            xhr.send(JSON.stringify(data));
+        });
+    }
+}
+const transport = new HTTPTransport();
+exports.default = transport;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"83hYd":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _button.Button));
+var _button = require("./button");
+
+},{"./button":"bHWNx","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"bHWNx":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Button", ()=>Button);
+var _block = require("../../core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+class Button extends (0, _blockDefault.default) {
+    constructor({ onClick , ...props }){
+        super({
+            ...props,
+            events: {
+                click: onClick
+            }
+        });
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"iKN2F","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"iKN2F":[function(require,module,exports) {
+module.exports = "<button id=\"{{id}}\" class=\"{{class}}\" >\r\n\t{{{ label }}}\r\n</button>\r\n";
 
 },{}],"92lNP":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13068,98 +13367,7 @@ class ControledInput extends (0, _blockDefault.default) {
 },{"core/Block":"aWH7T","bundle-text:./template.hbs":"ji1GX","core/validation":"bEseP","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"ji1GX":[function(require,module,exports) {
 module.exports = "<div class=\"controlled-input\">\r\n\t{{{\r\n\t\tInput\r\n\t\tclass=\"form__text-input\"\r\n\t\tonInput=onInput\r\n\t\tonFocus=onFocus\r\n\t\tonBlur=onBlur\r\n\t\tname=name\r\n\t\ttype=type\r\n\t\tplaceholder=\"{{placeholder}}\"\r\n\t}}}\r\n\t{{{ ErrorComponent ref=\"error\" text=error }}}\r\n</div>\r\n\r\n";
 
-},{}],"bEseP":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "validationFieldType", ()=>validationFieldType);
-let validationFieldType;
-(function(validationFieldType) {
-    validationFieldType[validationFieldType["Login"] = 0] = "Login";
-    validationFieldType[validationFieldType["string"] = 1] = "string";
-    validationFieldType[validationFieldType["Password"] = 2] = "Password";
-    validationFieldType[validationFieldType["string"] = 3] = "string";
-    validationFieldType[validationFieldType["FirstName"] = 4] = "FirstName";
-    validationFieldType[validationFieldType["string"] = 5] = "string";
-    validationFieldType[validationFieldType["SecondName"] = 6] = "SecondName";
-    validationFieldType[validationFieldType["string"] = 7] = "string";
-    validationFieldType[validationFieldType["Email"] = 8] = "Email";
-    validationFieldType[validationFieldType["string"] = 9] = "string";
-    validationFieldType[validationFieldType["RepeatPassword"] = 10] = "RepeatPassword";
-    validationFieldType[validationFieldType["string"] = 11] = "string";
-    validationFieldType[validationFieldType["Phone"] = 12] = "Phone";
-    validationFieldType[validationFieldType["string"] = 13] = "string";
-})(validationFieldType || (validationFieldType = {}));
-// Сообщения при возникновении ошибки
-const message = {
-    login: "Логин должен состояить из латинских букв и цифр, также допустимы символы _ и -.",
-    password: "Пароль должен содержать одну заглавную букву или цифру.",
-    fullName: "Допустимы символы латиницы и кириллицы, а также дефис.",
-    phone: "Телефон включает от 10 до 15 символов, состоит из цифр, начинается с плюса.",
-    email: "Включает цифры и спецсимволы вроде дефиса, должна быть \xabсобака\xbb (@) и точка после неё, перед точкой должны быть буквы"
-};
-// Правила:
-const expressions = {
-    LOGIN: /^[a-zA-Z][a-zA-Z0-9-_.]{3,20}$/,
-    PASSWORD: /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,40}$/,
-    FULL_NAME: /^[А-ЯA-Z][а-яА-ЯёЁa-zA-Z]+$/,
-    EMAIL: /.+@.+\..+/i,
-    PHONE: /^[+]?[0-9]{10,15}$/
-};
-function validateField(val, exp) {
-    return exp.test(val);
-}
-class Validation {
-    validate(rules) {
-        let errorMessage = "";
-        console.log(rules, "value");
-        for(let i = 0; i < rules.length; i++){
-            const { type , value  } = rules[i];
-            if (type && value) {
-                if (type === validationFieldType.Login) {
-                    console.log("validateField ");
-                    if (!validateField(value, expressions.LOGIN)) {
-                        errorMessage = message.login;
-                        break;
-                    }
-                } else if (type === validationFieldType.Password) {
-                    if (!validateField(value, expressions.PASSWORD)) {
-                        errorMessage = message.password;
-                        break;
-                    }
-                } else if (type === validationFieldType.FirstName) {
-                    if (!validateField(value, expressions.FULL_NAME)) {
-                        errorMessage = message.fullName;
-                        break;
-                    }
-                } else if (type === validationFieldType.SecondName) {
-                    if (!validateField(value, expressions.FULL_NAME)) {
-                        errorMessage = message.fullName;
-                        break;
-                    }
-                } else if (type === validationFieldType.Email) {
-                    if (!validateField(value, expressions.EMAIL)) {
-                        errorMessage = message.email;
-                        break;
-                    }
-                } else if (type === validationFieldType.RepeatPassword) {
-                    if (!validateField(value, expressions.PASSWORD)) {
-                        errorMessage = message.password;
-                        break;
-                    }
-                } else if (type === validationFieldType.Phone) {
-                    if (!validateField(value, expressions.PHONE)) {
-                        errorMessage = message.phone;
-                        break;
-                    }
-                }
-            }
-        }
-        return errorMessage;
-    }
-}
-exports.default = Validation;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"gPaCj":[function(require,module,exports) {
+},{}],"gPaCj":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _404.fourHundredFour));
@@ -13247,101 +13455,7 @@ class fiveHundred extends (0, _blockDefault.default) {
 },{"core/Block":"aWH7T","bundle-text:./template.hbs":"f3QM6","../../core":"9qbGm","../../components/disconnect":"nloyu","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"f3QM6":[function(require,module,exports) {
 module.exports = "<main class=\"page__disconnect\">\r\n  {{{ Disconnect fHStore=this }}}\r\n</main>\r\n";
 
-},{}],"cBdn8":[function() {},{}],"83hYd":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _button.Button));
-var _button = require("./button");
-
-},{"./button":"bHWNx","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"bHWNx":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Button", ()=>Button);
-var _block = require("../../core/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-var _templateHbs = require("bundle-text:./template.hbs");
-var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
-class Button extends (0, _blockDefault.default) {
-    constructor({ onClick , ...props }){
-        super({
-            ...props,
-            events: {
-                click: onClick
-            }
-        });
-    }
-    render() {
-        return 0, _templateHbsDefault.default;
-    }
-}
-
-},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"iKN2F","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"iKN2F":[function(require,module,exports) {
-module.exports = "<button id=\"{{id}}\" class=\"{{class}}\" >\r\n\t{{{ label }}}\r\n</button>\r\n";
-
-},{}],"6wqya":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _login.Login));
-var _login = require("./login");
-
-},{"./login":"jUY4P","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"jUY4P":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Login", ()=>Login);
-var _block = require("core/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-var _validation = require("core/validation");
-var _templateHbs = require("bundle-text:./template.hbs");
-var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
-var _loginScss = require("./login.scss");
-class Login extends (0, _blockDefault.default) {
-    constructor(){
-        super();
-        this.setProps({
-            loginValue: "",
-            passwordValue: "",
-            errors: {
-                login: "",
-                password: ""
-            },
-            onInput: (e)=>{
-                console.log("input");
-            //this.refs.loginInputRef.refs.errorRef.setProps({text: ""})
-            },
-            onFocus: (e)=>console.log("focus"),
-            onSubmit: (e)=>{
-                event.preventDefault();
-                const login = this.element?.querySelector('input[name="login"]');
-                const password = this.element?.querySelector('input[name="password"]');
-                const errorMessage = new (0, _validation.Validation)().validate([
-                    {
-                        type: (0, _validation.validationFieldType).Login,
-                        value: login?.value
-                    },
-                    {
-                        type: (0, _validation.validationFieldType).Password,
-                        value: password?.value
-                    }
-                ]);
-                //debugger;
-                if (errorMessage) this.setProps({
-                    loginValue: login.value,
-                    passwordValue: password.value
-                });
-                this.eventBus.emit((0, _blockDefault.default).EVENTS.FORM_SUBMIT);
-                AuthController.signup(data);
-            }
-        });
-    }
-    render() {
-        return 0, _templateHbsDefault.default;
-    }
-}
-
-},{"core/Block":"aWH7T","core/validation":"bEseP","bundle-text:./template.hbs":"7eMJU","./login.scss":"6SbUD","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7eMJU":[function(require,module,exports) {
-module.exports = "<section class=\"login\">\r\n  <form action=\"\" class=\"form\">\r\n    <div class=\"form-login__content\">\r\n\r\n      <label for=\"input-username\" class=\"form__label form__label--offset\">Логин</label>\r\n      {{{\r\n      \t\tControledInput\r\n      \t\tonInput=onInput\r\n\t\t\t\t\tonFocus=onFocus\r\n\t\t\t\t\tref=\"loginInputRef\"\r\n      \t\tname=\"login\"\r\n      \t\ttype=\"text\"\r\n      \t\tid=\"input-username\"\r\n      \t\tplaceholder=\"ivanivanov\"\r\n      \t\tlabel=\"login\"\r\n      }}}\r\n      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\r\n      <label for=\"password-input\" class=\"form__label form__label--offset\">Пароль</label>\r\n      {{{\r\n      \t\tControledInput\r\n      \t\tonInput=onInput\r\n\t\t\t\t\tonFocus=onFocus\r\n\t\t\t\t\tref=\"passInputRef\"\r\n      \t\tname=\"password\"\r\n      \t\ttype=\"password\"\r\n      \t\tid=\"password-input\"\r\n      \t\tplaceholder=\"password\"\r\n      }}}\r\n      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\r\n    </div>\r\n    <footer class=\"form-login__footer\">\r\n      {{{\r\n\t      \tButton\r\n\t      \tclass=\"button\"\r\n\t      \tlabel=\"Авторизоваться\"\r\n\t      \tonClick=onSubmit\r\n    \t}}}\r\n      <div class=\"form__links\">\r\n        <a href=\"#\" class=\"form__link\">Нет аккаунта?</a>\r\n      </div>\r\n    </footer>\r\n  </form>\r\n</section>\r\n";
-
-},{}],"6SbUD":[function() {},{}],"dtDez":[function(require,module,exports) {
+},{}],"cBdn8":[function() {},{}],"dtDez":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _error.ErrorComponent));
@@ -13404,14 +13518,15 @@ function initRouter(router, store) {
                 });
                 return;
             }
+            // условие срабатывает при первом рендере, передаем Signin или Profile
             if (!currentScreen) store.dispatch({
-                screen: Screens.Profile
+                screen: Screens.Main
             });
         });
     });
     // const Page = getScreenComponent("signin");
     // передадим название компонента для рендера
-    (0, _core.renderDOM)(new (0, _utils.getScreenComponent)("profile"));
+    (0, _core.renderDOM)(new (0, _utils.getScreenComponent)("main"));
 }
 
 },{"./core":"9qbGm","./utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hupOb":[function(require,module,exports) {
@@ -13429,8 +13544,11 @@ var _signin = require("../pages/signin");
 var _signinDefault = parcelHelpers.interopDefault(_signin);
 var _profile = require("../pages/profile");
 var _profileDefault = parcelHelpers.interopDefault(_profile);
+var _main = require("../pages/main");
+var _mainDefault = parcelHelpers.interopDefault(_main);
 const SigninPage = new (0, _signinDefault.default)();
 const ProfilePage = new (0, _profileDefault.default)();
+const MainPage = new (0, _mainDefault.default)();
 let Screens;
 (function(Screens) {
     Screens["Signin"] = "signin";
@@ -13439,13 +13557,14 @@ let Screens;
 })(Screens || (Screens = {}));
 const map = {
     [Screens.Signin]: SigninPage,
-    [Screens.Profile]: ProfilePage
+    [Screens.Profile]: ProfilePage,
+    [Screens.Main]: MainPage
 };
 function getScreenComponent(screen) {
     return map[screen];
 }
 
-},{"../pages/signin":"jSCQq","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","../pages/profile":"glT1D"}],"hgR4b":[function(require,module,exports) {
+},{"../pages/signin":"jSCQq","../pages/profile":"glT1D","../pages/main":"dgjed","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hgR4b":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "defaultState", ()=>defaultState);

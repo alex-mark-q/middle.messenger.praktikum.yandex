@@ -1,4 +1,4 @@
-import HTTPTransport from 'core/HTTPTransport';
+import transport from 'core/HTTPTransport';
 
 type LoginRequestData = {
 	login: string;
@@ -7,8 +7,11 @@ type LoginRequestData = {
 
 class authControllers
 {
-	signin:(data: LoginRequestData)
-	{
-		
+	auth (data: LoginRequestData) {
+		transport.post('/auth/signin', data)
 	}
 }
+
+const controllerAuth = new authControllers();
+
+export default controllerAuth;

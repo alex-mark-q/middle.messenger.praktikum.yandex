@@ -1,8 +1,8 @@
 const METHODS = {
-		GET: 'GET',
-		POST: 'POST',
-		PUT: 'PUT',
-		DELETE: 'DELETE',
+	GET: 'GET',
+	POST: 'POST',
+	PUT: 'PUT',
+	DELETE: 'DELETE',
 };
 
 enum rejectMessage {
@@ -35,33 +35,38 @@ function queryStringify(data: Data<unknown>) {
   }, '?');
 }
 
+let headers = { 'Content-Type': 'application/json' };
 class HTTPTransport {
 
-	get = (url, options = {}) => {
-		return this.request(url, {...options, method: METHODS.GET}, options?.timeout);
+	get (url, data = {}) {
+		return this.request(url, {data, method: METHODS.GET}, data?.timeout);
 	};
 
-	post = (url, options = {}) => {
-		return this.request(url, {...options, method: METHODS.POST}, options?.timeout);
+	post (url, data = {}) {
+		console.log("Login Data", data);
+		return this.request(url, {data, method: METHODS.POST, headers}, data?.timeout);
 	};
 
-	put = (url, options = {}) => {
-		return this.request(url, {...options, method: METHODS.PUT}, options?.timeout);
+	put (url, data = {}) {
+		return this.request(url, {data, method: METHODS.PUT}, data?.timeout);
 	};
 
-	delete = (url, options = {}) => {
-		return this.request(url, {...options, method: METHODS.DELETE}, options?.timeout);
+	del (url, data = {}) {
+		return this.request(url, {data, method: METHODS.DELETE}, data?.timeout);
 	};
 
-	request = (url: string | URL, options: Options, timeout = 5000) => {
+	request (url: string | URL, options: Options, timeout = 5000) {
+		console.log("options ", options);
+
 		const {headers = {}, method, data} = options;
+
 
 		return new Promise(function(resolve, reject) {
 			if (!method) {
 				reject(rejectMessage.EmptyMethod);
 				return;
 			}
-			if (!this.url) {
+			if (!url) {
         reject(rejectMessage.EmptyUrl);
         return;
       }
@@ -70,8 +75,7 @@ class HTTPTransport {
 			const isGet = method === METHODS.GET;
 
 	    xhr.open(
-				method,
-				isGet && !!data ? `${process.env.API_ENDPOINT}${queryStringify(data)}` : process.env.API_ENDPOINT,
+				method, `${process.env.API_ENDPOINT}${url}`,
 			);
 
 			Object.keys(headers).forEach(key => {
@@ -92,7 +96,7 @@ class HTTPTransport {
 			  xhr.send();
 			} else {
 				// @ts-ignore
-				xhr.send(data);
+				xhr.send(JSON.stringify(data));
 			}
 	  });
 	};

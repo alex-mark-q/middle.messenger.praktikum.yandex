@@ -29,15 +29,17 @@ export function initRouter(router, store)
 				store.dispatch({ screen: route.block });
 				return;
 			}
+			// условие срабатывает при первом рендере, передаем Signin или Profile
 			if (!currentScreen) {
-        store.dispatch({ screen: Screens.Profile });
+        store.dispatch({ screen: Screens.Main });
       }
+
 		})
 	})
 
 
 	// const Page = getScreenComponent("signin");
 	// передадим название компонента для рендера
-	renderDOM(new getScreenComponent("profile"));
+	renderDOM(new getScreenComponent("main"));
 
 }

@@ -11,7 +11,7 @@ import fiveHundred from "./pages/500"
 import "./vendor/index.scss";
 
 import Button from "./components/button";
-import Login from "./components/login";
+
 import Input from "./components/input";
 import ControledInput from "./components/controledInput";
 import ErrorComponent from "./components/ErrorComponent";
@@ -23,7 +23,7 @@ import { initRouter } from "./router";
 import { defaultState } from './store';
 
 registerComponent(Button);
-registerComponent(Login);
+
 registerComponent(Input);
 registerComponent(ControledInput);
 registerComponent(ErrorComponent);

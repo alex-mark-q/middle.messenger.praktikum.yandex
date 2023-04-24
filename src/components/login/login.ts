@@ -1,9 +1,10 @@
 import Block from 'core/Block';
 import { Validation, validationFieldType} from 'core/validation';
-import Button from '../button';
+import Button from 'components/button';
 import template from 'bundle-text:./template.hbs';
 import ControledInput from 'components/controledInput';
 import './login.scss';
+import controllerAuth from '../../controllers/authControllers';
 
 export class Login extends Block {
   constructor() {
@@ -39,9 +40,16 @@ export class Login extends Block {
 					})
 				}
 
-      	this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
+				const loginData = {
+          login: login.value,
+          password: password.value,
+        };
 
-      	AuthController.signup(data as unknown as SignupData)
+      	// this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
+
+      	console.log("loginData", login.value, password.value);
+
+      	controllerAuth.auth(loginData);
 
       }
     })
