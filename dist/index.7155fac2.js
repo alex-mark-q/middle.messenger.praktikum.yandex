@@ -639,9 +639,16 @@ document.addEventListener("DOMContentLoaded", ()=>{
    * @warning Не использовать такой способ на реальный проектах
    */ window.router = router;
     window.store = store;
+    store.on("changed", (prevState, nextState)=>{
+        console.log("%cstore updated", "background: #222; color: #bada55", nextState);
+    });
     // 1. Первое что делаем иницилизируем роутер
     // 2. Передадим объект store
+    console.log("before init store ", store);
     (0, _router.initRouter)(router, store);
+/**
+   * Загружаем данные для приложения
+   */ // store.dispatch(initApp);
 });
 
 },{"./core":"9qbGm","./pages/main":"dgjed","./pages/chat":"92lNP","./pages/profile":"glT1D","./pages/signin":"jSCQq","./pages/404":"gPaCj","./pages/500":"2EiPR","./vendor/index.scss":"cBdn8","./components/button":"83hYd","./components/input":"jnHpm","./components/controledInput":"c8UUW","./components/ErrorComponent":"dtDez","./store/chatRoom.json":"lMM3Q","./store/404.json":"babx5","./store/500.json":"b129i","./router":"9ks70","./store":"hgR4b","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9qbGm":[function(require,module,exports) {
@@ -12340,8 +12347,11 @@ class Store extends (0, _eventBusDefault.default) {
         };
         this.emit("change state", this.state);
     }
-    dispatch(nextStateOrAction) {
-        setState(nextStateOrAction);
+    dispatch(nextStateOrAction, payload) {
+        if (typeof nextStateOrAction === "function") nextStateOrAction(this.dispatch.bind(this), this.state, payload);
+        else setState({
+            ...nextStateOrAction
+        });
     }
 }
 
@@ -12359,7 +12369,8 @@ var _block = require("core/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _templateHbs = require("bundle-text:./template.hbs");
 var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
-var _core = require("../../core");
+var _core = require("core");
+// debugger;
 var _login = require("../../components/login");
 var _loginDefault = parcelHelpers.interopDefault(_login);
 var _button = require("../../components/button");
@@ -12367,8 +12378,8 @@ var _buttonDefault = parcelHelpers.interopDefault(_button);
 (0, _core.registerComponent)((0, _loginDefault.default));
 (0, _core.registerComponent)((0, _buttonDefault.default));
 class Main extends (0, _blockDefault.default) {
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.setProps({
             onButtonClick: ()=>console.log("button is clicked")
         });
@@ -12378,8 +12389,8 @@ class Main extends (0, _blockDefault.default) {
     }
 }
 
-},{"core/Block":"aWH7T","bundle-text:./template.hbs":"j9oDL","../../core":"9qbGm","../../components/login":"6wqya","../../components/button":"83hYd","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"j9oDL":[function(require,module,exports) {
-module.exports = "<body  class=\"page\">\r\n  <main class=\"page__center\">\r\n    <div class=\"page__form\">\r\n      {{#Login}}\r\n    \t{{/Login}}\r\n    </div>\r\n  </main>\r\n</body>\r\n\r\n";
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"j9oDL","core":"9qbGm","../../components/login":"6wqya","../../components/button":"83hYd","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"j9oDL":[function(require,module,exports) {
+module.exports = "<body  class=\"page\">\n  <main class=\"page__center\">\n    <div class=\"page__form\">\n      {{#Login fullScreen=true}}\n    \t{{/Login}}\n    </div>\n  </main>\n</body>\n\n";
 
 },{}],"6wqya":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -12397,8 +12408,9 @@ var _validation = require("core/validation");
 var _templateHbs = require("bundle-text:./template.hbs");
 var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
 var _loginScss = require("./login.scss");
-var _authControllers = require("../../controllers/authControllers");
-var _authControllersDefault = parcelHelpers.interopDefault(_authControllers);
+var _auth = require("../../services/auth");
+var _withRouter = require("utils/withRouter");
+var _withStore = require("utils/withStore");
 class Login extends (0, _blockDefault.default) {
     constructor(){
         super();
@@ -12411,7 +12423,6 @@ class Login extends (0, _blockDefault.default) {
             },
             onInput: (e)=>{
                 console.log("input");
-            //this.refs.loginInputRef.refs.errorRef.setProps({text: ""})
             },
             onFocus: (e)=>console.log("focus"),
             onSubmit: (e)=>{
@@ -12439,16 +12450,21 @@ class Login extends (0, _blockDefault.default) {
                 };
                 // this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
                 console.log("loginData", login.value, password.value);
-                (0, _authControllersDefault.default).auth(loginData);
-            }
+                console.log("this.props", this.props);
+                console.log("errorMessage", errorMessage);
+                // controllerAuth.auth(loginData);
+                this.props.store.dispatch(login, loginData);
+            },
+            formError: ()=>this.props.store.getState().loginFormError
         });
     }
     render() {
         return 0, _templateHbsDefault.default;
     }
 }
+exports.default = (0, _withRouter.withRouter)((0, _withStore.withStore)(Login));
 
-},{"core/Block":"aWH7T","core/validation":"bEseP","bundle-text:./template.hbs":"7eMJU","./login.scss":"6SbUD","../../controllers/authControllers":"khdRE","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"bEseP":[function(require,module,exports) {
+},{"core/Block":"aWH7T","core/validation":"bEseP","bundle-text:./template.hbs":"7eMJU","./login.scss":"6SbUD","../../services/auth":"dwLIY","utils/withRouter":"9t1HO","utils/withStore":"gWQPp","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"bEseP":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "validationFieldType", ()=>validationFieldType);
@@ -12481,7 +12497,7 @@ const message = {
 // Правила:
 const expressions = {
     LOGIN: /^[a-zA-Z][a-zA-Z0-9-_.]{3,20}$/,
-    PASSWORD: /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,40}$/,
+    PASSWORD: /^(?=.*[a-z])(?=.*[0-9])[a-za-z0-9]{8,40}$/,
     FULL_NAME: /^[А-ЯA-Z][а-яА-ЯёЁa-zA-Z]+$/,
     EMAIL: /.+@.+\..+/i,
     PHONE: /^[+]?[0-9]{10,15}$/
@@ -12540,9 +12556,20 @@ class Validation {
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7eMJU":[function(require,module,exports) {
-module.exports = "<section class=\"login\">\r\n  <form action=\"\" class=\"form\">\r\n    <div class=\"form-login__content\">\r\n\r\n      <label for=\"input-username\" class=\"form__label form__label--offset\">Логин</label>\r\n      {{{\r\n      \t\tControledInput\r\n      \t\tonInput=onInput\r\n\t\t\t\t\tonFocus=onFocus\r\n\t\t\t\t\tref=\"loginInputRef\"\r\n      \t\tname=\"login\"\r\n      \t\ttype=\"text\"\r\n      \t\tid=\"input-username\"\r\n      \t\tplaceholder=\"ivanivanov\"\r\n      \t\tlabel=\"login\"\r\n      }}}\r\n      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\r\n      <label for=\"password-input\" class=\"form__label form__label--offset\">Пароль</label>\r\n      {{{\r\n      \t\tControledInput\r\n      \t\tonInput=onInput\r\n\t\t\t\t\tonFocus=onFocus\r\n\t\t\t\t\tref=\"passInputRef\"\r\n      \t\tname=\"password\"\r\n      \t\ttype=\"password\"\r\n      \t\tid=\"password-input\"\r\n      \t\tplaceholder=\"password\"\r\n      }}}\r\n      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\r\n    </div>\r\n    <footer class=\"form-login__footer\">\r\n      {{{\r\n\t      \tButton\r\n\t      \tclass=\"button\"\r\n\t      \tlabel=\"Авторизоваться\"\r\n\t      \tonClick=onSubmit\r\n    \t}}}\r\n      <div class=\"form__links\">\r\n        <a href=\"#\" class=\"form__link\">Нет аккаунта?</a>\r\n      </div>\r\n    </footer>\r\n  </form>\r\n</section>\r\n";
+module.exports = "<section class=\"login\">\n  <form action=\"\" class=\"form\">\n    <div class=\"form-login__content\">\n\n      <label for=\"input-username\" class=\"form__label form__label--offset\">Логин</label>\n      {{{\n      \t\tControledInput\n      \t\tonInput=onInput\n\t\t\t\t\tonFocus=onFocus\n\t\t\t\t\tref=\"loginInputRef\"\n      \t\tname=\"login\"\n      \t\ttype=\"text\"\n      \t\tid=\"input-username\"\n      \t\tplaceholder=\"ivanivanov\"\n      \t\tlabel=\"login\"\n      }}}\n      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\n      <label for=\"password-input\" class=\"form__label form__label--offset\">Пароль</label>\n      {{{\n      \t\tControledInput\n      \t\tonInput=onInput\n\t\t\t\t\tonFocus=onFocus\n\t\t\t\t\tref=\"passInputRef\"\n      \t\tname=\"password\"\n      \t\ttype=\"password\"\n      \t\tid=\"password-input\"\n      \t\tplaceholder=\"password\"\n      }}}\n      {{#if ErrorComponent}}{{ErrorComponent text=formError}}{{/if}}\n    </div>\n    <footer class=\"form-login__footer\">\n      {{{\n\t      \tButton\n\t      \tclass=\"button\"\n\t      \tlabel=\"Авторизоваться\"\n\t      \tonClick=onSubmit\n    \t}}}\n      <div class=\"form__links\">\n        <a href=\"#\" class=\"form__link\">Нет аккаунта?</a>\n      </div>\n    </footer>\n  </form>\n</section>\n";
 
-},{}],"6SbUD":[function() {},{}],"khdRE":[function(require,module,exports) {
+},{}],"6SbUD":[function() {},{}],"dwLIY":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "login", ()=>login);
+var _authControllers = require("../controllers/authControllers");
+var _authControllersDefault = parcelHelpers.interopDefault(_authControllers);
+const login = async (action)=>{
+    const response = await (0, _authControllersDefault.default).auth(action);
+    window.router.go("/chat");
+};
+
+},{"../controllers/authControllers":"khdRE","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"khdRE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _httptransport = require("core/HTTPTransport");
@@ -12550,6 +12577,9 @@ var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
 class authControllers {
     auth(data) {
         (0, _httptransportDefault.default).post("/auth/signin", data);
+    }
+    user() {
+        (0, _httptransportDefault.default).get("/auth/user");
     }
 }
 const controllerAuth = new authControllers();
@@ -12644,6 +12674,60 @@ class HTTPTransport {
 }
 const transport = new HTTPTransport();
 exports.default = transport;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9t1HO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "withRouter", ()=>withRouter);
+function withRouter(WrappedBlock) {
+    // @ts-expect-error No base constructor has the specified number of type arguments
+    return class extends WrappedBlock {
+        static componentName = WrappedBlock.componentName || WrappedBlock.name;
+        constructor(props){
+            // появляется новое поле router, которое будет доступно в методе render компонента например Button
+            super({
+                ...props,
+                router: window.router
+            });
+        }
+    };
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"gWQPp":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "withStore", ()=>withStore);
+function withStore(WrappedBlock) {
+    // @ts-expect-error No base constructor has the specified
+    return class extends WrappedBlock {
+        static componentName = WrappedBlock.componentName || WrappedBlock.name;
+        constructor(props){
+            super({
+                ...props,
+                store: window.store
+            });
+        }
+        __onChangeStoreCallback = ()=>{
+            /**
+       * TODO: проверить что стор реально обновлен
+       * и прокидывать не целый стор, а необходимые поля
+       * с помощью метода mapStateToProps
+       */ // @ts-expect-error this is not typed
+            this.setProps({
+                ...this.props,
+                store: window.store
+            });
+        };
+        componentDidMount(props) {
+            super.componentDidMount(props);
+            window.store.on("changed", this.__onChangeStoreCallback);
+        }
+        componentWillUnmount() {
+            super.componentWillUnmount();
+            window.store.off("changed", this.__onChangeStoreCallback);
+        }
+    };
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"83hYd":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13470,6 +13554,9 @@ var _blockDefault = parcelHelpers.interopDefault(_block);
 var _templateHbs = require("bundle-text:./template.hbs");
 var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
 class ErrorComponent extends (0, _blockDefault.default) {
+    constructor(props){
+        super(props);
+    }
     render() {
         return 0, _templateHbsDefault.default;
     }
@@ -13506,11 +13593,15 @@ const routes = [
     }
 ];
 function initRouter(router, store) {
+    console.log("init initRouter", router, store);
     routes.forEach((route)=>{
+        console.log("route forEach", route);
         router.use(route.path, ()=>{
             // для каждого роутера мы определяем логику действия
             const isAuthorized = Boolean(store.getState().user);
             const currentScreen = Boolean(store.getState().screen);
+            console.log("isAuthorized", isAuthorized);
+            console.log("currentScreen", currentScreen);
             // если пользователь автороизован(или нет) и роут требует авторизации
             if (isAuthorized || !route.shouldAuthorized) {
                 store.dispatch({
@@ -13533,9 +13624,13 @@ function initRouter(router, store) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getScreenComponent", ()=>(0, _screenList.getScreenComponent));
+parcelHelpers.export(exports, "withRouter", ()=>(0, _withRouter.withRouter));
+parcelHelpers.export(exports, "withStore", ()=>(0, _withStore.withStore));
 var _screenList = require("./screenList");
+var _withRouter = require("./withRouter");
+var _withStore = require("./withStore");
 
-},{"./screenList":"7PHF3","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7PHF3":[function(require,module,exports) {
+},{"./screenList":"7PHF3","./withRouter":"9t1HO","./withStore":"gWQPp","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7PHF3":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Screens", ()=>Screens);

@@ -10,6 +10,9 @@ class authControllers
 	auth (data: LoginRequestData) {
 		transport.post('/auth/signin', data)
 	}
+	user () {
+		transport.get('/auth/user')
+	}
 }
 
 const controllerAuth = new authControllers();

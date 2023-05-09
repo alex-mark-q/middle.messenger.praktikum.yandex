@@ -100,7 +100,24 @@ document.addEventListener("DOMContentLoaded", () => {
   window.router = router;
   window.store = store;
 
+	store.on('changed', (prevState, nextState) => {
+    if (process.env.DEBUG) {
+      console.log(
+        '%cstore updated',
+        'background: #222; color: #bada55',
+        nextState,
+      );
+    }
+  });
+
   // 1. Первое что делаем иницилизируем роутер
   // 2. Передадим объект store
+
+  console.log("before init store ", store);
   initRouter(router, store);
+
+	/**
+   * Загружаем данные для приложения
+   */
+  // store.dispatch(initApp);
 });

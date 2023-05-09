@@ -20,6 +20,7 @@ registerComponent(actionChatModal);
 
 
 interface MessengerProps {
+	fullScreen?: boolean;
 	messageStore: Record<string, unknown>[];
 }
 

@@ -27,9 +27,15 @@ export class Store extends EventBus
 		this.emit("change state", this.state);
 	}
 
-	public dispatch(nextStateOrAction)
+	public dispatch(nextStateOrAction, payload)
 	{
-		setState(nextStateOrAction);
+
+		if(typeof nextStateOrAction === "function") {
+			nextStateOrAction(this.dispatch.bind(this), this.state, payload);
+		} else {
+			setState({...nextStateOrAction});
+		}
+
 	}
 
 }

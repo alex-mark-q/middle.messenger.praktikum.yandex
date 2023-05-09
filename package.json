@@ -12,7 +12,8 @@
     "core": "./src/core",
     "components": "./src/components",
     "pages": "./src/pages",
-    "controllers": "./src/controllers"
+    "controllers": "./src/controllers",
+    "utils": "./src/utils"
   },
   "author": "Aleksey Kripakov",
   "license": "MIT",

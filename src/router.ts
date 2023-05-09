@@ -16,12 +16,16 @@ const routes = [
 
 export function initRouter(router, store)
 {
-
+	console.log("init initRouter", router, store);
 	routes.forEach(route => {
+		console.log("route forEach", route);
 		router.use(route.path, () => {
 			// для каждого роутера мы определяем логику действия
 			const isAuthorized = Boolean(store.getState().user);
 			const currentScreen = Boolean(store.getState().screen);
+
+			console.log("isAuthorized", isAuthorized);
+			console.log("currentScreen", currentScreen);
 
 			// если пользователь автороизован(или нет) и роут требует авторизации
 			if(isAuthorized || !route.shouldAuthorized)

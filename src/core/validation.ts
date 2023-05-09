@@ -29,7 +29,7 @@ const message = {
 // Правила:
 const expressions = {
 	LOGIN: /^[a-zA-Z][a-zA-Z0-9-_.]{3,20}$/, // /^[a-zA-Z][a-zA-Z0-9-_.]{3,20}$/
-	PASSWORD: /^(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]{8,40}$/,
+	PASSWORD: /^(?=.*[a-z])(?=.*[0-9])[a-za-z0-9]{8,40}$/,
 	FULL_NAME: /^[А-ЯA-Z][а-яА-ЯёЁa-zA-Z]+$/,
 	EMAIL: /.+@.+\..+/i,
 	PHONE: /^[+]?[0-9]{10,15}$/
