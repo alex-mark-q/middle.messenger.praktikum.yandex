@@ -24,7 +24,7 @@ export class Store extends EventBus
 		console.log("current and next state ",this.state, nextState);
 		const prevState = this.state;
 		this.state = {...this.state, ...nextState};
-		this.emit("change state", this.state);
+		this.emit("change", prevState, nextState);
 	}
 
 	public dispatch(nextStateOrAction, payload)
@@ -33,7 +33,7 @@ export class Store extends EventBus
 		if(typeof nextStateOrAction === "function") {
 			nextStateOrAction(this.dispatch.bind(this), this.state, payload);
 		} else {
-			setState({...nextStateOrAction});
+			this.setState({...nextStateOrAction});
 		}
 
 	}

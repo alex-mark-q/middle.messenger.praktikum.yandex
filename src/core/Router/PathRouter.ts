@@ -1,3 +1,4 @@
+console.log("required PathRouter");
 import { CoreRouter } from "./CoreRouter";
 
 export class PathRouter implements CoreRouter {
@@ -32,7 +33,10 @@ export class PathRouter implements CoreRouter {
   }
 
   use(hash: string, callback: Function) {
+  	console.log("required PathRouter USE");
+  	console.log(hash, "gg", callback);
     this.routes[hash] = callback;
+    console.log("this USE", this);
     return this;
   }
 

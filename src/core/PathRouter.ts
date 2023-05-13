@@ -5,11 +5,11 @@ export class PathRouter {
 
 	use(hash: string, callback: Function) {
 		this.routes[hash] = callback;
-		console.log(
-			"PathRouter return",
-			"background: #222; color: #bada55",
-			this
-    );
+		// console.log(
+		// 	"PathRouter return",
+		// 	"background: #222; color: #bada55",
+		// 	this
+    // );
     return this;
 	}
 }

@@ -3,12 +3,12 @@ import { getScreenComponent } from './utils';
 
 const routes = [
   {
-    path: "*",
+    path: "/login",
     block: "login",
     shouldAuthorized: false,
   },
   {
-    path: '/profile',
+    path: '/chat',
     block: "chat",
     shouldAuthorized: true,
   }
@@ -20,27 +20,43 @@ export function initRouter(router, store)
 	routes.forEach(route => {
 		console.log("route forEach", route);
 		router.use(route.path, () => {
-			// для каждого роутера мы определяем логику действия
-			const isAuthorized = Boolean(store.getState().user);
-			const currentScreen = Boolean(store.getState().screen);
 
-			console.log("isAuthorized", isAuthorized);
-			console.log("currentScreen", currentScreen);
+      const isAuthorized = Boolean(store.getState().user);
+      const currentScreen = Boolean(store.getState().screen);
+      console.log("isAuthorized", isAuthorized, currentScreen);
+      console.log("init isAuthorized and currentScreen ", isAuthorized, currentScreen);
 
-			// если пользователь автороизован(или нет) и роут требует авторизации
-			if(isAuthorized || !route.shouldAuthorized)
-			{
-				store.dispatch({ screen: route.block });
-				return;
-			}
-			// условие срабатывает при первом рендере, передаем Signin или Profile
-			if (!currentScreen) {
-        store.dispatch({ screen: Screens.Main });
+      if (isAuthorized || !route.shouldAuthorized) {
+        store.dispatch({ screen: route.block });
+        return;
       }
 
-		})
+      if (!currentScreen) {
+        store.dispatch({  });
+      }
+
+    });
 	})
 
+  /**
+   * Глобальный слушатель изменений в сторе
+   * для переключения активного экрана
+   */
+	router.start();
+  store.on('changed', (prevState, nextState) => {
+  	console.log("store changed ",router);
+  	router.start();
+    // if (!prevState.appIsInited && nextState.appIsInited) {
+    // 	console.log("router ",router);
+    //   router.start();
+    // }
+
+    // if (prevState.screen !== nextState.screen) {
+    //   const Page = getScreenComponent(nextState.screen);
+    //   renderDOM(new Page({}));
+    //   document.title = `App / ${Page.componentName}`;
+    // }
+  });
 
 	// const Page = getScreenComponent("signin");
 	// передадим название компонента для рендера

@@ -1,6 +1,7 @@
 
 
 import { renderDOM, registerComponent, PathRouter, Store }  from "./core";
+import { initApp } from './services/initApp';
 import Main from "./pages/main";
 import Chat from "./pages/chat";
 import Profile from "./pages/profile"
@@ -83,6 +84,7 @@ switch (pathname) {
 declare global {
   interface Window {
     store: Store<AppState>;
+    router: CoreRouter;
   }
 }
 
@@ -99,6 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
    */
   window.router = router;
   window.store = store;
+
+  console.log("store show ", store);
 
 	store.on('changed', (prevState, nextState) => {
     if (process.env.DEBUG) {
@@ -119,5 +123,5 @@ document.addEventListener("DOMContentLoaded", () => {
 	/**
    * Загружаем данные для приложения
    */
-  // store.dispatch(initApp);
+  store.dispatch(initApp);
 });

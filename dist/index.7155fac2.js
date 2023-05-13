@@ -534,6 +534,7 @@ function hmrAcceptRun(bundle, id) {
 },{}],"57jqn":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _core = require("./core");
+var _initApp = require("./services/initApp");
 var _main = require("./pages/main");
 var _mainDefault = parcelHelpers.interopDefault(_main);
 var _chat = require("./pages/chat");
@@ -639,6 +640,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
    * @warning Не использовать такой способ на реальный проектах
    */ window.router = router;
     window.store = store;
+    console.log("store show ", store);
     store.on("changed", (prevState, nextState)=>{
         console.log("%cstore updated", "background: #222; color: #bada55", nextState);
     });
@@ -646,12 +648,12 @@ document.addEventListener("DOMContentLoaded", ()=>{
     // 2. Передадим объект store
     console.log("before init store ", store);
     (0, _router.initRouter)(router, store);
-/**
+    /**
    * Загружаем данные для приложения
-   */ // store.dispatch(initApp);
+   */ store.dispatch((0, _initApp.initApp));
 });
 
-},{"./core":"9qbGm","./pages/main":"dgjed","./pages/chat":"92lNP","./pages/profile":"glT1D","./pages/signin":"jSCQq","./pages/404":"gPaCj","./pages/500":"2EiPR","./vendor/index.scss":"cBdn8","./components/button":"83hYd","./components/input":"jnHpm","./components/controledInput":"c8UUW","./components/ErrorComponent":"dtDez","./store/chatRoom.json":"lMM3Q","./store/404.json":"babx5","./store/500.json":"b129i","./router":"9ks70","./store":"hgR4b","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9qbGm":[function(require,module,exports) {
+},{"./core":"9qbGm","./services/initApp":"6jFfC","./pages/main":"dgjed","./pages/chat":"92lNP","./pages/profile":"glT1D","./pages/signin":"jSCQq","./pages/404":"gPaCj","./pages/500":"2EiPR","./vendor/index.scss":"cBdn8","./components/button":"83hYd","./components/input":"jnHpm","./components/controledInput":"c8UUW","./components/ErrorComponent":"dtDez","./store/chatRoom.json":"lMM3Q","./store/404.json":"babx5","./store/500.json":"b129i","./router":"9ks70","./store":"hgR4b","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9qbGm":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Block", ()=>(0, _blockDefault.default));
@@ -665,10 +667,10 @@ var _registerComponent = require("./registerComponent");
 var _registerComponentDefault = parcelHelpers.interopDefault(_registerComponent);
 var _renderDOM = require("./renderDOM");
 var _renderDOMDefault = parcelHelpers.interopDefault(_renderDOM);
-var _pathRouter = require("./PathRouter");
+var _pathRouter = require("./Router/PathRouter");
 var _store = require("./Store");
 
-},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./PathRouter":"guXlI","./Store":"7b9cm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"aWH7T":[function(require,module,exports) {
+},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./Router/PathRouter":"hCJbE","./Store":"7b9cm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"aWH7T":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _eventBus = require("./EventBus");
@@ -867,7 +869,10 @@ class EventBus {
         this.listeners[event] = this.listeners[event].filter((listener)=>listener !== callback);
     }
     emit(event, ...args) {
-        console.log("emit event", "background: #222; color: #bada55");
+        // console.log(
+        // 	"emit event",
+        //   "background: #222; color: #bada55",
+        //   );
         if (!this.listeners[event]) return;
         this.listeners[event].forEach(function(listener) {
             listener(...args);
@@ -9898,7 +9903,7 @@ CodeGen.prototype = {
 exports["default"] = CodeGen;
 module.exports = exports["default"];
 
-},{"../utils":"yumAh","source-map":"epy8m"}],"epy8m":[function(require,module,exports) {
+},{"../utils":"yumAh","source-map":"gCzPc"}],"gCzPc":[function(require,module,exports) {
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -9907,7 +9912,7 @@ module.exports = exports["default"];
 exports.SourceMapConsumer = require("./lib/source-map-consumer").SourceMapConsumer;
 exports.SourceNode = require("./lib/source-node").SourceNode;
 
-},{"./lib/source-map-generator":"73zhZ","./lib/source-map-consumer":"3ZfI5","./lib/source-node":"eTbrC"}],"73zhZ":[function(require,module,exports) {
+},{"./lib/source-map-generator":"dfi6V","./lib/source-map-consumer":"7T1Vs","./lib/source-node":"aARoG"}],"dfi6V":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10190,7 +10195,7 @@ SourceMapGenerator.prototype._generateSourcesContent = function SourceMapGenerat
 };
 exports.SourceMapGenerator = SourceMapGenerator;
 
-},{"./base64-vlq":"gIkRZ","./util":"dDetV","./array-set":"j3ey8","./mapping-list":"1acWS"}],"gIkRZ":[function(require,module,exports) {
+},{"./base64-vlq":"fWToa","./util":"baiyg","./array-set":"buSAz","./mapping-list":"3CwhE"}],"fWToa":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10299,7 +10304,7 @@ var VLQ_CONTINUATION_BIT = VLQ_BASE;
     aOutParam.rest = aIndex;
 };
 
-},{"./base64":"4c8JT"}],"4c8JT":[function(require,module,exports) {
+},{"./base64":"2ES2L"}],"2ES2L":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10339,7 +10344,7 @@ var VLQ_CONTINUATION_BIT = VLQ_BASE;
     return -1;
 };
 
-},{}],"dDetV":[function(require,module,exports) {
+},{}],"baiyg":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10652,7 +10657,7 @@ exports.parseSourceMapInput = parseSourceMapInput;
 }
 exports.computeSourceURL = computeSourceURL;
 
-},{}],"j3ey8":[function(require,module,exports) {
+},{}],"buSAz":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10740,7 +10745,7 @@ var hasNativeMap = typeof Map !== "undefined";
 };
 exports.ArraySet = ArraySet;
 
-},{"./util":"dDetV"}],"1acWS":[function(require,module,exports) {
+},{"./util":"baiyg"}],"3CwhE":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2014 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10808,7 +10813,7 @@ exports.ArraySet = ArraySet;
 };
 exports.MappingList = MappingList;
 
-},{"./util":"dDetV"}],"3ZfI5":[function(require,module,exports) {
+},{"./util":"baiyg"}],"7T1Vs":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -11651,7 +11656,7 @@ IndexedSourceMapConsumer.prototype.constructor = SourceMapConsumer;
 };
 exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 
-},{"./util":"dDetV","./binary-search":"4yFYl","./array-set":"j3ey8","./base64-vlq":"gIkRZ","./quick-sort":"fNQBd"}],"4yFYl":[function(require,module,exports) {
+},{"./util":"baiyg","./binary-search":"8Zdyt","./array-set":"buSAz","./base64-vlq":"fWToa","./quick-sort":"akHpC"}],"8Zdyt":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -11732,7 +11737,7 @@ exports.LEAST_UPPER_BOUND = 2;
     return index;
 };
 
-},{}],"fNQBd":[function(require,module,exports) {
+},{}],"akHpC":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -11828,7 +11833,7 @@ exports.LEAST_UPPER_BOUND = 2;
     doQuickSort(ary, comparator, 0, ary.length - 1);
 };
 
-},{}],"eTbrC":[function(require,module,exports) {
+},{}],"aARoG":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -12143,7 +12148,7 @@ var isSourceNode = "$$$isSourceNode$$$";
 };
 exports.SourceNode = SourceNode;
 
-},{"./source-map-generator":"73zhZ","./util":"dDetV"}],"3PIn5":[function(require,module,exports) {
+},{"./source-map-generator":"dfi6V","./util":"baiyg"}],"3PIn5":[function(require,module,exports) {
 /* eslint-disable new-cap */ "use strict";
 exports.__esModule = true;
 exports.print = print;
@@ -12304,16 +12309,49 @@ function renderDOM(block) {
 }
 exports.default = renderDOM;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"guXlI":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hCJbE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "PathRouter", ()=>PathRouter);
+console.log("required PathRouter");
 class PathRouter {
     routes = {};
+    isStarted = false;
+    start() {
+        if (!this.isStarted) {
+            this.isStarted = true;
+            window.onpopstate = (event)=>{
+                this.onRouteChange.call(this);
+            };
+            this.onRouteChange();
+        }
+    }
+    onRouteChange(pathname = window.location.pathname) {
+        const found = Object.entries(this.routes).some(([routeHash, callback])=>{
+            if (routeHash === pathname) {
+                callback();
+                return true;
+            }
+            return false;
+        });
+        if (!found && this.routes["*"]) this.routes["*"]();
+    }
     use(hash, callback) {
+        console.log("required PathRouter USE");
+        console.log(hash, "gg", callback);
         this.routes[hash] = callback;
-        console.log("PathRouter return", "background: #222; color: #bada55", this);
+        console.log("this USE", this);
         return this;
+    }
+    go(pathname) {
+        window.history.pushState({}, "", pathname);
+        this.onRouteChange(pathname);
+    }
+    back() {
+        window.history.back();
+    }
+    forward() {
+        window.history.forward();
     }
 }
 
@@ -12345,17 +12383,27 @@ class Store extends (0, _eventBusDefault.default) {
             ...this.state,
             ...nextState
         };
-        this.emit("change state", this.state);
+        this.emit("change", prevState, nextState);
     }
     dispatch(nextStateOrAction, payload) {
         if (typeof nextStateOrAction === "function") nextStateOrAction(this.dispatch.bind(this), this.state, payload);
-        else setState({
+        else this.setState({
             ...nextStateOrAction
         });
     }
 }
 
-},{"./EventBus":"ezQjQ","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"dgjed":[function(require,module,exports) {
+},{"./EventBus":"ezQjQ","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"6jFfC":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initApp", ()=>initApp);
+async function initApp(dispatch) {
+    dispatch({
+        appIsInited: true
+    });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"dgjed":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _main.Main));
@@ -13582,12 +13630,12 @@ var _core = require("./core");
 var _utils = require("./utils");
 const routes = [
     {
-        path: "*",
+        path: "/login",
         block: "login",
         shouldAuthorized: false
     },
     {
-        path: "/profile",
+        path: "/chat",
         block: "chat",
         shouldAuthorized: true
     }
@@ -13597,23 +13645,35 @@ function initRouter(router, store) {
     routes.forEach((route)=>{
         console.log("route forEach", route);
         router.use(route.path, ()=>{
-            // для каждого роутера мы определяем логику действия
             const isAuthorized = Boolean(store.getState().user);
             const currentScreen = Boolean(store.getState().screen);
-            console.log("isAuthorized", isAuthorized);
-            console.log("currentScreen", currentScreen);
-            // если пользователь автороизован(или нет) и роут требует авторизации
+            console.log("isAuthorized", isAuthorized, currentScreen);
+            console.log("init isAuthorized and currentScreen ", isAuthorized, currentScreen);
             if (isAuthorized || !route.shouldAuthorized) {
                 store.dispatch({
                     screen: route.block
                 });
                 return;
             }
-            // условие срабатывает при первом рендере, передаем Signin или Profile
-            if (!currentScreen) store.dispatch({
-                screen: Screens.Main
-            });
+            if (!currentScreen) store.dispatch({});
         });
+    });
+    /**
+   * Глобальный слушатель изменений в сторе
+   * для переключения активного экрана
+   */ router.start();
+    store.on("changed", (prevState, nextState)=>{
+        console.log("store changed ", router);
+        router.start();
+    // if (!prevState.appIsInited && nextState.appIsInited) {
+    // 	console.log("router ",router);
+    //   router.start();
+    // }
+    // if (prevState.screen !== nextState.screen) {
+    //   const Page = getScreenComponent(nextState.screen);
+    //   renderDOM(new Page({}));
+    //   document.title = `App / ${Page.componentName}`;
+    // }
     });
     // const Page = getScreenComponent("signin");
     // передадим название компонента для рендера
