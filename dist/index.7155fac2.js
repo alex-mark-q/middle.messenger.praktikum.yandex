@@ -12652,27 +12652,19 @@ function initRouter(router, store) {
 },{"./core":"9qbGm","./utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hupOb":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "mergeDeep", ()=>(0, _mergeDeep.mergeDeep));
-parcelHelpers.export(exports, "diffObjectsDeep", ()=>(0, _diffObjectsDeep.diffObjectsDeep));
 parcelHelpers.export(exports, "withStore", ()=>(0, _withStore.withStore));
 parcelHelpers.export(exports, "withUser", ()=>(0, _withUser.withUser));
 parcelHelpers.export(exports, "withRouter", ()=>(0, _withRouter.withRouter));
 parcelHelpers.export(exports, "withIsLoading", ()=>(0, _withIsLoading.withIsLoading));
 parcelHelpers.export(exports, "Screens", ()=>(0, _screenList.Screens));
 parcelHelpers.export(exports, "getScreenComponent", ()=>(0, _screenList.getScreenComponent));
-parcelHelpers.export(exports, "transformUser", ()=>(0, _apiTransformers.transformUser));
-parcelHelpers.export(exports, "apiHasError", ()=>(0, _apiHasError.hasError));
-var _mergeDeep = require("./mergeDeep");
-var _diffObjectsDeep = require("./diffObjectsDeep");
 var _withStore = require("./withStore");
 var _withUser = require("./withUser");
 var _withRouter = require("./withRouter");
 var _withIsLoading = require("./withIsLoading");
 var _screenList = require("./screenList");
-var _apiTransformers = require("./apiTransformers");
-var _apiHasError = require("./apiHasError");
 
-},{"./screenList":"7PHF3","./withStore":"gWQPp","./withUser":"gSWfA","./withRouter":"9t1HO","./withIsLoading":"16ofE","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","./mergeDeep":"eApKf","./diffObjectsDeep":"zDbfw","./apiTransformers":"8eLQ7","./apiHasError":"7hYty"}],"7PHF3":[function(require,module,exports) {
+},{"./screenList":"7PHF3","./withStore":"gWQPp","./withUser":"gSWfA","./withRouter":"9t1HO","./withIsLoading":"16ofE","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7PHF3":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Screens", ()=>Screens);
@@ -13032,104 +13024,6 @@ function withUser(WrappedBlock) {
             window.store.off("changed", this.__onChangeUserCallback);
         }
     };
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"eApKf":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "mergeDeep", ()=>mergeDeep);
-function mergeDeep(lhs, rhs) {
-    for(let p in rhs){
-        if (!rhs.hasOwnProperty(p)) continue;
-        try {
-            if (rhs[p].constructor === Object) rhs[p] = mergeDeep(lhs[p], rhs[p]);
-            else lhs[p] = rhs[p];
-        } catch (e) {
-            lhs[p] = rhs[p];
-        }
-    }
-    return lhs;
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"zDbfw":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "diffObjectsDeep", ()=>diffObjectsDeep);
-const diffObjectsDeep = {
-    VALUE_CREATED: "created",
-    VALUE_UPDATED: "updated",
-    VALUE_DELETED: "deleted",
-    VALUE_UNCHANGED: "unchanged",
-    map: function(obj1, obj2) {
-        if (this.isFunction(obj1) || this.isFunction(obj2)) throw "Invalid argument. Function given, object expected.";
-        if (this.isValue(obj1) || this.isValue(obj2)) {
-            const type = this.compareValues(obj1, obj2);
-            if (type === this.VALUE_UNCHANGED) return;
-            return {
-                type,
-                data: obj1 === undefined ? obj2 : obj1
-            };
-        }
-        var diff = {};
-        for(var key in obj1){
-            if (this.isFunction(obj1[key])) continue;
-            var value2 = undefined;
-            if (obj2 && obj2[key] !== undefined) value2 = obj2[key];
-            diff[key] = this.map(obj1[key], value2);
-        }
-        for(var key in obj2){
-            if (this.isFunction(obj2[key]) || diff[key] !== undefined) continue;
-            diff[key] = this.map(undefined, obj2[key]);
-        }
-        return diff;
-    },
-    compareValues: function(value1, value2) {
-        if (value1 === value2) return this.VALUE_UNCHANGED;
-        if (this.isDate(value1) && this.isDate(value2) && value1.getTime() === value2.getTime()) return this.VALUE_UNCHANGED;
-        if (value1 === undefined) return this.VALUE_CREATED;
-        if (value2 === undefined) return this.VALUE_DELETED;
-        return this.VALUE_UPDATED;
-    },
-    isFunction: function(x) {
-        return Object.prototype.toString.call(x) === "[object Function]";
-    },
-    isArray: function(x) {
-        return Object.prototype.toString.call(x) === "[object Array]";
-    },
-    isDate: function(x) {
-        return Object.prototype.toString.call(x) === "[object Date]";
-    },
-    isObject: function(x) {
-        return Object.prototype.toString.call(x) === "[object Object]";
-    },
-    isValue: function(x) {
-        return !this.isObject(x) && !this.isArray(x);
-    }
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"8eLQ7":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "transformUser", ()=>transformUser);
-const transformUser = (data)=>{
-    return {
-        id: data.id,
-        login: data.login,
-        firstName: data.first_name,
-        secondName: data.second_name,
-        displayName: data.display_name,
-        avatar: data.avatar,
-        phone: data.phone,
-        email: data.email
-    };
-};
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7hYty":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "hasError", ()=>hasError);
-function hasError(response) {
-    return response && response.reason;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hgR4b":[function(require,module,exports) {
