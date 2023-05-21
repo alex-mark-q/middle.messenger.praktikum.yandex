@@ -1,9 +1,13 @@
-import { BlockMeta, Store } from 'core';
+
+import { BlockClass, Store } from 'core';
+
+console.log("run withStore", Store);
 
 type WithStateProps = { store: Store<AppState> };
 
-export function withStore<P extends WithStateProps>(WrappedBlock: BlockMeta<P>) {
+export function withStore<P extends WithStateProps>(WrappedBlock: BlockClass<P>) {
   // @ts-expect-error No base constructor has the specified
+
   return class extends WrappedBlock<P> {
     public static componentName = WrappedBlock.componentName || WrappedBlock.name;
 
@@ -31,5 +35,5 @@ export function withStore<P extends WithStateProps>(WrappedBlock: BlockMeta<P>) 
       window.store.off('changed', this.__onChangeStoreCallback);
     }
 
-  } as BlockMeta<Omit<P, 'store'>>;
+  } as BlockClass<Omit<P, 'store'>>;
 }

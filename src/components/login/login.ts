@@ -6,13 +6,19 @@ import ControledInput from "components/controledInput";
 import "./login.scss";
 import controllerAuth from "../../controllers/authControllers";
 import { login } from "../../services/auth";
+import { CoreRouter, Store, Block } from 'core';
 
 import { withRouter } from 'utils/withRouter';
 import { withStore } from 'utils/withStore';
+import { withIsLoading } from 'utils/withIsLoading';
 
-export class Login extends Block {
-  constructor() {
-    super()
+type LoginPageProps = {
+  store: Store<AppState>;
+};
+
+export class Login extends Block<LoginPageProps> {
+  constructor(props: LoginPageProps) {
+    super(props);
 
     this.setProps({
       loginValue: "",
@@ -66,9 +72,10 @@ export class Login extends Block {
   }
 
   render(): string {
+  	// console.log("login.ts", this.props);
     return template;
   }
 }
 
 
-export default withRouter(withStore(Login));
+export default withRouter(withStore(withIsLoading(Login)));
