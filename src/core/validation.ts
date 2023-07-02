@@ -39,10 +39,10 @@ function validateField (val: string, exp: RegExp) {
 	return exp.test(val);
 }
 
-export class Validation<MakeValidator> {
+export default class Validation<MakeValidator> {
 	validate(rules: validationField): string  {
 		let errorMessage = '';
-		console.log(rules, "value");
+		// console.log(rules, "value");
 		for(let i = 0; i < rules.length; i++) {
 			const { type, value } = rules[i];
 			if(type && value) {

@@ -1,6 +1,6 @@
 
 
-import { renderDOM, registerComponent, PathRouter, Store }  from "core";
+import { renderDOM, registerComponent, HashRouter, Store }  from "core";
 import { initApp } from './services/initApp';
 // import Main from "./pages/main";
 // import Chat from "./pages/chat";
@@ -84,13 +84,13 @@ registerComponent(ErrorComponent);
 declare global {
   interface Window {
     store: Store<AppState>;
-    router: CoreRouter;
+    router: HashRouter;
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const store = new Store(defaultState);
-  const router = new PathRouter();
+  const router = new HashRouter();
 
   /**
    * Помещаем роутер и стор в глобальную область для доступа в хоках with*

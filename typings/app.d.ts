@@ -24,6 +24,15 @@ declare global {
     email: string;
   }
 
+  export type Chat = {
+  	id: number;
+  	title: string;
+  	avatar: string;
+  	createdBy: number;
+  	unreadCount: number;
+  	lastMessage: boolean;
+  }
+
 
   // интерфейс предназначен для типизации данных которые поступают с сервера
   export type UserDTO = {
@@ -36,6 +45,16 @@ declare global {
   	phone: string;
   	email: string;
   }
+
+  export type ChatDTO = {
+  	id: number;
+  	title: string;
+  	avatar: string;
+  	created_by: number;
+  	unread_count: number;
+  	last_message: boolean;
+  }
+
 
 }
 

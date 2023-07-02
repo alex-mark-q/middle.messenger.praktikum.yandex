@@ -5,14 +5,9 @@ type LoginRequestData = {
 	password: string;
 }
 
-class authControllers
-{
-	auth (data: LoginRequestData) {
-		transport.post('/auth/signin', data)
-	}
-	user () {
-		transport.get('/auth/user')
-	}
+class authControllers {
+	auth = (data: LoginRequestData) => transport.post('/auth/signin', data)
+	user = () => transport.get<UserDTO | APIError>('/auth/user')
 }
 
 const controllerAuth = new authControllers();

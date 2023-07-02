@@ -1,4 +1,3 @@
-import { UserDTO } from 'api/types';
 
 export const transformUser = (data: UserDTO): User => {
   return {
@@ -11,4 +10,19 @@ export const transformUser = (data: UserDTO): User => {
     phone: data.phone,
     email: data.email,
   };
+};
+
+export const transformChat = (data: ChatDTO): Chat => {
+	console.log("transformChat", data[0]);
+	for (var i = 0, l = data.length; i < l; i++) {
+	  return {
+			id: data[i].id,
+			title: data[i].title,
+			avatar: data[i].avatar,
+			createdBy: data[i].created_by,
+			unreadCount: data[i].unread_count,
+			lastMessage: data[i].last_message,
+		};
+	}
+
 };

@@ -561,7 +561,7 @@ var _store = require("./store");
 (0, _core.registerComponent)((0, _errorComponentDefault.default));
 document.addEventListener("DOMContentLoaded", ()=>{
     const store = new (0, _core.Store)((0, _store.defaultState));
-    const router = new (0, _core.PathRouter)();
+    const router = new (0, _core.HashRouter)();
     /**
    * Помещаем роутер и стор в глобальную область для доступа в хоках with*
    * @warning Не использовать такой способ на реальный проектах
@@ -582,21 +582,24 @@ document.addEventListener("DOMContentLoaded", ()=>{
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Block", ()=>(0, _blockDefault.default));
-parcelHelpers.export(exports, "BlockMeta", ()=>(0, _block.BlockMeta));
+parcelHelpers.export(exports, "BlockClass", ()=>(0, _block.BlockClass));
 parcelHelpers.export(exports, "registerComponent", ()=>(0, _registerComponentDefault.default));
 parcelHelpers.export(exports, "renderDOM", ()=>(0, _renderDOMDefault.default));
-parcelHelpers.export(exports, "PathRouter", ()=>(0, _pathRouter.PathRouter));
+parcelHelpers.export(exports, "HashRouter", ()=>(0, _hashRouter.HashRouter));
 parcelHelpers.export(exports, "Store", ()=>(0, _store.Store));
+parcelHelpers.export(exports, "Dispatch", ()=>(0, _store.Dispatch));
+parcelHelpers.export(exports, "request", ()=>(0, _apiRequest.request));
 var _block = require("./Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _registerComponent = require("./registerComponent");
 var _registerComponentDefault = parcelHelpers.interopDefault(_registerComponent);
 var _renderDOM = require("./renderDOM");
 var _renderDOMDefault = parcelHelpers.interopDefault(_renderDOM);
-var _pathRouter = require("./Router/PathRouter");
+var _hashRouter = require("./HashRouter");
 var _store = require("./Store");
+var _apiRequest = require("./apiRequest");
 
-},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./Router/PathRouter":"hCJbE","./Store":"7b9cm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"aWH7T":[function(require,module,exports) {
+},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./HashRouter":"h1zlA","./Store":"7b9cm","./apiRequest":"jASk1","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"aWH7T":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _eventBus = require("./EventBus");
@@ -609,10 +612,8 @@ class Block {
         INIT: "init",
         FLOW_CDM: "flow:component-did-mount",
         FLOW_CDU: "flow:component-did-update",
-        FLOW_RENDER: "flow:render",
-        INPUT_CHANGED: "form:input-did-change",
-        INPUT_BLURRED: "form:input-did-blur",
-        INPUT_FOCUSED: "form:input-did-focus"
+        FLOW_CWU: "flow:component-will-unmount",
+        FLOW_RENDER: "flow:render"
     };
     id = (0, _nanoid.nanoid)(6);
     _element = null;
@@ -621,9 +622,6 @@ class Block {
     refs = {};
     constructor(props){
         const eventBus = new (0, _eventBusDefault.default)();
-        this._meta = {
-            props
-        };
         this.getStateFromProps(props);
         this.props = this._makePropsProxy(props || {});
         this.state = this._makePropsProxy(this.state);
@@ -631,13 +629,22 @@ class Block {
         this._registerEvents(eventBus);
         eventBus.emit(Block.EVENTS.INIT, this.props);
     }
+    /**
+   * Хелпер, который проверяет, находится ли элемент в DOM дереве
+   * И есть нет, триггерит событие COMPONENT_WILL_UNMOUNT
+   */ _checkInDom() {
+        const elementInDOM = document.body.contains(this._element);
+        if (elementInDOM) {
+            setTimeout(()=>this._checkInDom(), 1000);
+            return;
+        }
+        this.eventBus().emit(Block.EVENTS.FLOW_CWU, this.props);
+    }
     _registerEvents(eventBus) {
         eventBus.on(Block.EVENTS.INIT, this.init.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDM, this._componentDidMount.bind(this));
         eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
-        eventBus.on(Block.EVENTS.INPUT_CHANGED, this._render.bind(this));
-        eventBus.on(Block.EVENTS.INPUT_BLURRED, this._render.bind(this));
-        eventBus.on(Block.EVENTS.INPUT_FOCUSED, this._render.bind(this));
+        eventBus.on(Block.EVENTS.FLOW_CWU, this._componentWillUnmount.bind(this));
         eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
     }
     _createResources() {
@@ -651,11 +658,16 @@ class Block {
         this.eventBus().emit(Block.EVENTS.FLOW_RENDER, this.props);
     }
     _componentDidMount(props) {
+        this._checkInDom();
         this.componentDidMount(props);
     }
     componentDidMount(props) {}
+    _componentWillUnmount() {
+        this.eventBus().destroy();
+        this.componentWillUnmount();
+    }
+    componentWillUnmount() {}
     _componentDidUpdate(oldProps, newProps) {
-        //console.log('_componentDidUpdate');
         const response = this.componentDidUpdate(oldProps, newProps);
         if (!response) return;
         this._render();
@@ -663,9 +675,7 @@ class Block {
     componentDidUpdate(oldProps, newProps) {
         return true;
     }
-    /*
-  	Через метод setProps мы сможем перерендерить компонент
-  */ setProps = (nextProps)=>{
+    setProps = (nextProps)=>{
         if (!nextProps) return;
         Object.assign(this.props, nextProps);
     };
@@ -678,11 +688,9 @@ class Block {
     }
     _render() {
         const fragment = this._compile();
-        const newElement = fragment.firstElementChild; // поэтому соседний уровень вложенности в шаблоне hbs будет удален
-        if (this._element) {
-            this._removeEvents(); // удаляем все события для предотвращения утечек
-            this._element.replaceWith(newElement); // заменяет одни элементы другими.
-        }
+        this._removeEvents();
+        const newElement = fragment.firstElementChild;
+        this._element.replaceWith(newElement);
         this._element = newElement;
         this._addEvents();
     }
@@ -700,11 +708,7 @@ class Block {
         // Можно и так передать this
         // Такой способ больше не применяется с приходом ES6+
         const self = this;
-        /*
-			Метод Proxy перехвает события, например чтение/запись
-			В конструктор передается объект с ловушками: методами, которые перехватывают разные операции,
-			например, ловушка get – для чтения свойства из target, ловушка set – для записи свойства в target и так далее.
-    */ return new Proxy(props, {
+        return new Proxy(props, {
             get (target, prop) {
                 const value = target[prop];
                 return typeof value === "function" ? value.bind(target) : value;
@@ -769,14 +773,8 @@ class Block {
             if (layoutContent && stubChilds.length) layoutContent.append(...stubChilds);
         });
         /**
-     * Возвращаем фрагмент, который затем подхватывает функция _render
+     * Возвращаем фрагмент
      */ return fragment.content;
-    }
-    show() {
-        this.getContent().style.display = "block";
-    }
-    hide() {
-        this.getContent().style.display = "none";
     }
 }
 exports.default = Block;
@@ -795,14 +793,13 @@ class EventBus {
         this.listeners[event] = this.listeners[event].filter((listener)=>listener !== callback);
     }
     emit(event, ...args) {
-        // console.log(
-        // 	"emit event",
-        //   "background: #222; color: #bada55",
-        //   );
         if (!this.listeners[event]) return;
         this.listeners[event].forEach(function(listener) {
             listener(...args);
         });
+    }
+    destroy() {
+        this.listeners = {};
     }
 }
 exports.default = EventBus;
@@ -9829,7 +9826,7 @@ CodeGen.prototype = {
 exports["default"] = CodeGen;
 module.exports = exports["default"];
 
-},{"../utils":"yumAh","source-map":"gCzPc"}],"gCzPc":[function(require,module,exports) {
+},{"../utils":"yumAh","source-map":"epy8m"}],"epy8m":[function(require,module,exports) {
 /*
  * Copyright 2009-2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE.txt or:
@@ -9838,7 +9835,7 @@ module.exports = exports["default"];
 exports.SourceMapConsumer = require("./lib/source-map-consumer").SourceMapConsumer;
 exports.SourceNode = require("./lib/source-node").SourceNode;
 
-},{"./lib/source-map-generator":"dfi6V","./lib/source-map-consumer":"7T1Vs","./lib/source-node":"aARoG"}],"dfi6V":[function(require,module,exports) {
+},{"./lib/source-map-generator":"73zhZ","./lib/source-map-consumer":"3ZfI5","./lib/source-node":"eTbrC"}],"73zhZ":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10121,7 +10118,7 @@ SourceMapGenerator.prototype._generateSourcesContent = function SourceMapGenerat
 };
 exports.SourceMapGenerator = SourceMapGenerator;
 
-},{"./base64-vlq":"fWToa","./util":"baiyg","./array-set":"buSAz","./mapping-list":"3CwhE"}],"fWToa":[function(require,module,exports) {
+},{"./base64-vlq":"gIkRZ","./util":"dDetV","./array-set":"j3ey8","./mapping-list":"1acWS"}],"gIkRZ":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10230,7 +10227,7 @@ var VLQ_CONTINUATION_BIT = VLQ_BASE;
     aOutParam.rest = aIndex;
 };
 
-},{"./base64":"2ES2L"}],"2ES2L":[function(require,module,exports) {
+},{"./base64":"4c8JT"}],"4c8JT":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10270,7 +10267,7 @@ var VLQ_CONTINUATION_BIT = VLQ_BASE;
     return -1;
 };
 
-},{}],"baiyg":[function(require,module,exports) {
+},{}],"dDetV":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10583,7 +10580,7 @@ exports.parseSourceMapInput = parseSourceMapInput;
 }
 exports.computeSourceURL = computeSourceURL;
 
-},{}],"buSAz":[function(require,module,exports) {
+},{}],"j3ey8":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10671,7 +10668,7 @@ var hasNativeMap = typeof Map !== "undefined";
 };
 exports.ArraySet = ArraySet;
 
-},{"./util":"baiyg"}],"3CwhE":[function(require,module,exports) {
+},{"./util":"dDetV"}],"1acWS":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2014 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -10739,7 +10736,7 @@ exports.ArraySet = ArraySet;
 };
 exports.MappingList = MappingList;
 
-},{"./util":"baiyg"}],"7T1Vs":[function(require,module,exports) {
+},{"./util":"dDetV"}],"3ZfI5":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -11582,7 +11579,7 @@ IndexedSourceMapConsumer.prototype.constructor = SourceMapConsumer;
 };
 exports.IndexedSourceMapConsumer = IndexedSourceMapConsumer;
 
-},{"./util":"baiyg","./binary-search":"8Zdyt","./array-set":"buSAz","./base64-vlq":"fWToa","./quick-sort":"akHpC"}],"8Zdyt":[function(require,module,exports) {
+},{"./util":"dDetV","./binary-search":"4yFYl","./array-set":"j3ey8","./base64-vlq":"gIkRZ","./quick-sort":"fNQBd"}],"4yFYl":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -11663,7 +11660,7 @@ exports.LEAST_UPPER_BOUND = 2;
     return index;
 };
 
-},{}],"akHpC":[function(require,module,exports) {
+},{}],"fNQBd":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -11759,7 +11756,7 @@ exports.LEAST_UPPER_BOUND = 2;
     doQuickSort(ary, comparator, 0, ary.length - 1);
 };
 
-},{}],"aARoG":[function(require,module,exports) {
+},{}],"eTbrC":[function(require,module,exports) {
 /* -*- Mode: js; js-indent-level: 2; -*- */ /*
  * Copyright 2011 Mozilla Foundation and contributors
  * Licensed under the New BSD license. See LICENSE or:
@@ -12074,7 +12071,7 @@ var isSourceNode = "$$$isSourceNode$$$";
 };
 exports.SourceNode = SourceNode;
 
-},{"./source-map-generator":"dfi6V","./util":"baiyg"}],"3PIn5":[function(require,module,exports) {
+},{"./source-map-generator":"73zhZ","./util":"dDetV"}],"3PIn5":[function(require,module,exports) {
 /* eslint-disable new-cap */ "use strict";
 exports.__esModule = true;
 exports.print = print;
@@ -12206,15 +12203,15 @@ parcelHelpers.defineInteropFlag(exports);
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
 function registerComponent(Component) {
-    (0, _handlebarsDefault.default).registerHelper(Component.name, function({ hash: { ref , ...hash } , data , fn  }) {
+    (0, _handlebarsDefault.default).registerHelper(Component.componentName || Component.name, function({ hash: { ref , ...hash } , data , fn  }) {
         if (!data.root.children) data.root.children = {};
         if (!data.root.refs) data.root.refs = {};
         const { children , refs  } = data.root;
         /**
-     * Костыль для того, чтобы передавать переменные
-     * внутрь блоков вручную подменяя значение
-     */ Object.keys(hash).forEach((key)=>{
-            if (this[key] && typeof this[key] === "string") hash[key] = hash[key].replace(new RegExp(`{{${key}}}`, "i"), this[key]);
+       * Костыль для того, чтобы передавать переменные
+       * внутрь блоков вручную подменяя значение
+       */ Object.keys(hash).forEach((key)=>{
+            if (this[key] && typeof hash[key] === "string") hash[key] = hash[key].replace(new RegExp(`{{${key}}}`, "i"), this[key]);
         });
         const component = new Component(hash);
         children[component.id] = component;
@@ -12235,26 +12232,26 @@ function renderDOM(block) {
 }
 exports.default = renderDOM;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hCJbE":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"h1zlA":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "PathRouter", ()=>PathRouter);
-console.log("required PathRouter");
-class PathRouter {
+/**
+ * @warning в работах нужно реализовать обычный Router.
+ */ parcelHelpers.export(exports, "HashRouter", ()=>HashRouter);
+class HashRouter {
     routes = {};
     isStarted = false;
     start() {
         if (!this.isStarted) {
             this.isStarted = true;
-            window.onpopstate = (event)=>{
-                this.onRouteChange.call(this);
-            };
+            window.addEventListener("hashchange", ()=>this.onRouteChange());
             this.onRouteChange();
         }
     }
-    onRouteChange(pathname = window.location.pathname) {
+    onRouteChange() {
+        const { hash  } = window.location;
         const found = Object.entries(this.routes).some(([routeHash, callback])=>{
-            if (routeHash === pathname) {
+            if (routeHash === hash) {
                 callback();
                 return true;
             }
@@ -12263,21 +12260,14 @@ class PathRouter {
         if (!found && this.routes["*"]) this.routes["*"]();
     }
     use(hash, callback) {
-        console.log("required PathRouter USE");
-        console.log(hash, "gg", callback);
         this.routes[hash] = callback;
-        console.log("this USE", this);
         return this;
     }
-    go(pathname) {
-        window.history.pushState({}, "", pathname);
-        this.onRouteChange(pathname);
+    go(hash) {
+        window.location.hash = hash;
     }
     back() {
         window.history.back();
-    }
-    forward() {
-        window.history.forward();
     }
 }
 
@@ -12316,7 +12306,41 @@ class Store extends (0, _eventBusDefault.default) {
     }
 }
 
-},{"./EventBus":"ezQjQ","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"6jFfC":[function(require,module,exports) {
+},{"./EventBus":"ezQjQ","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"jASk1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * @warning В работе нужно использовать классовый подход и самописный HttpTransport
+ * @see https://practicum.yandex.ru/learn/middle-frontend/courses/d0b6060f-550a-4fe8-bc01-3496013f7260/sprints/18176/topics/b8f31bf4-5dc3-4b69-8689-9e50e8a70921/lessons/83244899-b95f-409c-a634-2e0bc8f944e7/
+ */ parcelHelpers.export(exports, "request", ()=>request);
+const sleep = (ms = 300)=>new Promise((res)=>setTimeout(res, ms));
+function request({ method , path , data  }) {
+    return sleep().then(()=>fetch(`${"https://ya-praktikum.tech/api/v2"}/${path}`, {
+            method,
+            credentials: "include",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: data ? JSON.stringify(data) : null
+        }).then((response)=>{
+            const isJson = response.headers.get("content-type")?.includes("application/json");
+            return isJson ? response.json() : null;
+        }).then((data)=>{
+            return data;
+        }));
+}
+request.post = (path, data)=>request({
+        method: "POST",
+        path,
+        data
+    });
+request.get = (path)=>request({
+        method: "GET",
+        path
+    });
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"6jFfC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initApp", ()=>initApp);
@@ -12420,14 +12444,17 @@ class ControledInput extends (0, _blockDefault.default) {
                 const secondName = this.element?.querySelector('input[name="second_name"]');
                 const phone = this.element?.querySelector('input[name="phone"]');
                 const RepeatPassword = this.element?.querySelector('input[name="password"]');
-                console.log("password", password);
-                console.log("login", login);
+                // console.log("password", password);
+                // console.log("login", login);
                 const errorMessage = new (0, _validationDefault.default)().validate([
                     {
                         type: (0, _validation.validationFieldType).Login,
                         value: login?.value
                     },
-                    // {type: validationFieldType.Password, value: password?.value},
+                    {
+                        type: (0, _validation.validationFieldType).Password,
+                        value: password?.value
+                    },
                     {
                         type: (0, _validation.validationFieldType).FirstName,
                         value: firstName?.value
@@ -12465,7 +12492,6 @@ module.exports = "<div class=\"controlled-input\">\r\n\t{{{\r\n\t\tInput\r\n\t\t
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "validationFieldType", ()=>validationFieldType);
-parcelHelpers.export(exports, "Validation", ()=>Validation);
 let validationFieldType;
 (function(validationFieldType) {
     validationFieldType[validationFieldType["Login"] = 0] = "Login";
@@ -12505,7 +12531,7 @@ function validateField(val, exp) {
 class Validation {
     validate(rules) {
         let errorMessage = "";
-        console.log(rules, "value");
+        // console.log(rules, "value");
         for(let i = 0; i < rules.length; i++){
             const { type , value  } = rules[i];
             if (type && value) {
@@ -12551,6 +12577,7 @@ class Validation {
         return errorMessage;
     }
 }
+exports.default = Validation;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"dtDez":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -12584,7 +12611,6 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initRouter", ()=>initRouter);
 var _core = require("./core");
 var _utils = require("./utils");
-console.log("router ", (0, _utils.Screens));
 const routes = [
     {
         path: "/",
@@ -12592,39 +12618,37 @@ const routes = [
         shouldAuthorized: false
     },
     {
-        path: "/profile",
+        path: "#profile",
         block: (0, _utils.Screens).Profile,
         shouldAuthorized: false
     },
     {
-        path: "/chat",
-        block: "chat",
+        path: "#chat",
+        block: (0, _utils.Screens).Chat,
         shouldAuthorized: true
     },
     {
         path: "*",
-        block: "login",
+        block: (0, _utils.Screens).Main,
         shouldAuthorized: false
     }, 
 ];
 function initRouter(router, store) {
-    console.log("init initRouter", router, store);
     routes.forEach((route)=>{
-        console.log("route forEach", route);
         router.use(route.path, ()=>{
             const isAuthorized = Boolean(store.getState().user);
             const currentScreen = Boolean(store.getState().screen);
             console.log("isAuthorized", isAuthorized, currentScreen);
-            console.log("init isAuthorized and currentScreen ", isAuthorized, currentScreen);
-            // if (isAuthorized || !route.shouldAuthorized) {
-            //   store.dispatch({ screen: route.block });
-            //   return;
-            // }
-            store.dispatch({
+            // console.log("init isAuthorized and currentScreen ", isAuthorized, currentScreen);
+            if (isAuthorized || !route.shouldAuthorized) {
+                store.dispatch({
+                    screen: route.block
+                });
+                return;
+            }
+            if (!currentScreen) store.dispatch({
                 screen: (0, _utils.Screens).Main
             });
-        // if (!currentScreen) {
-        // }
         });
     });
     /**
@@ -12638,7 +12662,6 @@ function initRouter(router, store) {
         // 	console.log("router ",router);
         //   router.start();
         // }
-        console.log("getScreenComponent", (0, _utils.getScreenComponent));
         const Page = (0, _utils.getScreenComponent)(nextState?.screen);
         // console.log("Page", Page);
         // передадим название компонента для рендера
@@ -12652,296 +12675,56 @@ function initRouter(router, store) {
 },{"./core":"9qbGm","./utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hupOb":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "transformUser", ()=>(0, _apiTransformers.transformUser));
+parcelHelpers.export(exports, "transformChat", ()=>(0, _apiTransformers.transformChat));
 parcelHelpers.export(exports, "withStore", ()=>(0, _withStore.withStore));
 parcelHelpers.export(exports, "withUser", ()=>(0, _withUser.withUser));
 parcelHelpers.export(exports, "withRouter", ()=>(0, _withRouter.withRouter));
 parcelHelpers.export(exports, "withIsLoading", ()=>(0, _withIsLoading.withIsLoading));
 parcelHelpers.export(exports, "Screens", ()=>(0, _screenList.Screens));
 parcelHelpers.export(exports, "getScreenComponent", ()=>(0, _screenList.getScreenComponent));
+parcelHelpers.export(exports, "apiHasError", ()=>(0, _apiHasError.hasError));
+var _apiTransformers = require("./apiTransformers");
 var _withStore = require("./withStore");
 var _withUser = require("./withUser");
 var _withRouter = require("./withRouter");
 var _withIsLoading = require("./withIsLoading");
 var _screenList = require("./screenList");
+var _apiHasError = require("./apiHasError");
 
-},{"./screenList":"7PHF3","./withStore":"gWQPp","./withUser":"gSWfA","./withRouter":"9t1HO","./withIsLoading":"16ofE","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7PHF3":[function(require,module,exports) {
+},{"./apiTransformers":"8eLQ7","./withStore":"gWQPp","./withUser":"gSWfA","./withRouter":"9t1HO","./withIsLoading":"16ofE","./screenList":"7PHF3","./apiHasError":"7hYty","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"8eLQ7":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Screens", ()=>Screens);
-parcelHelpers.export(exports, "getScreenComponent", ()=>getScreenComponent);
-var _main = require("pages/main");
-var _mainDefault = parcelHelpers.interopDefault(_main);
-let Screens;
-(function(Screens) {
-    Screens["Main"] = "main";
-})(Screens || (Screens = {}));
-const map = {
-    [Screens.Main]: (0, _mainDefault.default)
-};
-const getScreenComponent = (screen)=>{
-    return map[screen];
-};
-
-},{"pages/main":"dgjed","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"dgjed":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _mainDefault.default));
-var _main = require("./main");
-var _mainDefault = parcelHelpers.interopDefault(_main);
-
-},{"./main":"hUNuv","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hUNuv":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Main", ()=>Main);
-var _core = require("core");
-var _templateHbs = require("bundle-text:./template.hbs");
-var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
-var _utils = require("utils");
-// debugger;
-var _login = require("../../components/login");
-var _loginDefault = parcelHelpers.interopDefault(_login);
-var _button = require("../../components/button");
-var _buttonDefault = parcelHelpers.interopDefault(_button);
-console.log("main return");
-(0, _core.registerComponent)((0, _loginDefault.default));
-(0, _core.registerComponent)((0, _buttonDefault.default));
-class Main extends (0, _core.Block) {
-    constructor(props){
-        super(props);
-        this.setProps({
-            onButtonClick: ()=>console.log("button is clicked")
-        });
-    }
-    render() {
-        console.log("Onboarding.ts ", this.props);
-        return 0, _templateHbsDefault.default;
-    }
-}
-// export default Main;
-console.log("Onboarding.ts ", (0, _utils.withRouter));
-exports.default = (0, _utils.withRouter)((0, _utils.withStore)((0, _utils.withIsLoading)(Main)));
-
-},{"core":"9qbGm","bundle-text:./template.hbs":"j9oDL","utils":"hupOb","../../components/login":"6wqya","../../components/button":"83hYd","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"j9oDL":[function(require,module,exports) {
-module.exports = "<body  class=\"page\">\r\n  <main class=\"page__center\">\r\n    <div class=\"page__form\">\r\n      {{#Login fullScreen=true}}\r\n    \t{{/Login}}\r\n    </div>\r\n  </main>\r\n</body>\r\n\r\n";
-
-},{}],"6wqya":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _login.Login));
-var _login = require("./login");
-
-},{"./login":"jUY4P","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"jUY4P":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Login", ()=>Login);
-var _block = require("core/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-var _validation = require("core/validation");
-var _templateHbs = require("bundle-text:./template.hbs");
-var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
-var _loginScss = require("./login.scss");
-var _auth = require("../../services/auth");
-var _core = require("core");
-var _withRouter = require("utils/withRouter");
-var _withStore = require("utils/withStore");
-var _withIsLoading = require("utils/withIsLoading");
-class Login extends (0, _core.Block) {
-    constructor(props){
-        super(props);
-        this.setProps({
-            loginValue: "",
-            passwordValue: "",
-            errors: {
-                login: "",
-                password: ""
-            },
-            onInput: (e)=>{
-                console.log("input");
-            },
-            onFocus: (e)=>console.log("focus"),
-            onSubmit: (e)=>{
-                event.preventDefault();
-                const login = this.element?.querySelector('input[name="login"]');
-                const password = this.element?.querySelector('input[name="password"]');
-                const errorMessage = new (0, _validation.Validation)().validate([
-                    {
-                        type: (0, _validation.validationFieldType).Login,
-                        value: login?.value
-                    },
-                    {
-                        type: (0, _validation.validationFieldType).Password,
-                        value: password?.value
-                    }
-                ]);
-                //debugger;
-                if (errorMessage) this.setProps({
-                    loginValue: login.value,
-                    passwordValue: password.value
-                });
-                const loginData = {
-                    login: login.value,
-                    password: password.value
-                };
-                // this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
-                console.log("loginData", login.value, password.value);
-                console.log("this.props", this.props);
-                console.log("errorMessage", errorMessage);
-                // controllerAuth.auth(loginData);
-                this.props.store.dispatch(login, loginData);
-            },
-            formError: ()=>this.props.store.getState().loginFormError
-        });
-    }
-    render() {
-        // console.log("login.ts", this.props);
-        return 0, _templateHbsDefault.default;
-    }
-}
-exports.default = (0, _withRouter.withRouter)((0, _withStore.withStore)((0, _withIsLoading.withIsLoading)(Login)));
-
-},{"core/Block":"aWH7T","core/validation":"bEseP","bundle-text:./template.hbs":"7eMJU","./login.scss":"6SbUD","../../services/auth":"dwLIY","core":"9qbGm","utils/withRouter":"9t1HO","utils/withStore":"gWQPp","utils/withIsLoading":"16ofE","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7eMJU":[function(require,module,exports) {
-module.exports = "<section class=\"login\">\r\n  <form action=\"\" class=\"form\">\r\n    <div class=\"form-login__content\">\r\n\r\n      <label for=\"input-username\" class=\"form__label form__label--offset\">Логин</label>\r\n      {{{\r\n      \t\tControledInput\r\n      \t\tonInput=onInput\r\n\t\t\t\t\tonFocus=onFocus\r\n\t\t\t\t\tref=\"loginInputRef\"\r\n      \t\tname=\"login\"\r\n      \t\ttype=\"text\"\r\n      \t\tid=\"input-username\"\r\n      \t\tplaceholder=\"ivanivanov\"\r\n      \t\tlabel=\"login\"\r\n      }}}\r\n      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\r\n      <label for=\"password-input\" class=\"form__label form__label--offset\">Пароль</label>\r\n      {{{\r\n      \t\tControledInput\r\n      \t\tonInput=onInput\r\n\t\t\t\t\tonFocus=onFocus\r\n\t\t\t\t\tref=\"passInputRef\"\r\n      \t\tname=\"password\"\r\n      \t\ttype=\"password\"\r\n      \t\tid=\"password-input\"\r\n      \t\tplaceholder=\"password\"\r\n      }}}\r\n      {{#if ErrorComponent}}{{ErrorComponent text=formError}}{{/if}}\r\n    </div>\r\n    <footer class=\"form-login__footer\">\r\n      {{{\r\n\t      \tButton\r\n\t      \tclass=\"button\"\r\n\t      \tlabel=\"Авторизоваться\"\r\n\t      \tonClick=onSubmit\r\n    \t}}}\r\n      <div class=\"form__links\">\r\n        <a href=\"#\" class=\"form__link\">Нет аккаунта?</a>\r\n      </div>\r\n    </footer>\r\n  </form>\r\n</section>\r\n";
-
-},{}],"6SbUD":[function() {},{}],"dwLIY":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "login", ()=>login);
-var _authControllers = require("../controllers/authControllers");
-var _authControllersDefault = parcelHelpers.interopDefault(_authControllers);
-const login = async (action)=>{
-    const response = await (0, _authControllersDefault.default).auth(action);
-    window.router.go("/chat");
-};
-
-},{"../controllers/authControllers":"khdRE","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"khdRE":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _httptransport = require("core/HTTPTransport");
-var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
-class authControllers {
-    auth(data) {
-        (0, _httptransportDefault.default).post("/auth/signin", data);
-    }
-    user() {
-        (0, _httptransportDefault.default).get("/auth/user");
-    }
-}
-const controllerAuth = new authControllers();
-exports.default = controllerAuth;
-
-},{"core/HTTPTransport":"3s5Eb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"3s5Eb":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-const METHODS = {
-    GET: "GET",
-    POST: "POST",
-    PUT: "PUT",
-    DELETE: "DELETE"
-};
-let rejectMessage;
-(function(rejectMessage) {
-    rejectMessage["EmptyMethod"] = "не передан метод";
-    rejectMessage["EmptyUrl"] = "не передан метод";
-    rejectMessage["IsObject"] = "поле data должно быть объектом";
-    rejectMessage["RejectRequest"] = "запрос отменен";
-    rejectMessage["RejectError"] = "запрос упал с ошибкой";
-    rejectMessage["RejectTimeout"] = "запрос превысил таймаут";
-})(rejectMessage || (rejectMessage = {}));
-function queryStringify(data) {
-    if (typeof data !== "object") throw new Error("Data must be object");
-    // Здесь достаточно и [object Object] для объекта
-    const keys = Object.keys(data);
-    return keys.reduce((result, key, index)=>{
-        return `${result}${key}=${data[key]}${index < keys.length - 1 ? "&" : ""}`;
-    }, "?");
-}
-let headers = {
-    "Content-Type": "application/json"
-};
-class HTTPTransport {
-    get(url, data = {}) {
-        return this.request(url, {
-            data,
-            method: METHODS.GET
-        }, data?.timeout);
-    }
-    post(url, data = {}) {
-        console.log("Login Data", data);
-        return this.request(url, {
-            data,
-            method: METHODS.POST,
-            headers
-        }, data?.timeout);
-    }
-    put(url, data = {}) {
-        return this.request(url, {
-            data,
-            method: METHODS.PUT
-        }, data?.timeout);
-    }
-    del(url, data = {}) {
-        return this.request(url, {
-            data,
-            method: METHODS.DELETE
-        }, data?.timeout);
-    }
-    request(url, options, timeout = 5000) {
-        console.log("options ", options);
-        const { headers ={} , method , data  } = options;
-        return new Promise(function(resolve, reject) {
-            if (!method) {
-                reject(rejectMessage.EmptyMethod);
-                return;
-            }
-            if (!url) {
-                reject(rejectMessage.EmptyUrl);
-                return;
-            }
-            const xhr = new XMLHttpRequest();
-            const isGet = method === METHODS.GET;
-            xhr.open(method, `${"https://ya-praktikum.tech/api/v2"}${url}`);
-            Object.keys(headers).forEach((key)=>{
-                xhr.setRequestHeader(key, headers[key]);
-            });
-            xhr.onload = function() {
-                resolve(xhr);
-            };
-            xhr.onabort = reject(rejectMessage.RejectRequest);
-            xhr.onerror = reject(rejectMessage.RejectError);
-            xhr.timeout = timeout;
-            xhr.ontimeout = reject(rejectMessage.RejectTimeout);
-            if (isGet || !data) xhr.send();
-            else // @ts-ignore
-            xhr.send(JSON.stringify(data));
-        });
-    }
-}
-const transport = new HTTPTransport();
-exports.default = transport;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9t1HO":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "withRouter", ()=>withRouter);
-function withRouter(WrappedBlock) {
-    // @ts-expect-error No base constructor has the specified number of type arguments
-    return class extends WrappedBlock {
-        static componentName = WrappedBlock.componentName || WrappedBlock.name;
-        constructor(props){
-            super({
-                ...props,
-                router: window.router
-            });
-        }
+parcelHelpers.export(exports, "transformUser", ()=>transformUser);
+parcelHelpers.export(exports, "transformChat", ()=>transformChat);
+const transformUser = (data)=>{
+    return {
+        id: data.id,
+        login: data.login,
+        firstName: data.first_name,
+        secondName: data.second_name,
+        displayName: data.display_name,
+        avatar: data.avatar,
+        phone: data.phone,
+        email: data.email
     };
-}
+};
+const transformChat = (data)=>{
+    console.log("transformChat", data[0]);
+    for(var i = 0, l = data.length; i < l; i++)return {
+        id: data[i].id,
+        title: data[i].title,
+        avatar: data[i].avatar,
+        createdBy: data[i].created_by,
+        unreadCount: data[i].unread_count,
+        lastMessage: data[i].last_message
+    };
+};
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"gWQPp":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "withStore", ()=>withStore);
-var _core = require("core");
-console.log("run withStore", (0, _core.Store));
 function withStore(WrappedBlock) {
     // @ts-expect-error No base constructor has the specified
     return class extends WrappedBlock {
@@ -12970,26 +12753,6 @@ function withStore(WrappedBlock) {
         componentWillUnmount() {
             super.componentWillUnmount();
             window.store.off("changed", this.__onChangeStoreCallback);
-        }
-    };
-}
-
-},{"core":"9qbGm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"16ofE":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/**
- * HOC не подписан на изменения стора, поэтому будет корректно работать
- * только при обернутом withStore хоке.
- */ parcelHelpers.export(exports, "withIsLoading", ()=>withIsLoading);
-function withIsLoading(WrappedBlock) {
-    // @ts-expect-error No base constructor has the specified number of type arguments
-    return class extends WrappedBlock {
-        static componentName = WrappedBlock.componentName || WrappedBlock.name;
-        constructor(props){
-            super({
-                ...props,
-                isLoading: ()=>window.store.getState().isLoading
-            });
         }
     };
 }
@@ -13024,6 +12787,810 @@ function withUser(WrappedBlock) {
             window.store.off("changed", this.__onChangeUserCallback);
         }
     };
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9t1HO":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "withRouter", ()=>withRouter);
+function withRouter(WrappedBlock) {
+    // @ts-expect-error No base constructor has the specified number of type arguments
+    return class extends WrappedBlock {
+        static componentName = WrappedBlock.componentName || WrappedBlock.name;
+        constructor(props){
+            super({
+                ...props,
+                router: window.router
+            });
+        }
+    };
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"16ofE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * HOC не подписан на изменения стора, поэтому будет корректно работать
+ * только при обернутом withStore хоке.
+ */ parcelHelpers.export(exports, "withIsLoading", ()=>withIsLoading);
+function withIsLoading(WrappedBlock) {
+    // @ts-expect-error No base constructor has the specified number of type arguments
+    return class extends WrappedBlock {
+        static componentName = WrappedBlock.componentName || WrappedBlock.name;
+        constructor(props){
+            super({
+                ...props,
+                isLoading: ()=>window.store.getState().isLoading
+            });
+        }
+    };
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7PHF3":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Screens", ()=>Screens);
+parcelHelpers.export(exports, "getScreenComponent", ()=>getScreenComponent);
+var _main = require("pages/main");
+var _mainDefault = parcelHelpers.interopDefault(_main);
+var _chat = require("pages/chat");
+var _chatDefault = parcelHelpers.interopDefault(_chat);
+let Screens;
+(function(Screens) {
+    Screens["Main"] = "main";
+    Screens["Chat"] = "chat";
+})(Screens || (Screens = {}));
+const map = {
+    [Screens.Main]: (0, _mainDefault.default),
+    [Screens.Chat]: (0, _chatDefault.default)
+};
+const getScreenComponent = (screen)=>{
+    return map[screen];
+};
+
+},{"pages/main":"dgjed","pages/chat":"92lNP","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"dgjed":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _mainDefault.default));
+var _main = require("./main");
+var _mainDefault = parcelHelpers.interopDefault(_main);
+
+},{"./main":"hUNuv","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hUNuv":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Main", ()=>Main);
+var _core = require("core");
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _utils = require("utils");
+var _validation = require("core/validation");
+var _validationDefault = parcelHelpers.interopDefault(_validation);
+var _auth = require("../../services/auth");
+// import Login from "../../components/login";
+var _button = require("../../components/button");
+var _buttonDefault = parcelHelpers.interopDefault(_button);
+// registerComponent(Login);
+(0, _core.registerComponent)((0, _buttonDefault.default));
+class Main extends (0, _core.Block) {
+    constructor(props){
+        super(props);
+        this.setProps({
+            loginValue: "",
+            passwordValue: "",
+            errors: {
+                login: "",
+                password: ""
+            },
+            onInput: (e)=>{
+            // console.log("input");
+            },
+            onFocus: (e)=>{
+            // console.log("focus"),
+            },
+            onSubmit: (e)=>{
+                event.preventDefault();
+                const login = this.element?.querySelector('input[name="login"]');
+                const password = this.element?.querySelector('input[name="password"]');
+                const errorMessage = new (0, _validationDefault.default)().validate([
+                    {
+                        type: (0, _validation.validationFieldType).Login,
+                        value: login?.value
+                    },
+                    {
+                        type: (0, _validation.validationFieldType).Password,
+                        value: password?.value
+                    }
+                ]);
+                //debugger;
+                const loginData = {
+                    login: login?.value,
+                    password: password?.value
+                };
+                const nextState = {
+                    errors: {
+                        login: "",
+                        password: ""
+                    },
+                    values: {
+                        ...loginData
+                    }
+                };
+                // this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
+                this.setState(nextState);
+                console.log("loginData", (0, _auth.login), loginData);
+                // controllerAuth.auth(loginData);
+                console.log("main.ts this.props", this.props);
+                this.props.store.dispatch((0, _auth.login), loginData);
+            },
+            formError: ()=>this.props.store.getState().loginFormError
+        });
+    }
+    render() {
+        console.log("Main.ts ", this, window.store);
+        return 0, _templateHbsDefault.default;
+    }
+}
+// export default Main;
+exports.default = (0, _utils.withRouter)((0, _utils.withStore)(Main));
+
+},{"core":"9qbGm","bundle-text:./template.hbs":"j9oDL","utils":"hupOb","core/validation":"bEseP","../../services/auth":"bXWfl","../../components/button":"83hYd","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"j9oDL":[function(require,module,exports) {
+module.exports = "<body  class=\"page\">\n  <main class=\"page__center\">\n    <div class=\"page__form\">\n    \t<section class=\"login\">\n\t\t\t  <form action=\"\" class=\"form\">\n\t\t\t    <div class=\"form-login__content\">\n\n\t\t\t      <label for=\"input-username\" class=\"form__label form__label--offset\">Логин</label>\n\t\t\t      {{{\n\t\t\t      \t\tControledInput\n\t\t\t      \t\tonInput=onInput\n\t\t\t\t\t\t\t\tonFocus=onFocus\n\t\t\t\t\t\t\t\tref=\"loginInputRef\"\n\t\t\t      \t\tname=\"login\"\n\t\t\t      \t\ttype=\"text\"\n\t\t\t      \t\tid=\"input-username\"\n\t\t\t      \t\tplaceholder=\"ivanivanov\"\n\t\t\t      \t\tlabel=\"login\"\n\t\t\t      }}}\n\t\t\t      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\n\t\t\t      <label for=\"password-input\" class=\"form__label form__label--offset\">Пароль</label>\n\t\t\t      {{{\n\t\t\t      \t\tControledInput\n\t\t\t      \t\tonInput=onInput\n\t\t\t\t\t\t\t\tonFocus=onFocus\n\t\t\t\t\t\t\t\tref=\"passInputRef\"\n\t\t\t      \t\tname=\"password\"\n\t\t\t      \t\ttype=\"password\"\n\t\t\t      \t\tid=\"password-input\"\n\t\t\t      \t\tplaceholder=\"password\"\n\t\t\t      }}}\n\t\t\t      {{#if ErrorComponent}}{{ErrorComponent text=formError}}{{/if}}\n\t\t\t    </div>\n\t\t\t    <footer class=\"form-login__footer\">\n\t\t\t      {{{\n\t\t\t\t      \tButton\n\t\t\t\t      \tclass=\"button\"\n\t\t\t\t      \tlabel=\"Авторизоваться\"\n\t\t\t\t      \tonClick=onSubmit\n\t\t\t    \t}}}\n\t\t\t      <div class=\"form__links\">\n\t\t\t        <a href=\"#\" class=\"form__link\">Нет аккаунта?</a>\n\t\t\t      </div>\n\t\t\t    </footer>\n\t\t\t  </form>\n\t\t\t</section>\n\n    </div>\n  </main>\n</body>\n\n";
+
+},{}],"bXWfl":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "login", ()=>login);
+var _authControllers = require("../controllers/authControllers");
+var _authControllersDefault = parcelHelpers.interopDefault(_authControllers);
+var _utils = require("utils");
+const login = async (dispatch, state, action)=>{
+    const dataResponse = await (0, _authControllersDefault.default).auth(action);
+    console.log("auth.ts response", dataResponse);
+    const responseUser = await (0, _authControllersDefault.default).user();
+    console.log("responseUser Data", responseUser);
+    if ((0, _utils.apiHasError)(dataResponse)) {
+        console.log("ошибка ");
+        dispatch({
+            isLoading: false,
+            loginFormError: dataResponse.response
+        });
+        return;
+    }
+    dispatch({
+        user: (0, _utils.transformUser)(responseUser)
+    });
+    window.router.go("#chat");
+// const dataChat = await controllerChat.getUserChat();
+// console.log("chat dataChat", dataChat);
+// dispatch({ chats: dataChat });
+// try {
+// 	window.router.go('/chat');
+// 	dispatch({ user: responseUser});
+// } catch (error) {
+// 	console.log("error", error);
+// }
+// if(responseUser) {
+// }
+};
+
+},{"../controllers/authControllers":"khdRE","utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"khdRE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _httptransport = require("core/HTTPTransport");
+var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
+class authControllers {
+    auth = (data)=>(0, _httptransportDefault.default).post("/auth/signin", data);
+    user = ()=>(0, _httptransportDefault.default).get("/auth/user");
+}
+const controllerAuth = new authControllers();
+exports.default = controllerAuth;
+
+},{"core/HTTPTransport":"3s5Eb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"3s5Eb":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+const METHODS = {
+    GET: "GET",
+    POST: "POST",
+    PUT: "PUT",
+    DELETE: "DELETE"
+};
+let rejectMessage;
+(function(rejectMessage) {
+    rejectMessage["EmptyMethod"] = "не передан метод";
+    rejectMessage["EmptyUrl"] = "не передан метод";
+    rejectMessage["IsObject"] = "поле data должно быть объектом";
+    rejectMessage["RejectRequest"] = "запрос отменен";
+    rejectMessage["RejectError"] = "запрос упал с ошибкой";
+    rejectMessage["RejectTimeout"] = "запрос превысил таймаут";
+})(rejectMessage || (rejectMessage = {}));
+function queryStringify(data) {
+    if (typeof data !== "object") throw new Error("Data must be object");
+    // Здесь достаточно и [object Object] для объекта
+    const keys = Object.keys(data);
+    return keys.reduce((result, key, index)=>{
+        return `${result}${key}=${data[key]}${index < keys.length - 1 ? "&" : ""}`;
+    }, "?");
+}
+function onload(xhr, resolve, reject) {
+    return function() {
+        const startObject = xhr.responseText.trim().startsWith("{");
+        const startArray = xhr.responseText.trim().startsWith("[");
+        const endObject = xhr.responseText.trim().endsWith("}");
+        const endArray = xhr.responseText.trim().endsWith("]");
+        const isStartBracket = startObject || startArray;
+        const isEndBracket = endObject || endArray;
+        const isJson = isStartBracket && isEndBracket;
+        const badResponse = !xhr.status.toString().startsWith("2");
+        const done = badResponse ? reject : resolve;
+        done(isJson ? JSON.parse(xhr.responseText) : xhr.responseText);
+        xhr.abort();
+    };
+}
+let headers = {
+    "Content-Type": "application/json"
+};
+class HTTPTransport {
+    get(url, data = {}) {
+        console.log("Get Data", url, data);
+        return this.request(url, {
+            data,
+            method: METHODS.GET
+        });
+    }
+    post(url, data = {}) {
+        console.log("Post Data", url, data);
+        return this.request(url, {
+            data,
+            method: METHODS.POST,
+            headers
+        });
+    }
+    put(url, data = {}) {
+        return this.request(url, {
+            data,
+            method: METHODS.PUT
+        }, data?.timeout);
+    }
+    del(url, data = {}) {
+        return this.request(url, {
+            data,
+            method: METHODS.DELETE
+        }, data?.timeout);
+    }
+    request(url, options, timeout = 5000) {
+        console.log("Get Request", url, options);
+        const { headers ={} , method , data  } = options;
+        const promise = new Promise(function(resolve, reject) {
+            if (!method) {
+                reject(rejectMessage.EmptyMethod);
+                return;
+            }
+            if (!url) {
+                reject(rejectMessage.EmptyUrl);
+                return;
+            }
+            const xhr = new XMLHttpRequest();
+            const isGet = method === METHODS.GET;
+            if (isGet) console.log("isGet ", `${"https://ya-praktikum.tech/api/v2"}${url}${queryStringify(data)}`);
+            xhr.open(method, isGet ? `${"https://ya-praktikum.tech/api/v2"}${url}${queryStringify(data)}` : `${"https://ya-praktikum.tech/api/v2"}${url}`);
+            Object.keys(headers).forEach((key)=>{
+                xhr.setRequestHeader(key, headers[key]);
+            });
+            xhr.onload = onload(xhr, resolve, reject);
+            xhr.withCredentials = true;
+            xhr.onabort = reject; //(throw new Error(rejectMessage.RejectRequest));
+            xhr.onerror = reject; //(rejectMessage.RejectError);
+            xhr.timeout = timeout;
+            xhr.ontimeout = reject; //(rejectMessage.RejectTimeout);
+            if (isGet) {
+                console.log("options request ", method, data);
+                xhr.send();
+            } else // @ts-ignore
+            xhr.send(JSON.stringify(data));
+        });
+        return promise;
+    }
+}
+const transport = new HTTPTransport();
+exports.default = transport;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"92lNP":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _chat.Chat));
+var _chat = require("./chat");
+
+},{"./chat":"BTZqg","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"BTZqg":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Chat", ()=>Chat);
+var _core = require("core");
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _chatScss = require("./chat.scss");
+var _handlebars = require("handlebars");
+var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
+var _chatControllers = require("../../controllers/chatControllers");
+var _chatControllersDefault = parcelHelpers.interopDefault(_chatControllers);
+var _auth = require("../../services/auth");
+var _core1 = require("../../core");
+var _profileLink = require("../../components/ProfileLink");
+var _profileLinkDefault = parcelHelpers.interopDefault(_profileLink);
+var _search = require("../../components/search");
+var _searchDefault = parcelHelpers.interopDefault(_search);
+var _message = require("../../components/message");
+var _messageDefault = parcelHelpers.interopDefault(_message);
+var _messagesList = require("../../layout/messagesList");
+var _messagesListDefault = parcelHelpers.interopDefault(_messagesList);
+var _utils = require("utils");
+var _actionChatModal = require("../../components/actionChatModal");
+var _actionChatModalDefault = parcelHelpers.interopDefault(_actionChatModal);
+(0, _core1.registerComponent)((0, _profileLinkDefault.default));
+(0, _core1.registerComponent)((0, _searchDefault.default));
+(0, _core1.registerComponent)((0, _messageDefault.default));
+(0, _core1.registerComponent)((0, _messagesListDefault.default));
+(0, _core1.registerComponent)((0, _actionChatModalDefault.default));
+(0, _handlebarsDefault.default).registerHelper("chatPayload", function() {
+    let userChat = this.props.store.getState().chats;
+    console.log("chat", userChat);
+    return userChat;
+});
+class Chat extends (0, _core.Block) {
+    constructor(props){
+        super(props);
+        async function Chats() {
+            const dataChat = await (0, _auth.chats)();
+            console.log("chat dataChat", dataChat);
+            return dataChat;
+        }
+        this.setProps({
+            onSubmitAddUser: (event)=>{
+                console.log("click buttonAddUser");
+                event.preventDefault();
+                const myDropdown = document.getElementById("modalPlusUser");
+                if (myDropdown && myDropdown.classList.contains("show")) myDropdown.classList.remove("show");
+                events: click: ()=>{
+                    (0, _chatControllersDefault.default).addUserToChat();
+                };
+            },
+            onSubmitDelUser: (event)=>{
+                event.preventDefault();
+                const myDropdown = document.getElementById("modalMinusUser");
+                if (myDropdown && myDropdown.classList.contains("show")) myDropdown.classList.remove("show");
+                events: click: ()=>{
+                    (0, _chatControllersDefault.default).delUserToChat();
+                };
+            },
+            // chats: this.props.store.dispatch(chats)
+            chats: Chats().then(function(result) {
+                console.log("result Promise", result);
+                return result;
+            })
+        });
+    }
+    // init() {
+    // 	this.props.getChats();
+    // 	async function main() {
+    // 		await getChats();
+    // 	}
+    // 	main();
+    // 	.then(function fulfilled(v){
+    // 		console.log("chats", v);
+    // 	},
+    // 	function rejected(reason){
+    // 	 // Ой, что-то пошло не так
+    // 	})
+    // 	let chats = async => {
+    // 		// const await getChats = getChats();
+    // 		this.setProps({
+    // 			chats: new Promise( function(resolve,reject) {
+    // 				return getChats();
+    // 			})
+    // 		});
+    // 	};
+    // 	// console.log("chats", chats);
+    // 	chats();
+    // }
+    render() {
+        console.log("Chat.ts this.props", this, window.store);
+        // const chats = async function(){
+        // 	return await this.props?.chats;
+        // };
+        // console.log("Chat.ts this.props chats", chats);
+        // chats().then(function(result) {
+        //   console.log("result ",result) // "Some User token"
+        // })
+        return 0, _templateHbsDefault.default;
+    }
+}
+exports.default = (0, _utils.withRouter)((0, _utils.withStore)(Chat));
+
+},{"core":"9qbGm","bundle-text:./template.hbs":"hj2Gs","./chat.scss":"9kAb2","handlebars":"dH8Fg","../../core":"9qbGm","../../components/ProfileLink":"fsW0O","../../components/search":"euWG7","../../components/message":"12sQ1","../../layout/messagesList":"b6P5O","utils":"hupOb","../../components/actionChatModal":"7Reun","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","../../controllers/chatControllers":"9Bhfw","../../services/auth":"bXWfl"}],"hj2Gs":[function(require,module,exports) {
+module.exports = "<main class=\"page__chat\">\n\t<div class=\"chat\">\n\t\t<div class=\"chat-list\">\n\t\t\t{{{ ProfileLink }}}\n\t\t\t{{{ Search }}}\n\t\t\t<ul class=\"chat-list__message\">\n\t\t\t\t{{ this }}\n\t\t\t\t{{#each this}}\n\t\t\t\t{{{ Message messageStore=this }}}\n\t\t\t\t{{/each}}\n\t\t\t</ul>\n\t\t\t{{!-- <div>{{data.title}}</div> --}}\n\t\t</div>\n\t</div>\n\t{{{ MessagesList messageStore=this }}}\n\t<div id=\"modalPlusUser\" class=\"dialog\" role=\"dialog\">\n\t\t<div class=\"dialog__body\">\n\t\t\t{{{actionChatModal type=\"addUser\" action=buttonAddUser onClick=onClick}}}\n\t\t\t<form id=\"modalForm\">\n\t\t\t  <div>\n\t\t\t\t\t<label class=\"text-field__label\">\n\t\t\t\t\t<span>Логин</span>\n\t\t\t\t\t\t{{{ Input name=\"login\" type=\"text\" class=\"form__text-input\" placeholder=\"логин\" }}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t\t{{{\n\t\t      \tButton\n\t\t      \tid=\"ActionModalPlusUser\"\n\t\t      \tclass=\"button\"\n\t\t      \tlabel=\"Добавить\"\n\t\t      \tonClick=onSubmitAddUser\n\t    \t}}}\n\t\t\t</form>\n\t\t</div>\n\t</div>\n\t<div id=\"modalMinusUser\" class=\"dialog\" role=\"dialog\">\n\t\t<div class=\"dialog__body\">\n\t\t\t{{{actionChatModal type=\"delUser\" action=buttonAddUser onClick=onClick}}}\n\t\t\t<form id=\"modalForm\">\n\t\t\t  <div>\n\t\t\t\t\t<label class=\"text-field__label\">\n\t\t\t\t\t<span>Логин</span>\n\t\t\t\t\t\t{{{ Input name=\"login\" type=\"text\" class=\"form__text-input\" placeholder=\"логин\" }}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t\t{{{\n\t\t      \tButton\n\t\t      \tid=\"ActionModalPlusUser\"\n\t\t      \tclass=\"button\"\n\t\t      \tlabel=\"Удалить\"\n\t\t      \tonClick=onSubmit\n\t    \t}}}\n\t\t\t</form>\n\t\t</div>\n\t</div>\n</main>\n";
+
+},{}],"9kAb2":[function() {},{}],"fsW0O":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _profileLink.ProfileLink));
+var _profileLink = require("./ProfileLink");
+
+},{"./ProfileLink":"7iIw1","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7iIw1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ProfileLink", ()=>ProfileLink);
+var _block = require("core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _profileScss = require("./profile.scss");
+class ProfileLink extends (0, _blockDefault.default) {
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"gjXVK","./profile.scss":"5Ub3N","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"gjXVK":[function(require,module,exports) {
+module.exports = "<div class=\"profile\">\r\n\t<a href=\"profile\" class=\"profile__link\">Профиль &rarr;</a>\r\n</div>\r\n";
+
+},{}],"5Ub3N":[function() {},{}],"euWG7":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _search.Search));
+var _search = require("./search");
+
+},{"./search":"evtA4","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"evtA4":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Search", ()=>Search);
+var _block = require("core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _searchScss = require("./search.scss");
+var _core = require("../../core");
+var _input = require("../../components/input");
+var _inputDefault = parcelHelpers.interopDefault(_input);
+(0, _core.registerComponent)((0, _inputDefault.default));
+class Search extends (0, _blockDefault.default) {
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"hk8ml","./search.scss":"7nPTJ","../../core":"9qbGm","../../components/input":"jnHpm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hk8ml":[function(require,module,exports) {
+module.exports = "<div class=\"search\">\r\n  {{{ Input type=\"text\" placeholder=\"Поиск\" class=\"search__input\" }}}\r\n</div>\r\n";
+
+},{}],"7nPTJ":[function() {},{}],"12sQ1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _message.Message));
+var _message = require("./message");
+
+},{"./message":"1g59v","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"1g59v":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Message", ()=>Message);
+var _block = require("core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _messageScss = require("./message.scss");
+var _handlebars = require("handlebars");
+var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
+(0, _handlebarsDefault.default).registerHelper("theActiveChat", function(value) {
+    const searchId = new Proxy(new URLSearchParams(window.location.search), {
+        get: (searchParams, name)=>searchParams.get(String(name))
+    });
+    return String(value) === searchId.id;
+});
+class Message extends (0, _blockDefault.default) {
+    constructor(messageStore){
+        super(messageStore);
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"67lGh","./message.scss":"1I55v","handlebars":"dH8Fg","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"67lGh":[function(require,module,exports) {
+module.exports = "<li class=\"message\">\r\n\t<a class=\"{{#if (theActiveChat messageStore.message.id)}}active{{/if}}\" href=\"chat?id={{messageStore.message.id}}\">\r\n\t\t<div class=\"message__circle\">\r\n\t\t\t<div class=\"message__circle-user\">\r\n\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t  <div class=\"message__about\">\r\n\t    <div class=\"message__name\">{{ messageStore.message.name }}</div>\r\n\t    <div class=\"message__text\">\r\n\t      {{#if messageStore.message.myMessage}}\r\n\t      <span class=\"message__direction\">Вы:</span>\r\n\t      {{/if}}\r\n\t      {{ messageStore.message.text }}\r\n\t    </div>\r\n\t  </div>\r\n\t  <div class=\"message__status\">\r\n\t    <span class=\"message__time\">{{ messageStore.message.time }}</span>\r\n\t    {{#if messageStore.message.count}}\r\n\t      <span class=\"message__amount\">{{ messageStore.message.count }}</span>\r\n\t    {{/if}}\r\n\t  </div>\r\n\t</a>\r\n</li>\r\n";
+
+},{}],"1I55v":[function() {},{}],"b6P5O":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _messagesList.MessagesList));
+var _messagesList = require("./messagesList");
+
+},{"./messagesList":"edHYh","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"edHYh":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "MessagesList", ()=>MessagesList);
+var _block = require("core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _messagesListScss = require("./messagesList.scss");
+var _core = require("../../core");
+var _reducerChatModal = require("../../components/reducerChatModal");
+var _reducerChatModalDefault = parcelHelpers.interopDefault(_reducerChatModal);
+var _attach = require("../../components/attach");
+var _attachDefault = parcelHelpers.interopDefault(_attach);
+(0, _core.registerComponent)((0, _reducerChatModalDefault.default));
+(0, _core.registerComponent)((0, _attachDefault.default));
+class MessagesList extends (0, _blockDefault.default) {
+    constructor({ messageStore  }){
+        //console.log("messageStore___", messageStore);
+        super({
+            messageStore
+        });
+        this.setProps({
+            getChat: ()=>{
+                const searchId = new Proxy(new URLSearchParams(window.location.search), {
+                    get: (searchParams, name)=>searchParams.get(String(name))
+                });
+                return !!searchId.id;
+            },
+            onClick: (event)=>{
+                console.log("click");
+                event.preventDefault();
+                const myDropdown = document.getElementById("modalShowOther");
+                if (myDropdown) myDropdown.classList.toggle("show");
+            },
+            onSendMessage: (event)=>{
+                event.preventDefault();
+                const form = document.getElementById("sendMessage");
+                const input = form.elements.namedItem("message");
+                if (input.value) {
+                    const message = input.value;
+                    console.log(input.value);
+                    const chat = document.querySelector(".chat-body__history");
+                    const div = document.createElement("div");
+                    const date = new Date();
+                    const time = `${date.getHours()}:${date.getMinutes()}`;
+                    div.classList.add("chat-body__message");
+                    div.classList.add("chat-body__message_my");
+                    div.innerHTML = `
+            <div class="message-content">
+                <p>${message}</p>
+            </div>
+            <span>
+                ${time}
+            </span>
+        	`;
+                    chat.appendChild(div);
+                    input.value = "";
+                }
+            }
+        });
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"V9rU8","./messagesList.scss":"9kPsv","../../core":"9qbGm","../../components/reducerChatModal":"dbC67","../../components/attach":"kopZz","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"V9rU8":[function(require,module,exports) {
+module.exports = "{{#if getChat}}\r\n\t<div class=\"chat-body\">\r\n\t\t<div class=\"chat-body__container\">\r\n\r\n\t\t\t<div class=\"chat-body__header\">\r\n\t\t\t\t<div class=\"message__circle\">\r\n\t\t\t\t\t<div class=\"message__circle-user\">\r\n\t\t\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t\t<div class=\"message__name\">{{messageStore.message.name}}</div>\r\n\t\t\t\t{{{ reducerChatModal id=\"modalShowUser\" }}}\r\n\t\t\t</div>\r\n\r\n\t\t\t<div class=\"chat-body__history\">\r\n\r\n\t\t\t\t\t{{#each messageStore }}\r\n\t\t\t\t\t\t\t<div class=\"chat-body__message chat-body__message_my\">\r\n\t\t\t\t\t\t\t\t{{ message.text }}\r\n\t\t\t\t\t\t\t\t<span>{{ message.time }}</span>\r\n\t\t\t\t\t\t\t</div>\r\n\r\n\t\t\t\t\t\t\t<div class=\"chat-body__message\">\r\n\t\t\t\t\t\t\t\t{{ message.text }}\r\n\t\t\t\t\t\t\t\t<span>{{ message.time }}</span>\r\n\t\t\t\t\t\t\t</div>\r\n\t\t\t\t\t{{/each}}\r\n\r\n\t\t\t</div>\r\n\t\t\t<div class=\"chat-body__send\">\r\n\t\t\t\t{{{ Attach id=\"modalShowOther\" class=\"attach__image\" onClick=onClick }}}\r\n\t\t\t\t<form id=\"sendMessage\">\r\n\t\t\t\t\t{{{ Input type=\"text\" name=\"message\" placeholder=\"Сообщение\" class=\"search__input_message\" }}}\r\n\t\t\t\t\t{{{ Button class=\"chat-body__button\" onClick=onSendMessage label=\"→\"}}}\r\n\t\t\t\t</form>\r\n\t\t\t</div>\r\n\r\n\t\t</div>\r\n\t</div>\r\n{{else}}\r\n    <div class=\"chat-body__empty-message\">\r\n        <p>Выберите чат чтобы отправить сообщение</p>\r\n    </div>\r\n{{/if}}\r\n";
+
+},{}],"9kPsv":[function() {},{}],"dbC67":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _reducerChatModal.reducerChatModal));
+var _reducerChatModal = require("./reducerChatModal");
+
+},{"./reducerChatModal":"8XwIC","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"8XwIC":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "reducerChatModal", ()=>reducerChatModal);
+var _block = require("core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _reducerScss = require("./reducer.scss");
+var _core = require("../../core");
+var _buttonToogle = require("../buttonToogle");
+var _buttonToogleDefault = parcelHelpers.interopDefault(_buttonToogle);
+var _actionChatModal = require("../actionChatModal");
+var _actionChatModalDefault = parcelHelpers.interopDefault(_actionChatModal);
+(0, _core.registerComponent)((0, _actionChatModalDefault.default));
+(0, _core.registerComponent)((0, _buttonToogleDefault.default));
+class reducerChatModal extends (0, _blockDefault.default) {
+    constructor({ id  }){
+        super({
+            id
+        });
+        this.setProps({
+            onClick: (event)=>{
+                event.preventDefault();
+                const myDropdownShow = document.querySelector(".kebab__modal");
+                if (myDropdownShow) myDropdownShow.classList.toggle("show");
+            },
+            onActionPlusUser: (event)=>{
+                event.preventDefault();
+                const myModalPlusUser = document.getElementById("modalPlusUser");
+                if (myModalPlusUser) myModalPlusUser.classList.toggle("show");
+            },
+            onActionMinusUser: (event)=>{
+                event.preventDefault();
+                const myModalMinusUser = document.getElementById("modalMinusUser");
+                if (myModalMinusUser) myModalMinusUser.classList.toggle("show");
+            }
+        });
+        console.log(this.props);
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"dzRhC","./reducer.scss":"3Dyw5","../../core":"9qbGm","../buttonToogle":"c4ZEH","../actionChatModal":"7Reun","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"dzRhC":[function(require,module,exports) {
+module.exports = "<div class=\"kebab\">\r\n\t{{{ buttonToogle class=\"kebab__element kebab__element-reset\" onClick=onClick }}}\r\n\t<div class=\"kebab__modal\" id=\"{{id}}\">\r\n\t\t<div class=\"kebab__wrapper\">\r\n\t\t\t{{{actionChatModal type=\"addUser\" action=onActionPlusUser onClick=buttonAddUser }}}\r\n\t\t\t{{{actionChatModal id=\"ActionModalMinusUser\" type=\"delUser\" action=onActionMinusUser }}}\r\n\t\t</div>\r\n\t</div>\r\n\r\n</div>\r\n";
+
+},{}],"3Dyw5":[function() {},{}],"c4ZEH":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _button.buttonToogle));
+var _button = require("./button");
+
+},{"./button":"7H5qR","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7H5qR":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "buttonToogle", ()=>buttonToogle);
+var _block = require("../../core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+class buttonToogle extends (0, _blockDefault.default) {
+    constructor({ label , onClick  }){
+        super({
+            label,
+            events: {
+                click: onClick
+            }
+        });
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"cJ5rZ","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"cJ5rZ":[function(require,module,exports) {
+module.exports = "<button class=\"kebab__element kebab__element-reset\">\r\n\t<figure></figure>\r\n\t<figure class=\"middle\"></figure>\r\n\t<figure></figure>\r\n</button>\r\n";
+
+},{}],"7Reun":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _actionChatModal.actionChatModal));
+var _actionChatModal = require("./actionChatModal");
+
+},{"./actionChatModal":"k662v","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"k662v":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "actionChatModal", ()=>actionChatModal);
+var _block = require("core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _reducerScss = require("./reducer.scss");
+class actionChatModal extends (0, _blockDefault.default) {
+    constructor({ id , type , action  }){
+        super({
+            id,
+            type,
+            events: {
+                click: action
+            }
+        });
+        window.addEventListener("click", (event)=>{
+            console.log("window");
+            if (event.target instanceof Element && !event.target.closest(".kebab__element")) {
+                const myDropdown = document.getElementById("modalShowUser");
+                if (myDropdown && myDropdown.classList.contains("show")) myDropdown.classList.remove("show");
+            }
+        // if (event.target instanceof Element && !event.target.closest('.kebab__modal-plus')) {
+        // 	console.log('кликы');
+        //   const myDropdown = document.getElementById('modalAddUser');
+        //   if (myDropdown && myDropdown.classList.contains('show')) {
+        //     myDropdown.classList.remove('show');
+        //   }
+        // }
+        });
+    }
+    render() {
+        switch(this.props.type){
+            case "addUser":
+                return `
+      			<div  id="{{id}}" class="kebab__modal-plus">
+							<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+						      <circle cx="11" cy="11" r="10.25" stroke="var(--link-color)" stroke-width="1.5"></circle>
+						      <line x1="10.9999" y1="5.5" x2="10.9999" y2="16.5" stroke="#3369F3" stroke-width="1.5"></line>
+						      <line x1="5.49988" y1="11" x2="16.4999" y2="11" stroke="#3369F3" stroke-width="1.5"></line>
+						  </svg>
+							Добавить пользователя
+						</div>
+	        `;
+            case "delUser":
+                return `
+					<div  id="{{id}}" class="kebab__modal-minus">
+					<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+					      <circle cx="11" cy="11" r="10.25" stroke="var(--link-color)" stroke-width="1.5"></circle>
+					      <line x1="7.11077" y1="7.11103" x2="14.8889" y2="14.8892" stroke="#3369F3" stroke-width="1.5"></line>
+					      <line x1="7.11078" y1="14.8891" x2="14.889" y2="7.11093" stroke="#3369F3" stroke-width="1.5"></line>
+					  </svg>
+						Удалить пользователя
+					</div>`;
+            default:
+                return "<div>default</div>";
+        }
+    }
+}
+
+},{"core/Block":"aWH7T","./reducer.scss":"djmHi","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"djmHi":[function() {},{}],"kopZz":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _attach.Attach));
+var _attach = require("./attach");
+
+},{"./attach":"fNVwl","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"fNVwl":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Attach", ()=>Attach);
+var _block = require("core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _attachScss = require("./attach.scss");
+class Attach extends (0, _blockDefault.default) {
+    constructor({ id , onClick  }){
+        super({
+            id,
+            events: {
+                click: onClick
+            }
+        });
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"892Oa","./attach.scss":"bQ74T","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"892Oa":[function(require,module,exports) {
+module.exports = "<div class=\"attach\">\r\n\t<button class=\"kebab__element-reset\">\r\n\t\t<svg width=\"32\" height=\"32\" viewBox=\"0 0 32 32\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M7.18662 13.5L14.7628 5.92389L15.7056 6.8667L8.12943 14.4428L7.18662 13.5Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M9.70067 16.0141L17.2768 8.43793L18.2196 9.38074L10.6435 16.9569L9.70067 16.0141Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M15.0433 21.3567L22.6195 13.7806L23.5623 14.7234L15.9861 22.2995L15.0433 21.3567Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M17.5574 23.8708L25.1335 16.2946L26.0763 17.2374L18.5002 24.8136L17.5574 23.8708Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M17.5574 23.8709C14.9423 26.486 10.7118 26.4954 8.10831 23.8919C5.50482 21.2884 5.51424 17.0579 8.12936 14.4428L7.18655 13.5C4.0484 16.6381 4.0371 21.7148 7.16129 24.839C10.2855 27.9632 15.3621 27.9518 18.5003 24.8137L17.5574 23.8709Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M22.6195 13.7806L23.5623 14.7234C26.003 12.2826 26.0118 8.3341 23.5819 5.90417C21.152 3.47424 17.2035 3.48303 14.7627 5.92381L15.7055 6.86662C17.6233 4.94887 20.7257 4.94196 22.6349 6.85119C24.5441 8.76042 24.5372 11.8628 22.6195 13.7806Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M9.70092 16.0144C7.95751 17.7578 7.95123 20.5782 9.68689 22.3138C11.4226 24.0495 14.2429 24.0432 15.9863 22.2998L15.0435 21.357C13.8231 22.5774 11.8489 22.5818 10.6339 21.3668C9.41894 20.1518 9.42334 18.1776 10.6437 16.9572L9.70092 16.0144Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t</svg>\r\n\t</button>\r\n\t<div class=\"attach__modal\" id=\"{{id}}\">\r\n\t\t<div class=\"attach__wrapper\">\r\n\t\t\t<div class=\"attach__modal-file\">\r\n\t\t\t\t<svg width=\"22\" height=\"22\" viewBox=\"0 0 22 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n\t\t        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M4 1.5H18C19.3807 1.5 20.5 2.61929 20.5 4V14L14.5194 12.4052C13.5108 12.1362 12.4714 12 11.4275 12H10.5725C9.52864 12 8.48921 12.1362 7.48057 12.4052L1.5 14V4C1.5 2.61929 2.61929 1.5 4 1.5ZM0 4C0 1.79086 1.79086 0 4 0H18C20.2091 0 22 1.79086 22 4V18C22 20.2091 20.2091 22 18 22H4C1.79086 22 0 20.2091 0 18V4ZM8 6C8 7.10457 7.10457 8 6 8C4.89543 8 4 7.10457 4 6C4 4.89543 4.89543 4 6 4C7.10457 4 8 4.89543 8 6Z\" fill=\"#3369f3\"></path>\r\n\t\t    </svg>\r\n\t\t\t\tФото или видео\r\n\t\t\t</div>\r\n\t\t\t<div class=\"attach__modal-foto\">\r\n\t\t\t\t<svg width=\"32\" height=\"32\" viewBox=\"0 0 32 32\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M7.18662 13.5L14.7628 5.92389L15.7056 6.8667L8.12943 14.4428L7.18662 13.5Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M9.70067 16.0141L17.2768 8.43793L18.2196 9.38074L10.6435 16.9569L9.70067 16.0141Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M15.0433 21.3567L22.6195 13.7806L23.5623 14.7234L15.9861 22.2995L15.0433 21.3567Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M17.5574 23.8708L25.1335 16.2946L26.0763 17.2374L18.5002 24.8136L17.5574 23.8708Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M17.5574 23.8709C14.9423 26.486 10.7118 26.4954 8.10831 23.8919C5.50482 21.2884 5.51424 17.0579 8.12936 14.4428L7.18655 13.5C4.0484 16.6381 4.0371 21.7148 7.16129 24.839C10.2855 27.9632 15.3621 27.9518 18.5003 24.8137L17.5574 23.8709Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M22.6195 13.7806L23.5623 14.7234C26.003 12.2826 26.0118 8.3341 23.5819 5.90417C21.152 3.47424 17.2035 3.48303 14.7627 5.92381L15.7055 6.86662C17.6233 4.94887 20.7257 4.94196 22.6349 6.85119C24.5441 8.76042 24.5372 11.8628 22.6195 13.7806Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M9.70092 16.0144C7.95751 17.7578 7.95123 20.5782 9.68689 22.3138C11.4226 24.0495 14.2429 24.0432 15.9863 22.2998L15.0435 21.357C13.8231 22.5774 11.8489 22.5818 10.6339 21.3668C9.41894 20.1518 9.42334 18.1776 10.6437 16.9572L9.70092 16.0144Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t      </svg>\r\n\t\t\t\tФайл\r\n\t\t\t</div>\r\n\t\t\t<div class=\"attach__modal-location\">\r\n\t\t\t\t<svg width=\"22\" height=\"22\" viewBox=\"0 0 22 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M20.5 11C20.5 16.2467 16.2467 20.5 11 20.5C5.75329 20.5 1.5 16.2467 1.5 11C1.5 5.75329 5.75329 1.5 11 1.5C16.2467 1.5 20.5 5.75329 20.5 11ZM22 11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0C17.0751 0 22 4.92487 22 11ZM11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z\" fill=\"#3369f3\"></path>\r\n\t      </svg>\r\n\t\t\t\tЛокация\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>\r\n";
+
+},{}],"bQ74T":[function() {},{}],"9Bhfw":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _httptransport = require("core/HTTPTransport");
+var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
+class chatController {
+    getUserChat = (body)=>(0, _httptransportDefault.default).get("/chats", body);
+    // getUserChat(body?: getUserChatPayload): Promise<unknown> {
+    // 	return transport.get("/chats");
+    // }
+    addUserToChat(id, userId) {
+        return (0, _httptransportDefault.default).put("/users", {
+            id,
+            userId
+        });
+    }
+    delUserToChat(id, userId) {
+        return (0, _httptransportDefault.default).delete("/users", {
+            id,
+            userId
+        });
+    }
+}
+const controllerChat = new chatController();
+exports.default = controllerChat;
+
+},{"core/HTTPTransport":"3s5Eb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7hYty":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "hasError", ()=>hasError);
+function hasError(response) {
+    if (response !== "OK") {
+        console.log("apiHasError.ts response", typeof response, response);
+        const getReason = JSON.parse(response);
+        console.log(getReason);
+        return getReason && getReason.reason;
+    }
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hgR4b":[function(require,module,exports) {

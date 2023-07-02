@@ -31,12 +31,12 @@ export class ControledInput extends Block {
       	const phone = this.element?.querySelector('input[name="phone"]') as HTMLInputElement;
       	const RepeatPassword = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
 
-      	console.log("password", password);
-				console.log("login", login);
+      	// console.log("password", password);
+				// console.log("login", login);
 
     		const errorMessage = new Validation().validate([
     			{type: validationFieldType.Login, value: login?.value},
-      		// {type: validationFieldType.Password, value: password?.value},
+      		{type: validationFieldType.Password, value: password?.value},
       		{type: validationFieldType.FirstName, value: firstName?.value},
       		{type: validationFieldType.SecondName, value: secondName?.value},
       		{type: validationFieldType.Email, value: email?.value},

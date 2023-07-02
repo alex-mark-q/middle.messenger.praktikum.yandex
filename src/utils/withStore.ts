@@ -1,8 +1,6 @@
 
 import { BlockClass, Store } from 'core';
 
-console.log("run withStore", Store);
-
 type WithStateProps = { store: Store<AppState> };
 
 export function withStore<P extends WithStateProps>(WrappedBlock: BlockClass<P>) {

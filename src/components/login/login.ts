@@ -1,6 +1,6 @@
-import Block from "core/Block";
+
 import { Validation, validationFieldType} from "core/validation";
-import Button from "components/button";
+
 import template from "bundle-text:./template.hbs";
 import ControledInput from "components/controledInput";
 import "./login.scss";
@@ -8,9 +8,7 @@ import controllerAuth from "../../controllers/authControllers";
 import { login } from "../../services/auth";
 import { CoreRouter, Store, Block } from 'core';
 
-import { withRouter } from 'utils/withRouter';
-import { withStore } from 'utils/withStore';
-import { withIsLoading } from 'utils/withIsLoading';
+import { withStore, withRouter, withIsLoading } from 'utils';
 
 type LoginPageProps = {
   store: Store<AppState>;
@@ -72,10 +70,10 @@ export class Login extends Block<LoginPageProps> {
   }
 
   render(): string {
-  	// console.log("login.ts", this.props);
+		console.log("login.ts", this.props);
     return template;
   }
 }
 
 
-export default withRouter(withStore(withIsLoading(Login)));
+export default withRouter(withStore(Login));

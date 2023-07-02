@@ -1,7 +1,6 @@
 import { renderDOM }  from "./core";
 import { getScreenComponent, Screens } from './utils';
 
-console.log("router ",Screens);
 
 const routes = [
   {
@@ -10,43 +9,41 @@ const routes = [
     shouldAuthorized: false,
   },
 	{
-    path: "/profile",
+    path: "#profile",
     block: Screens.Profile,
     shouldAuthorized: false,
   },
   {
-    path: '/chat',
-    block: "chat",
+    path: '#chat',
+    block: Screens.Chat,
     shouldAuthorized: true,
   },
 	{
     path: '*',
-    block: "login",
+    block: Screens.Main,
     shouldAuthorized: false,
   },
 ];
 
-export function initRouter(router, store)
-{
-	console.log("init initRouter", router, store);
+export function initRouter(router, store) {
 	routes.forEach(route => {
-		console.log("route forEach", route);
+
 		router.use(route.path, () => {
 
       const isAuthorized = Boolean(store.getState().user);
       const currentScreen = Boolean(store.getState().screen);
 
       console.log("isAuthorized", isAuthorized, currentScreen);
-      console.log("init isAuthorized and currentScreen ", isAuthorized, currentScreen);
+      // console.log("init isAuthorized and currentScreen ", isAuthorized, currentScreen);
 
-      // if (isAuthorized || !route.shouldAuthorized) {
-      //   store.dispatch({ screen: route.block });
-      //   return;
-      // }
-      store.dispatch({ screen: Screens.Main });
-      // if (!currentScreen) {
+      if (isAuthorized || !route.shouldAuthorized) {
+        store.dispatch({ screen: route.block });
+        return;
+      }
 
-      // }
+      if (!currentScreen) {
+      	store.dispatch({ screen: Screens.Main });
+      }
 
     });
 	})
@@ -64,7 +61,6 @@ export function initRouter(router, store)
     //   router.start();
     // }
 
-  	console.log("getScreenComponent",getScreenComponent);
 		const Page = getScreenComponent(nextState?.screen);
 		// console.log("Page", Page);
 		// передадим название компонента для рендера

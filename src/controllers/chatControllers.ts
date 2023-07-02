@@ -1,14 +1,23 @@
-import HTTPTransport from 'core/HTTPTransport';
+import transport from "core/HTTPTransport";
 
-console.log(HTTPTransport);
+type getUserChatPayload = {
+	offset?: integer
+	limit?: string
+	title?: string
+}
 
 class chatController {
 
+	getUserChat = (body?: getUserChatPayload): Promise<unknown> => transport.get("/chats", body);
+
+	// getUserChat(body?: getUserChatPayload): Promise<unknown> {
+	// 	return transport.get("/chats");
+	// }
 	addUserToChat(id: number, userId: number): Promise<unknown> {
-		HTTPTransport.put('/users', {id, userId});
+		return transport.put("/users", {id, userId});
 	}
 	delUserToChat(id: number, userId: number): Promise<unknown> {
-		HTTPTransport.delete('/users', {id, userId});
+		return transport.delete("/users", {id, userId});
 	}
 
 }

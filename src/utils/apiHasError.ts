@@ -1,5 +1,18 @@
-import { APIError } from 'api/types';
+
+export type APIError = {
+  reason: string;
+};
 
 export function hasError(response: any): response is APIError {
-  return response && response.reason;
+
+	if(response !== "OK") {
+		console.log("apiHasError.ts response", typeof response, response);
+		const getReason = JSON.parse(response);
+		console.log(getReason);
+
+	  return getReason && getReason.reason;
+
+	}
+
+
 }
