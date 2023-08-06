@@ -1,17 +1,17 @@
 <li class="message">
-	<a class="{{#if (theActiveChat messageStore.message.id)}}active{{/if}}" href="chat?id={{messageStore.message.id}}">
+	<a class="{{#if (theActiveChat messageStore.id)}}active{{/if}}" href="chat?id={{messageStore.id}}">
 		<div class="message__circle">
 			<div class="message__circle-user">
 				{{!-- <img src="{{messageStore.message.url}}" alt="avatar" /> --}}
 			</div>
 		</div>
 	  <div class="message__about">
-	    <div class="message__name">{{ messageStore.message.name }}</div>
+	    <div class="message__name">{{ messageStore.title }}</div>
 	    <div class="message__text">
-	      {{#if messageStore.message.myMessage}}
+	      {{#if messageStore.myMessage}}
 	      <span class="message__direction">Вы:</span>
 	      {{/if}}
-	      {{ messageStore.message.text }}
+	      {{ messageStore.text }}
 	    </div>
 	  </div>
 	  <div class="message__status">

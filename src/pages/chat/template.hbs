@@ -4,53 +4,58 @@
 			{{{ ProfileLink }}}
 			{{{ Search }}}
 			<ul class="chat-list__message">
-				{{ this }}
-				{{#each this}}
-				{{{ Message messageStore=this }}}
-				{{/each}}
+
+
+				{{#chatPayload chats }}
+
+					<li class="message">
+						<a class="{{#if (theActiveChat id)}}active{{/if}}" href="chat?id={{id}}">
+							<div class="message__circle">
+								<div class="message__circle-user">
+									{{!-- <img src="{{messageStore.message.url}}" alt="avatar" /> --}}
+								</div>
+							</div>
+						  <div class="message__about">
+						    <div class="message__name">{{ title }}</div>
+						    <div class="message__text">
+						      {{#if last_message}}
+						      <span class="message__direction">Вы:</span>
+						      {{/if}}
+						      {{ last_message }}
+						    </div>
+						  </div>
+						  <div class="message__status">
+						    <span class="message__time">{{ created_by }}</span>
+						    {{#if unread_count}}
+						      <span class="message__amount">{{ unread_count }}</span>
+						    {{/if}}
+						  </div>
+						</a>
+					</li>
+
+				{{/chatPayload}}
+
 			</ul>
+			<div class="chat__footer">
+				{{{
+					Button
+					class="chat__add-button"
+					onClick=onModalAddChat
+				}}}
+				{{{
+					Button
+					class="chat__del-button"
+					onClick=onModalDelChat
+				}}}
+			</div>
 			{{!-- <div>{{data.title}}</div> --}}
 		</div>
 	</div>
-	{{{ MessagesList messageStore=this }}}
-	<div id="modalPlusUser" class="dialog" role="dialog">
-		<div class="dialog__body">
-			{{{actionChatModal type="addUser" action=buttonAddUser onClick=onClick}}}
-			<form id="modalForm">
-			  <div>
-					<label class="text-field__label">
-					<span>Логин</span>
-						{{{ Input name="login" type="text" class="form__text-input" placeholder="логин" }}}
-					</label>
-				</div>
-				{{{
-		      	Button
-		      	id="ActionModalPlusUser"
-		      	class="button"
-		      	label="Добавить"
-		      	onClick=onSubmitAddUser
-	    	}}}
-			</form>
-		</div>
-	</div>
-	<div id="modalMinusUser" class="dialog" role="dialog">
-		<div class="dialog__body">
-			{{{actionChatModal type="delUser" action=buttonAddUser onClick=onClick}}}
-			<form id="modalForm">
-			  <div>
-					<label class="text-field__label">
-					<span>Логин</span>
-						{{{ Input name="login" type="text" class="form__text-input" placeholder="логин" }}}
-					</label>
-				</div>
-				{{{
-		      	Button
-		      	id="ActionModalPlusUser"
-		      	class="button"
-		      	label="Удалить"
-		      	onClick=onSubmit
-	    	}}}
-			</form>
-		</div>
-	</div>
+	{{{ MessagesList messageStore = user }}}
+
+	{{{ actionChatModal type="modalMinusUser"}}}
+	{{{ actionChatModal type="modalPlusUser" action=onSubmitAddUser }}}
+	{{{ actionChatModal type="modalAddChat" }}}
+	{{{ actionChatModal type="modalDelChat" }}}
+
 </main>

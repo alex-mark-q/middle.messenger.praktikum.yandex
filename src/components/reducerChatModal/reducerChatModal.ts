@@ -37,16 +37,22 @@ export class reducerChatModal extends Block<Props> {
           myModalPlusUser.classList.toggle('show');
         }
       },
-      onActionMinusUser: (event: Event) => {
-      	event.preventDefault();
-      	const myModalMinusUser = document.getElementById('modalMinusUser');
-        if(myModalMinusUser) {
-        	myModalMinusUser.classList.toggle('show');
-        }
-      }
+			onActionMinusUser: (event: Event) => {
+				event.preventDefault();
+				const myModalMinusUser = document.getElementById('modalMinusUser');
+				if(myModalMinusUser) {
+					myModalMinusUser.classList.toggle('show');
+				}
+			},
+			onActionAddChat: (event: Event) => {
+				event.preventDefault();
+				const myModalMinusUser = document.getElementById('modalAddChat');
+				if(myModalMinusUser) {
+					myModalMinusUser.classList.toggle('show');
+				}
+			}
 
     });
-    console.log(this.props);
   }
 
   render(): string {

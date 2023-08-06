@@ -10,8 +10,16 @@
 		cursor: pointer;
 		text-decoration: none;
     color: #000;
+		align-items: center;
+    justify-content: center;
+	}
+	a > div:first-child {
+		flex-shrink: 0
 	}
 	&__about {
+		display: flex;
+    justify-content: center;
+    align-items: center;
 		width: 100%;
 		margin-left: 10px;
 	}
@@ -56,7 +64,9 @@
     padding: 0;
 	}
 	&__circle {
-		display: inline-block;
+		height: 70px;
+    width: 70px;
+    display: flex;
 		background-color: #EFEFEF;
 		margin: 10px;
 		border-radius: 50%;
@@ -67,8 +77,6 @@
 		vertical-align: middle;
 		text-align: center;
 		text-decoration: none;
-		height: 100px;
-		width: 105px;
 		font-size: 30px;
 	}
 }

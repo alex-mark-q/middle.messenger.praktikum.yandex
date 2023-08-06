@@ -533,15 +533,9 @@ function hmrAcceptRun(bundle, id) {
 
 },{}],"57jqn":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+var _indexScss = require("./vendor/index.scss");
 var _core = require("core");
 var _initApp = require("./services/initApp");
-// import Main from "./pages/main";
-// import Chat from "./pages/chat";
-// import Profile from "./pages/profile"
-// import Signin from "./pages/signin"
-// import fourHundredFour from "./pages/404";
-// import fiveHundred from "./pages/500"
-var _indexScss = require("./vendor/index.scss");
 var _button = require("./components/button");
 var _buttonDefault = parcelHelpers.interopDefault(_button);
 var _input = require("./components/input");
@@ -550,9 +544,8 @@ var _controledInput = require("./components/controledInput");
 var _controledInputDefault = parcelHelpers.interopDefault(_controledInput);
 var _errorComponent = require("./components/ErrorComponent");
 var _errorComponentDefault = parcelHelpers.interopDefault(_errorComponent);
-// import storeChatRoom  from "./store/chatRoom.json";
-// import store404  from "./store/404.json";
-// import store500  from "./store/500.json";
+var _splash = require("pages/splash");
+var _splashDefault = parcelHelpers.interopDefault(_splash);
 var _router = require("./router");
 var _store = require("./store");
 (0, _core.registerComponent)((0, _buttonDefault.default));
@@ -567,6 +560,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
    * @warning Не использовать такой способ на реальный проектах
    */ window.router = router;
     window.store = store;
+    // store.dispatch(initApp(() => setTimeout(renderDOM(new SplashScreen({})),1000)));
+    (0, _core.renderDOM)(new (0, _splashDefault.default)({}));
     store.on("changed", (prevState, nextState)=>{
         console.log("%cstore updated", "background: #222; color: #bada55", nextState);
     });
@@ -578,7 +573,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
    */ store.dispatch((0, _initApp.initApp));
 });
 
-},{"core":"9qbGm","./services/initApp":"6jFfC","./vendor/index.scss":"cBdn8","./components/button":"83hYd","./components/input":"jnHpm","./components/controledInput":"c8UUW","./components/ErrorComponent":"dtDez","./router":"9ks70","./store":"hgR4b","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9qbGm":[function(require,module,exports) {
+},{"./vendor/index.scss":"cBdn8","core":"9qbGm","./services/initApp":"6jFfC","./components/button":"83hYd","./components/input":"jnHpm","./components/controledInput":"c8UUW","./components/ErrorComponent":"dtDez","pages/splash":"ccw0C","./router":"9ks70","./store":"hgR4b","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"cBdn8":[function() {},{}],"9qbGm":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Block", ()=>(0, _blockDefault.default));
@@ -588,7 +583,6 @@ parcelHelpers.export(exports, "renderDOM", ()=>(0, _renderDOMDefault.default));
 parcelHelpers.export(exports, "HashRouter", ()=>(0, _hashRouter.HashRouter));
 parcelHelpers.export(exports, "Store", ()=>(0, _store.Store));
 parcelHelpers.export(exports, "Dispatch", ()=>(0, _store.Dispatch));
-parcelHelpers.export(exports, "request", ()=>(0, _apiRequest.request));
 var _block = require("./Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _registerComponent = require("./registerComponent");
@@ -597,9 +591,8 @@ var _renderDOM = require("./renderDOM");
 var _renderDOMDefault = parcelHelpers.interopDefault(_renderDOM);
 var _hashRouter = require("./HashRouter");
 var _store = require("./Store");
-var _apiRequest = require("./apiRequest");
 
-},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./HashRouter":"h1zlA","./Store":"7b9cm","./apiRequest":"jASk1","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"aWH7T":[function(require,module,exports) {
+},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./HashRouter":"h1zlA","./Store":"7b9cm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"aWH7T":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _eventBus = require("./EventBus");
@@ -679,6 +672,9 @@ class Block {
         if (!nextProps) return;
         Object.assign(this.props, nextProps);
     };
+    sideEffects() {
+        return;
+    }
     setState = (nextState)=>{
         if (!nextState) return;
         Object.assign(this.state, nextState);
@@ -12228,6 +12224,7 @@ parcelHelpers.defineInteropFlag(exports);
 function renderDOM(block) {
     const root = document.querySelector("#app");
     root.innerHTML = "";
+    // debugger;
     root.appendChild(block.getContent());
 }
 exports.default = renderDOM;
@@ -12299,380 +12296,58 @@ class Store extends (0, _eventBusDefault.default) {
     }
     dispatch(nextStateOrAction, payload) {
         if (typeof nextStateOrAction === "function") nextStateOrAction(this.dispatch.bind(this), this.state, payload);
-        else this.set({
-            ...this.state,
-            ...nextStateOrAction
-        });
+        else {
+            console.log("payload", nextStateOrAction);
+            this.set({
+                ...this.state,
+                ...nextStateOrAction
+            });
+        }
     }
 }
 
-},{"./EventBus":"ezQjQ","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"jASk1":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/**
- * @warning В работе нужно использовать классовый подход и самописный HttpTransport
- * @see https://practicum.yandex.ru/learn/middle-frontend/courses/d0b6060f-550a-4fe8-bc01-3496013f7260/sprints/18176/topics/b8f31bf4-5dc3-4b69-8689-9e50e8a70921/lessons/83244899-b95f-409c-a634-2e0bc8f944e7/
- */ parcelHelpers.export(exports, "request", ()=>request);
-const sleep = (ms = 300)=>new Promise((res)=>setTimeout(res, ms));
-function request({ method , path , data  }) {
-    return sleep().then(()=>fetch(`${"https://ya-praktikum.tech/api/v2"}/${path}`, {
-            method,
-            credentials: "include",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: data ? JSON.stringify(data) : null
-        }).then((response)=>{
-            const isJson = response.headers.get("content-type")?.includes("application/json");
-            return isJson ? response.json() : null;
-        }).then((data)=>{
-            return data;
-        }));
-}
-request.post = (path, data)=>request({
-        method: "POST",
-        path,
-        data
-    });
-request.get = (path)=>request({
-        method: "GET",
-        path
-    });
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"6jFfC":[function(require,module,exports) {
+},{"./EventBus":"ezQjQ","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"6jFfC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initApp", ()=>initApp);
-async function initApp(dispatch) {
-    dispatch({
-        appIsInited: true
-    });
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"cBdn8":[function() {},{}],"83hYd":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _button.Button));
-var _button = require("./button");
-
-},{"./button":"bHWNx","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"bHWNx":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Button", ()=>Button);
-var _block = require("../../core/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-var _templateHbs = require("bundle-text:./template.hbs");
-var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
-class Button extends (0, _blockDefault.default) {
-    constructor({ onClick , ...props }){
-        super({
-            ...props,
-            events: {
-                click: onClick
-            }
+var _utils = require("utils");
+var _authControllers = require("../controllers/authControllers");
+var _authControllersDefault = parcelHelpers.interopDefault(_authControllers);
+var _chat = require("./chat");
+async function initApp(dispatch, callback) {
+    //console.log("initApp");
+    await new Promise((r)=>setTimeout(r, 400));
+    let responseUser;
+    try {
+        responseUser = await (0, _authControllersDefault.default).user();
+        //console.log("ошибка1 ", responseUser);
+        // await Promise.all([
+        // 	dispatch({ user: transformUser(responseUser) }),
+        // 	dispatch({ chat: transformUser(chats) })
+        // ]);
+        if (responseUser) new Promise(function(fulfilled, reject) {
+            return [
+                fulfilled(dispatch((0, _chat.chats)))
+            ];
+        }).then(()=>setTimeout(()=>dispatch({
+                    user: (0, _utils.transformUser)(responseUser)
+                }), 50)).then(()=>setTimeout(()=>dispatch({
+                    screen: (0, _utils.Screens).Chat
+                }), 0));
+    } catch (error) {
+        console.log("ошибка2 ", (0, _utils.apiHasError)(error));
+        dispatch({
+            screen: (0, _utils.Screens).Main
         });
-    }
-    render() {
-        return 0, _templateHbsDefault.default;
-    }
-}
-
-},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"iKN2F","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"iKN2F":[function(require,module,exports) {
-module.exports = "<button id=\"{{id}}\" class=\"{{class}}\" >\r\n\t{{{ label }}}\r\n</button>\r\n";
-
-},{}],"jnHpm":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _input.Input));
-var _input = require("./input");
-
-},{"./input":"l1Oy0","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"l1Oy0":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Input", ()=>Input);
-var _block = require("../../core/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-var _templateHbs = require("bundle-text:./template.hbs");
-var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
-var _inputScss = require("./input.scss");
-class Input extends (0, _blockDefault.default) {
-    constructor({ onInput , onBlur , onFocus , ...props }){
-        super({
-            ...props,
-            events: {
-                input: onInput,
-                blur: onBlur,
-                focus: onFocus
-            }
+    } finally{
+        dispatch({
+            appIsInited: true
         });
-    }
-    render() {
-        return 0, _templateHbsDefault.default;
+    // dispatch({ user: transformUser(responseUser) })
     }
 }
 
-},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"4ZNmj","./input.scss":"lmhui","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"4ZNmj":[function(require,module,exports) {
-module.exports = "<input\r\n\tclass=\"{{class}}\"\r\n\ttype=\"{{type}}\"\r\n\tname=\"{{name}}\"\r\n\tid=\"{{id}}\"\r\n\t{{#if label}} label=\"{{label}}\" {{/if}}\r\n\t{{#if placeholder}} placeholder=\"{{placeholder}}\" {{/if}}\r\n>\r\n";
-
-},{}],"lmhui":[function() {},{}],"c8UUW":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _controledInput.ControledInput));
-var _controledInput = require("./controledInput");
-
-},{"./controledInput":"kwFuF","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"kwFuF":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "ControledInput", ()=>ControledInput);
-var _block = require("core/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-var _templateHbs = require("bundle-text:./template.hbs");
-var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
-var _validation = require("core/validation");
-var _validationDefault = parcelHelpers.interopDefault(_validation);
-class ControledInput extends (0, _blockDefault.default) {
-    constructor({ ...props }){
-        super({
-            ...props,
-            onBlur: (e)=>{
-                const input = e.target;
-                const login = this.element?.querySelector('input[name="login"]');
-                const password = this.element?.querySelector('input[name="password"]');
-                const firstName = this.element?.querySelector('input[name="first_name"]');
-                const email = this.element?.querySelector('input[name="email"]');
-                const secondName = this.element?.querySelector('input[name="second_name"]');
-                const phone = this.element?.querySelector('input[name="phone"]');
-                const RepeatPassword = this.element?.querySelector('input[name="password"]');
-                // console.log("password", password);
-                // console.log("login", login);
-                const errorMessage = new (0, _validationDefault.default)().validate([
-                    {
-                        type: (0, _validation.validationFieldType).Login,
-                        value: login?.value
-                    },
-                    {
-                        type: (0, _validation.validationFieldType).Password,
-                        value: password?.value
-                    },
-                    {
-                        type: (0, _validation.validationFieldType).FirstName,
-                        value: firstName?.value
-                    },
-                    {
-                        type: (0, _validation.validationFieldType).SecondName,
-                        value: secondName?.value
-                    },
-                    {
-                        type: (0, _validation.validationFieldType).Email,
-                        value: email?.value
-                    },
-                    {
-                        type: (0, _validation.validationFieldType).Phone,
-                        value: phone?.value
-                    },
-                    {
-                        type: (0, _validation.validationFieldType).RepeatPassword,
-                        value: RepeatPassword?.value
-                    }
-                ]);
-                this.refs.error.innerHTML = errorMessage;
-            }
-        });
-    }
-    render() {
-        return 0, _templateHbsDefault.default;
-    }
-}
-
-},{"core/Block":"aWH7T","bundle-text:./template.hbs":"ji1GX","core/validation":"bEseP","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"ji1GX":[function(require,module,exports) {
-module.exports = "<div class=\"controlled-input\">\r\n\t{{{\r\n\t\tInput\r\n\t\tclass=\"form__text-input\"\r\n\t\tonInput=onInput\r\n\t\tonFocus=onFocus\r\n\t\tonBlur=onBlur\r\n\t\tname=name\r\n\t\ttype=type\r\n\t\tplaceholder=\"{{placeholder}}\"\r\n\t}}}\r\n\t{{{ ErrorComponent ref=\"error\" text=error }}}\r\n</div>\r\n\r\n";
-
-},{}],"bEseP":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "validationFieldType", ()=>validationFieldType);
-let validationFieldType;
-(function(validationFieldType) {
-    validationFieldType[validationFieldType["Login"] = 0] = "Login";
-    validationFieldType[validationFieldType["string"] = 1] = "string";
-    validationFieldType[validationFieldType["Password"] = 2] = "Password";
-    validationFieldType[validationFieldType["string"] = 3] = "string";
-    validationFieldType[validationFieldType["FirstName"] = 4] = "FirstName";
-    validationFieldType[validationFieldType["string"] = 5] = "string";
-    validationFieldType[validationFieldType["SecondName"] = 6] = "SecondName";
-    validationFieldType[validationFieldType["string"] = 7] = "string";
-    validationFieldType[validationFieldType["Email"] = 8] = "Email";
-    validationFieldType[validationFieldType["string"] = 9] = "string";
-    validationFieldType[validationFieldType["RepeatPassword"] = 10] = "RepeatPassword";
-    validationFieldType[validationFieldType["string"] = 11] = "string";
-    validationFieldType[validationFieldType["Phone"] = 12] = "Phone";
-    validationFieldType[validationFieldType["string"] = 13] = "string";
-})(validationFieldType || (validationFieldType = {}));
-// Сообщения при возникновении ошибки
-const message = {
-    login: "Логин должен состояить из латинских букв и цифр, также допустимы символы _ и -.",
-    password: "Пароль должен содержать одну заглавную букву или цифру.",
-    fullName: "Допустимы символы латиницы и кириллицы, а также дефис.",
-    phone: "Телефон включает от 10 до 15 символов, состоит из цифр, начинается с плюса.",
-    email: "Включает цифры и спецсимволы вроде дефиса, должна быть \xabсобака\xbb (@) и точка после неё, перед точкой должны быть буквы"
-};
-// Правила:
-const expressions = {
-    LOGIN: /^[a-zA-Z][a-zA-Z0-9-_.]{3,20}$/,
-    PASSWORD: /^(?=.*[a-z])(?=.*[0-9])[a-za-z0-9]{8,40}$/,
-    FULL_NAME: /^[А-ЯA-Z][а-яА-ЯёЁa-zA-Z]+$/,
-    EMAIL: /.+@.+\..+/i,
-    PHONE: /^[+]?[0-9]{10,15}$/
-};
-function validateField(val, exp) {
-    return exp.test(val);
-}
-class Validation {
-    validate(rules) {
-        let errorMessage = "";
-        // console.log(rules, "value");
-        for(let i = 0; i < rules.length; i++){
-            const { type , value  } = rules[i];
-            if (type && value) {
-                if (type === validationFieldType.Login) {
-                    console.log("validateField ");
-                    if (!validateField(value, expressions.LOGIN)) {
-                        errorMessage = message.login;
-                        break;
-                    }
-                } else if (type === validationFieldType.Password) {
-                    if (!validateField(value, expressions.PASSWORD)) {
-                        errorMessage = message.password;
-                        break;
-                    }
-                } else if (type === validationFieldType.FirstName) {
-                    if (!validateField(value, expressions.FULL_NAME)) {
-                        errorMessage = message.fullName;
-                        break;
-                    }
-                } else if (type === validationFieldType.SecondName) {
-                    if (!validateField(value, expressions.FULL_NAME)) {
-                        errorMessage = message.fullName;
-                        break;
-                    }
-                } else if (type === validationFieldType.Email) {
-                    if (!validateField(value, expressions.EMAIL)) {
-                        errorMessage = message.email;
-                        break;
-                    }
-                } else if (type === validationFieldType.RepeatPassword) {
-                    if (!validateField(value, expressions.PASSWORD)) {
-                        errorMessage = message.password;
-                        break;
-                    }
-                } else if (type === validationFieldType.Phone) {
-                    if (!validateField(value, expressions.PHONE)) {
-                        errorMessage = message.phone;
-                        break;
-                    }
-                }
-            }
-        }
-        return errorMessage;
-    }
-}
-exports.default = Validation;
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"dtDez":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _error.ErrorComponent));
-var _error = require("./error");
-
-},{"./error":"lKh7V","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"lKh7V":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "ErrorComponent", ()=>ErrorComponent);
-var _block = require("../../core/Block");
-var _blockDefault = parcelHelpers.interopDefault(_block);
-var _templateHbs = require("bundle-text:./template.hbs");
-var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
-class ErrorComponent extends (0, _blockDefault.default) {
-    constructor(props){
-        super(props);
-    }
-    render() {
-        return 0, _templateHbsDefault.default;
-    }
-}
-
-},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"7uNnS","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7uNnS":[function(require,module,exports) {
-module.exports = "<span class=\"alarm\">{{#if text}} {{text}} {{/if}}</span>\r\n";
-
-},{}],"9ks70":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "initRouter", ()=>initRouter);
-var _core = require("./core");
-var _utils = require("./utils");
-const routes = [
-    {
-        path: "/",
-        block: (0, _utils.Screens).Main,
-        shouldAuthorized: false
-    },
-    {
-        path: "#profile",
-        block: (0, _utils.Screens).Profile,
-        shouldAuthorized: false
-    },
-    {
-        path: "#chat",
-        block: (0, _utils.Screens).Chat,
-        shouldAuthorized: true
-    },
-    {
-        path: "*",
-        block: (0, _utils.Screens).Main,
-        shouldAuthorized: false
-    }, 
-];
-function initRouter(router, store) {
-    routes.forEach((route)=>{
-        router.use(route.path, ()=>{
-            const isAuthorized = Boolean(store.getState().user);
-            const currentScreen = Boolean(store.getState().screen);
-            console.log("isAuthorized", isAuthorized, currentScreen);
-            // console.log("init isAuthorized and currentScreen ", isAuthorized, currentScreen);
-            if (isAuthorized || !route.shouldAuthorized) {
-                store.dispatch({
-                    screen: route.block
-                });
-                return;
-            }
-            if (!currentScreen) store.dispatch({
-                screen: (0, _utils.Screens).Main
-            });
-        });
-    });
-    /**
-   * Глобальный слушатель изменений в сторе
-   * для переключения активного экрана
-   */ // router.start();
-    store.on("changed", (prevState, nextState)=>{
-        console.log("store changed ", nextState);
-        router.start();
-        // if (!prevState.appIsInited && nextState.appIsInited) {
-        // 	console.log("router ",router);
-        //   router.start();
-        // }
-        const Page = (0, _utils.getScreenComponent)(nextState?.screen);
-        // console.log("Page", Page);
-        // передадим название компонента для рендера
-        if (Page) (0, _core.renderDOM)(new Page({}));
-    });
-// const Page = getScreenComponent("signin");
-// передадим название компонента для рендера
-// renderDOM(new getScreenComponent("main"));
-}
-
-},{"./core":"9qbGm","./utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hupOb":[function(require,module,exports) {
+},{"utils":"hupOb","../controllers/authControllers":"khdRE","./chat":"ipdHp","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hupOb":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "transformUser", ()=>(0, _apiTransformers.transformUser));
@@ -12681,6 +12356,7 @@ parcelHelpers.export(exports, "withStore", ()=>(0, _withStore.withStore));
 parcelHelpers.export(exports, "withUser", ()=>(0, _withUser.withUser));
 parcelHelpers.export(exports, "withRouter", ()=>(0, _withRouter.withRouter));
 parcelHelpers.export(exports, "withIsLoading", ()=>(0, _withIsLoading.withIsLoading));
+parcelHelpers.export(exports, "withChat", ()=>(0, _withChat.withChat));
 parcelHelpers.export(exports, "Screens", ()=>(0, _screenList.Screens));
 parcelHelpers.export(exports, "getScreenComponent", ()=>(0, _screenList.getScreenComponent));
 parcelHelpers.export(exports, "apiHasError", ()=>(0, _apiHasError.hasError));
@@ -12689,10 +12365,11 @@ var _withStore = require("./withStore");
 var _withUser = require("./withUser");
 var _withRouter = require("./withRouter");
 var _withIsLoading = require("./withIsLoading");
+var _withChat = require("./withChat");
 var _screenList = require("./screenList");
 var _apiHasError = require("./apiHasError");
 
-},{"./apiTransformers":"8eLQ7","./withStore":"gWQPp","./withUser":"gSWfA","./withRouter":"9t1HO","./withIsLoading":"16ofE","./screenList":"7PHF3","./apiHasError":"7hYty","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"8eLQ7":[function(require,module,exports) {
+},{"./apiTransformers":"8eLQ7","./withStore":"gWQPp","./withUser":"gSWfA","./withRouter":"9t1HO","./withIsLoading":"16ofE","./withChat":"9Uur4","./screenList":"7PHF3","./apiHasError":"7hYty","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"8eLQ7":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "transformUser", ()=>transformUser);
@@ -12826,6 +12503,23 @@ function withIsLoading(WrappedBlock) {
     };
 }
 
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9Uur4":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "withChat", ()=>withChat);
+function withChat(WrappedBlock) {
+    // @ts-expect-error No base constructor has the specified number of type arguments
+    return class extends WrappedBlock {
+        static componentName = WrappedBlock.componentName || WrappedBlock.name;
+        constructor(props){
+            super({
+                ...props,
+                chat: window.store.getState().chats
+            });
+        }
+    };
+}
+
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7PHF3":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -12917,7 +12611,7 @@ class Main extends (0, _core.Block) {
                 };
                 // this.eventBus.emit(Block.EVENTS.FORM_SUBMIT)
                 this.setState(nextState);
-                console.log("loginData", (0, _auth.login), loginData);
+                // console.log("loginData", loginAuth, loginData);
                 // controllerAuth.auth(loginData);
                 console.log("main.ts this.props", this.props);
                 this.props.store.dispatch((0, _auth.login), loginData);
@@ -12926,7 +12620,7 @@ class Main extends (0, _core.Block) {
         });
     }
     render() {
-        console.log("Main.ts ", this, window.store);
+        // console.log("Main.ts ", this, window.store);
         return 0, _templateHbsDefault.default;
     }
 }
@@ -12936,44 +12630,124 @@ exports.default = (0, _utils.withRouter)((0, _utils.withStore)(Main));
 },{"core":"9qbGm","bundle-text:./template.hbs":"j9oDL","utils":"hupOb","core/validation":"bEseP","../../services/auth":"bXWfl","../../components/button":"83hYd","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"j9oDL":[function(require,module,exports) {
 module.exports = "<body  class=\"page\">\n  <main class=\"page__center\">\n    <div class=\"page__form\">\n    \t<section class=\"login\">\n\t\t\t  <form action=\"\" class=\"form\">\n\t\t\t    <div class=\"form-login__content\">\n\n\t\t\t      <label for=\"input-username\" class=\"form__label form__label--offset\">Логин</label>\n\t\t\t      {{{\n\t\t\t      \t\tControledInput\n\t\t\t      \t\tonInput=onInput\n\t\t\t\t\t\t\t\tonFocus=onFocus\n\t\t\t\t\t\t\t\tref=\"loginInputRef\"\n\t\t\t      \t\tname=\"login\"\n\t\t\t      \t\ttype=\"text\"\n\t\t\t      \t\tid=\"input-username\"\n\t\t\t      \t\tplaceholder=\"ivanivanov\"\n\t\t\t      \t\tlabel=\"login\"\n\t\t\t      }}}\n\t\t\t      {{#if ErrorComponent}}{{ErrorComponent}}{{/if}}\n\t\t\t      <label for=\"password-input\" class=\"form__label form__label--offset\">Пароль</label>\n\t\t\t      {{{\n\t\t\t      \t\tControledInput\n\t\t\t      \t\tonInput=onInput\n\t\t\t\t\t\t\t\tonFocus=onFocus\n\t\t\t\t\t\t\t\tref=\"passInputRef\"\n\t\t\t      \t\tname=\"password\"\n\t\t\t      \t\ttype=\"password\"\n\t\t\t      \t\tid=\"password-input\"\n\t\t\t      \t\tplaceholder=\"password\"\n\t\t\t      }}}\n\t\t\t      {{#if ErrorComponent}}{{ErrorComponent text=formError}}{{/if}}\n\t\t\t    </div>\n\t\t\t    <footer class=\"form-login__footer\">\n\t\t\t      {{{\n\t\t\t\t      \tButton\n\t\t\t\t      \tclass=\"button\"\n\t\t\t\t      \tlabel=\"Авторизоваться\"\n\t\t\t\t      \tonClick=onSubmit\n\t\t\t    \t}}}\n\t\t\t      <div class=\"form__links\">\n\t\t\t        <a href=\"#\" class=\"form__link\">Нет аккаунта?</a>\n\t\t\t      </div>\n\t\t\t    </footer>\n\t\t\t  </form>\n\t\t\t</section>\n\n    </div>\n  </main>\n</body>\n\n";
 
-},{}],"bXWfl":[function(require,module,exports) {
+},{}],"bEseP":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "validationFieldType", ()=>validationFieldType);
+let validationFieldType;
+(function(validationFieldType) {
+    validationFieldType[validationFieldType["Login"] = 0] = "Login";
+    validationFieldType[validationFieldType["string"] = 1] = "string";
+    validationFieldType[validationFieldType["Password"] = 2] = "Password";
+    validationFieldType[validationFieldType["string"] = 3] = "string";
+    validationFieldType[validationFieldType["FirstName"] = 4] = "FirstName";
+    validationFieldType[validationFieldType["string"] = 5] = "string";
+    validationFieldType[validationFieldType["SecondName"] = 6] = "SecondName";
+    validationFieldType[validationFieldType["string"] = 7] = "string";
+    validationFieldType[validationFieldType["Email"] = 8] = "Email";
+    validationFieldType[validationFieldType["string"] = 9] = "string";
+    validationFieldType[validationFieldType["RepeatPassword"] = 10] = "RepeatPassword";
+    validationFieldType[validationFieldType["string"] = 11] = "string";
+    validationFieldType[validationFieldType["Phone"] = 12] = "Phone";
+    validationFieldType[validationFieldType["string"] = 13] = "string";
+})(validationFieldType || (validationFieldType = {}));
+// Сообщения при возникновении ошибки
+const message = {
+    login: "Логин должен состояить из латинских букв и цифр, также допустимы символы _ и -.",
+    password: "Пароль должен содержать одну заглавную букву или цифру.",
+    fullName: "Допустимы символы латиницы и кириллицы, а также дефис.",
+    phone: "Телефон включает от 10 до 15 символов, состоит из цифр, начинается с плюса.",
+    email: "Включает цифры и спецсимволы вроде дефиса, должна быть \xabсобака\xbb (@) и точка после неё, перед точкой должны быть буквы"
+};
+// Правила:
+const expressions = {
+    LOGIN: /^[a-zA-Z][a-zA-Z0-9-_.]{3,20}$/,
+    PASSWORD: /^(?=.*[a-z])(?=.*[0-9])[a-za-z0-9]{8,40}$/,
+    FULL_NAME: /^[А-ЯA-Z][а-яА-ЯёЁa-zA-Z]+$/,
+    EMAIL: /.+@.+\..+/i,
+    PHONE: /^[+]?[0-9]{10,15}$/
+};
+function validateField(val, exp) {
+    return exp.test(val);
+}
+class Validation {
+    validate(rules) {
+        let errorMessage = "";
+        // console.log(rules, "value");
+        for(let i = 0; i < rules.length; i++){
+            const { type , value  } = rules[i];
+            if (type && value) {
+                if (type === validationFieldType.Login) {
+                    console.log("validateField ");
+                    if (!validateField(value, expressions.LOGIN)) {
+                        errorMessage = message.login;
+                        break;
+                    }
+                } else if (type === validationFieldType.Password) {
+                    if (!validateField(value, expressions.PASSWORD)) {
+                        errorMessage = message.password;
+                        break;
+                    }
+                } else if (type === validationFieldType.FirstName) {
+                    if (!validateField(value, expressions.FULL_NAME)) {
+                        errorMessage = message.fullName;
+                        break;
+                    }
+                } else if (type === validationFieldType.SecondName) {
+                    if (!validateField(value, expressions.FULL_NAME)) {
+                        errorMessage = message.fullName;
+                        break;
+                    }
+                } else if (type === validationFieldType.Email) {
+                    if (!validateField(value, expressions.EMAIL)) {
+                        errorMessage = message.email;
+                        break;
+                    }
+                } else if (type === validationFieldType.RepeatPassword) {
+                    if (!validateField(value, expressions.PASSWORD)) {
+                        errorMessage = message.password;
+                        break;
+                    }
+                } else if (type === validationFieldType.Phone) {
+                    if (!validateField(value, expressions.PHONE)) {
+                        errorMessage = message.phone;
+                        break;
+                    }
+                }
+            }
+        }
+        return errorMessage;
+    }
+}
+exports.default = Validation;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"bXWfl":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "login", ()=>login);
+var _core = require("core");
 var _authControllers = require("../controllers/authControllers");
 var _authControllersDefault = parcelHelpers.interopDefault(_authControllers);
 var _utils = require("utils");
+var _user = require("./user");
+var _chat = require("./chat");
 const login = async (dispatch, state, action)=>{
-    const dataResponse = await (0, _authControllersDefault.default).auth(action);
-    console.log("auth.ts response", dataResponse);
-    const responseUser = await (0, _authControllersDefault.default).user();
-    console.log("responseUser Data", responseUser);
-    if ((0, _utils.apiHasError)(dataResponse)) {
-        console.log("ошибка ");
-        dispatch({
-            isLoading: false,
-            loginFormError: dataResponse.response
-        });
-        return;
+    let dataResponse;
+    try {
+        dataResponse = await (0, _authControllersDefault.default).auth(action);
+    } catch (error) {
+        console.log("ошибка ", (0, _utils.apiHasError)(error));
     }
-    dispatch({
-        user: (0, _utils.transformUser)(responseUser)
-    });
-    window.router.go("#chat");
-// const dataChat = await controllerChat.getUserChat();
-// console.log("chat dataChat", dataChat);
-// dispatch({ chats: dataChat });
-// try {
-// 	window.router.go('/chat');
-// 	dispatch({ user: responseUser});
-// } catch (error) {
-// 	console.log("error", error);
-// }
-// if(responseUser) {
-// }
+    const getUser = new (0, _core.Store)().getState().user;
+    if (!getUser) {
+        new Promise(function(resolve, reject) {
+            resolve(dispatch((0, _user.user)));
+        }).then(()=>setTimeout(()=>window.router.go("#chat"), 50));
+        dispatch((0, _chat.chats));
+    }
 };
 
-},{"../controllers/authControllers":"khdRE","utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"khdRE":[function(require,module,exports) {
+},{"core":"9qbGm","../controllers/authControllers":"khdRE","utils":"hupOb","./user":"eEuXd","./chat":"ipdHp","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"khdRE":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _httptransport = require("core/HTTPTransport");
@@ -13031,14 +12805,14 @@ let headers = {
 };
 class HTTPTransport {
     get(url, data = {}) {
-        console.log("Get Data", url, data);
+        // console.log("Get Data", url, data);
         return this.request(url, {
             data,
             method: METHODS.GET
         });
     }
     post(url, data = {}) {
-        console.log("Post Data", url, data);
+        // console.log("Post Data", url, data);
         return this.request(url, {
             data,
             method: METHODS.POST,
@@ -13051,14 +12825,13 @@ class HTTPTransport {
             method: METHODS.PUT
         }, data?.timeout);
     }
-    del(url, data = {}) {
+    delete(url, data = {}) {
         return this.request(url, {
             data,
             method: METHODS.DELETE
         }, data?.timeout);
     }
     request(url, options, timeout = 5000) {
-        console.log("Get Request", url, options);
         const { headers ={} , method , data  } = options;
         const promise = new Promise(function(resolve, reject) {
             if (!method) {
@@ -13071,7 +12844,9 @@ class HTTPTransport {
             }
             const xhr = new XMLHttpRequest();
             const isGet = method === METHODS.GET;
-            if (isGet) console.log("isGet ", `${"https://ya-praktikum.tech/api/v2"}${url}${queryStringify(data)}`);
+            // if(isGet) {
+            // 	console.log("isGet " , `${process.env.API_ENDPOINT}${url}${queryStringify(data)}`);
+            // }
             xhr.open(method, isGet ? `${"https://ya-praktikum.tech/api/v2"}${url}${queryStringify(data)}` : `${"https://ya-praktikum.tech/api/v2"}${url}`);
             Object.keys(headers).forEach((key)=>{
                 xhr.setRequestHeader(key, headers[key]);
@@ -13082,10 +12857,8 @@ class HTTPTransport {
             xhr.onerror = reject; //(rejectMessage.RejectError);
             xhr.timeout = timeout;
             xhr.ontimeout = reject; //(rejectMessage.RejectTimeout);
-            if (isGet) {
-                console.log("options request ", method, data);
-                xhr.send();
-            } else // @ts-ignore
+            if (isGet) xhr.send();
+            else // @ts-ignore
             xhr.send(JSON.stringify(data));
         });
         return promise;
@@ -13094,11 +12867,134 @@ class HTTPTransport {
 const transport = new HTTPTransport();
 exports.default = transport;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"92lNP":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"eEuXd":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _chat.Chat));
+parcelHelpers.export(exports, "user", ()=>user);
+parcelHelpers.export(exports, "addUserToChat", ()=>addUserToChat);
+var _authControllers = require("../controllers/authControllers");
+var _authControllersDefault = parcelHelpers.interopDefault(_authControllers);
+var _userControllers = require("../controllers/userControllers");
+var _userControllersDefault = parcelHelpers.interopDefault(_userControllers);
+var _chatControllers = require("../controllers/chatControllers");
+var _chatControllersDefault = parcelHelpers.interopDefault(_chatControllers);
+var _utils = require("utils");
+const user = async (dispatch, state, action)=>{
+    const responseUser = await (0, _authControllersDefault.default).user();
+    console.log("responseUser Data", responseUser);
+    dispatch({
+        user: (0, _utils.transformUser)(responseUser)
+    });
+};
+const addUserToChat = async (dispatch, state, action)=>{
+    const responseUser = await (0, _userControllersDefault.default).search(action);
+    console.log("responseUser Data", responseUser);
+    async function userToChat() {
+        const userId = window.store.state.searchUser;
+        const chatId = Number(new URLSearchParams(window.location.search).get("id"));
+        await (0, _chatControllersDefault.default).addUserToChat([
+            userId[0].id
+        ], chatId);
+    }
+    new Promise(function(fulfilled, reject) {
+        return [
+            fulfilled(dispatch({
+                searchUser: responseUser
+            })),
+            fulfilled(userToChat())
+        ];
+    }).then(()=>{
+        console.log("OKKKKKKK");
+    });
+};
+
+},{"../controllers/authControllers":"khdRE","../controllers/userControllers":"a3Ffs","utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","../controllers/chatControllers":"9Bhfw"}],"a3Ffs":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _httptransport = require("core/HTTPTransport");
+var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
+class userController {
+    search = async (login)=>(0, _httptransportDefault.default).post("/user/search/", {
+            login
+        });
+}
+const controllerUser = new userController();
+exports.default = controllerUser;
+
+},{"core/HTTPTransport":"3s5Eb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9Bhfw":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _httptransport = require("core/HTTPTransport");
+var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
+class chatController {
+    getUserChat = (body)=>(0, _httptransportDefault.default).get("/chats", body);
+    addUserToChat = (users, id)=>{
+        console.log("body", users, id);
+        return (0, _httptransportDefault.default).put("/chats/users", {
+            users,
+            chatId: id
+        });
+    };
+    delUserToChat = (id)=>{
+        return (0, _httptransportDefault.default).delete("/chats", {
+            chatId: id
+        });
+    };
+}
+const controllerChat = new chatController();
+exports.default = controllerChat;
+
+},{"core/HTTPTransport":"3s5Eb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"ipdHp":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "chats", ()=>chats);
+var _chatControllers = require("../controllers/chatControllers");
+var _chatControllersDefault = parcelHelpers.interopDefault(_chatControllers);
+const chats = async (dispatch, state, action)=>{
+    const dataChat = await (0, _chatControllersDefault.default).getUserChat();
+    console.log("chat.ts dataChat", dataChat);
+    dispatch({
+        chats: dataChat
+    });
+};
+
+},{"../controllers/chatControllers":"9Bhfw","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"83hYd":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _button.Button));
+var _button = require("./button");
+
+},{"./button":"bHWNx","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"bHWNx":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Button", ()=>Button);
+var _block = require("../../core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+class Button extends (0, _blockDefault.default) {
+    constructor({ onClick , ...props }){
+        super({
+            ...props,
+            events: {
+                click: onClick
+            }
+        });
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"iKN2F","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"iKN2F":[function(require,module,exports) {
+module.exports = "<button id=\"{{id}}\" class=\"{{class}}\" >\r\n\t{{{ label }}}\r\n</button>\r\n";
+
+},{}],"92lNP":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _chatDefault.default));
 var _chat = require("./chat");
+var _chatDefault = parcelHelpers.interopDefault(_chat);
 
 },{"./chat":"BTZqg","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"BTZqg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13110,9 +13006,6 @@ var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
 var _chatScss = require("./chat.scss");
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
-var _chatControllers = require("../../controllers/chatControllers");
-var _chatControllersDefault = parcelHelpers.interopDefault(_chatControllers);
-var _auth = require("../../services/auth");
 var _core1 = require("../../core");
 var _profileLink = require("../../components/ProfileLink");
 var _profileLinkDefault = parcelHelpers.interopDefault(_profileLink);
@@ -13125,88 +13018,85 @@ var _messagesListDefault = parcelHelpers.interopDefault(_messagesList);
 var _utils = require("utils");
 var _actionChatModal = require("../../components/actionChatModal");
 var _actionChatModalDefault = parcelHelpers.interopDefault(_actionChatModal);
+var _user = require("../../services/user");
 (0, _core1.registerComponent)((0, _profileLinkDefault.default));
 (0, _core1.registerComponent)((0, _searchDefault.default));
 (0, _core1.registerComponent)((0, _messageDefault.default));
 (0, _core1.registerComponent)((0, _messagesListDefault.default));
 (0, _core1.registerComponent)((0, _actionChatModalDefault.default));
-(0, _handlebarsDefault.default).registerHelper("chatPayload", function() {
-    let userChat = this.props.store.getState().chats;
-    console.log("chat", userChat);
-    return userChat;
-});
 class Chat extends (0, _core.Block) {
     constructor(props){
         super(props);
-        async function Chats() {
-            const dataChat = await (0, _auth.chats)();
-            console.log("chat dataChat", dataChat);
-            return dataChat;
-        }
         this.setProps({
-            onSubmitAddUser: (event)=>{
-                console.log("click buttonAddUser");
-                event.preventDefault();
-                const myDropdown = document.getElementById("modalPlusUser");
-                if (myDropdown && myDropdown.classList.contains("show")) myDropdown.classList.remove("show");
-                events: click: ()=>{
-                    (0, _chatControllersDefault.default).addUserToChat();
-                };
+            onSubmitCloseModal: ()=>{
+                const page = document.getElementsByClassName("page__chat");
+                const modal = document.getElementById("modalDelChat");
+                page.addEventListener("click", (event)=>{
+                    if (!event.target.closest("#modalDelChat").length) {
+                        console.log("onSubmitHideModal", this);
+                        this.onSubmitHideModal(modal);
+                    }
+                });
             },
-            onSubmitDelUser: (event)=>{
+            onModalAddChat: (event)=>{
                 event.preventDefault();
-                const myDropdown = document.getElementById("modalMinusUser");
-                if (myDropdown && myDropdown.classList.contains("show")) myDropdown.classList.remove("show");
-                events: click: ()=>{
-                    (0, _chatControllersDefault.default).delUserToChat();
-                };
+                const myModalAddChat = document.getElementById("modalAddChat");
+                this.onSubmitShowModal(myModalAddChat);
             },
-            // chats: this.props.store.dispatch(chats)
-            chats: Chats().then(function(result) {
-                console.log("result Promise", result);
-                return result;
-            })
+            onModalDelChat: ()=>{
+                const myModalDelChat = document.getElementById("modalDelChat");
+                this.onSubmitShowModal(myModalDelChat);
+            },
+            onSubmitAddUser: async ()=>{
+                const userLogin = document.getElementById("login_field").value;
+                const chatId = Number(new URLSearchParams(window.location.search).get("id"));
+                if (userLogin && chatId) {
+                    console.log("addUserToChat props", userLogin);
+                    // addUserToChat(userLogin, chatId).finally(() => {
+                    // 	console.log("addUserToChat props", this.props);
+                    // })
+                    const foo = async ()=>{
+                        await this.props.store.dispatch((0, _user.addUserToChat), userLogin);
+                    };
+                    new Promise(function(fulfilled, reject) {
+                        return fulfilled(foo());
+                    });
+                // console.log("addUserToChat(userLogin)",addUserToChat(userLogin))
+                // console.log("addUserToChat props", this.props);
+                // new Promise(function(resolve, reject) {
+                // 	resolve(addUserToChat(userLogin));
+                // }).then(() => {
+                // 	console.log("addUserToChat props", this.props);
+                // })
+                }
+            }
         });
     }
-    // init() {
-    // 	this.props.getChats();
-    // 	async function main() {
-    // 		await getChats();
-    // 	}
-    // 	main();
-    // 	.then(function fulfilled(v){
-    // 		console.log("chats", v);
-    // 	},
-    // 	function rejected(reason){
-    // 	 // Ой, что-то пошло не так
-    // 	})
-    // 	let chats = async => {
-    // 		// const await getChats = getChats();
-    // 		this.setProps({
-    // 			chats: new Promise( function(resolve,reject) {
-    // 				return getChats();
-    // 			})
-    // 		});
-    // 	};
-    // 	// console.log("chats", chats);
-    // 	chats();
-    // }
+    onSubmitShowModal(element) {
+        if (element) element.classList.toggle("show");
+    }
+    onSubmitHideModal(element) {
+        if (element) element.classList.remove("show");
+    }
     render() {
-        console.log("Chat.ts this.props", this, window.store);
-        // const chats = async function(){
-        // 	return await this.props?.chats;
-        // };
-        // console.log("Chat.ts this.props chats", chats);
-        // chats().then(function(result) {
-        //   console.log("result ",result) // "Some User token"
-        // })
+        const chats = this.props.store.getState().chats;
+        const user = this.props.store.getState().user;
+        console.log("Chat.ts this.props", this, chats, user);
+        if (chats) (0, _handlebarsDefault.default).registerHelper("chatPayload", function(ignore, opt) {
+            // console.log("chat registerHelper ", chats);
+            var results = "";
+            chats.forEach((item)=>{
+                results += opt.fn(item);
+            });
+            return results;
+        });
         return 0, _templateHbsDefault.default;
     }
 }
-exports.default = (0, _utils.withRouter)((0, _utils.withStore)(Chat));
+exports.default = (0, _utils.withRouter)((0, _utils.withStore)((0, _utils.withUser)((0, _utils.withChat)(Chat))));
 
-},{"core":"9qbGm","bundle-text:./template.hbs":"hj2Gs","./chat.scss":"9kAb2","handlebars":"dH8Fg","../../core":"9qbGm","../../components/ProfileLink":"fsW0O","../../components/search":"euWG7","../../components/message":"12sQ1","../../layout/messagesList":"b6P5O","utils":"hupOb","../../components/actionChatModal":"7Reun","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","../../controllers/chatControllers":"9Bhfw","../../services/auth":"bXWfl"}],"hj2Gs":[function(require,module,exports) {
-module.exports = "<main class=\"page__chat\">\n\t<div class=\"chat\">\n\t\t<div class=\"chat-list\">\n\t\t\t{{{ ProfileLink }}}\n\t\t\t{{{ Search }}}\n\t\t\t<ul class=\"chat-list__message\">\n\t\t\t\t{{ this }}\n\t\t\t\t{{#each this}}\n\t\t\t\t{{{ Message messageStore=this }}}\n\t\t\t\t{{/each}}\n\t\t\t</ul>\n\t\t\t{{!-- <div>{{data.title}}</div> --}}\n\t\t</div>\n\t</div>\n\t{{{ MessagesList messageStore=this }}}\n\t<div id=\"modalPlusUser\" class=\"dialog\" role=\"dialog\">\n\t\t<div class=\"dialog__body\">\n\t\t\t{{{actionChatModal type=\"addUser\" action=buttonAddUser onClick=onClick}}}\n\t\t\t<form id=\"modalForm\">\n\t\t\t  <div>\n\t\t\t\t\t<label class=\"text-field__label\">\n\t\t\t\t\t<span>Логин</span>\n\t\t\t\t\t\t{{{ Input name=\"login\" type=\"text\" class=\"form__text-input\" placeholder=\"логин\" }}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t\t{{{\n\t\t      \tButton\n\t\t      \tid=\"ActionModalPlusUser\"\n\t\t      \tclass=\"button\"\n\t\t      \tlabel=\"Добавить\"\n\t\t      \tonClick=onSubmitAddUser\n\t    \t}}}\n\t\t\t</form>\n\t\t</div>\n\t</div>\n\t<div id=\"modalMinusUser\" class=\"dialog\" role=\"dialog\">\n\t\t<div class=\"dialog__body\">\n\t\t\t{{{actionChatModal type=\"delUser\" action=buttonAddUser onClick=onClick}}}\n\t\t\t<form id=\"modalForm\">\n\t\t\t  <div>\n\t\t\t\t\t<label class=\"text-field__label\">\n\t\t\t\t\t<span>Логин</span>\n\t\t\t\t\t\t{{{ Input name=\"login\" type=\"text\" class=\"form__text-input\" placeholder=\"логин\" }}}\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t\t{{{\n\t\t      \tButton\n\t\t      \tid=\"ActionModalPlusUser\"\n\t\t      \tclass=\"button\"\n\t\t      \tlabel=\"Удалить\"\n\t\t      \tonClick=onSubmit\n\t    \t}}}\n\t\t\t</form>\n\t\t</div>\n\t</div>\n</main>\n";
+},{"core":"9qbGm","bundle-text:./template.hbs":"hj2Gs","./chat.scss":"9kAb2","handlebars":"dH8Fg","../../core":"9qbGm","../../components/ProfileLink":"fsW0O","../../components/search":"euWG7","../../components/message":"12sQ1","../../layout/messagesList":"b6P5O","utils":"hupOb","../../components/actionChatModal":"7Reun","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","../../services/user":"eEuXd"}],"hj2Gs":[function(require,module,exports) {
+module.exports = "<main class=\"page__chat\">\n\t<div class=\"chat\">\n\t\t<div class=\"chat-list\">\n\t\t\t{{{ ProfileLink }}}\n\t\t\t{{{ Search }}}\n\t\t\t<ul class=\"chat-list__message\">\n\n\n\t\t\t\t{{#chatPayload chats }}\n\n\t\t\t\t\t<li class=\"message\">\n\t\t\t\t\t\t<a class=\"{{#if (theActiveChat id)}}active{{/if}}\" href=\"chat?id={{id}}\">\n\t\t\t\t\t\t\t<div class=\"message__circle\">\n\t\t\t\t\t\t\t\t<div class=\"message__circle-user\">\n\t\t\t\t\t\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t  <div class=\"message__about\">\n\t\t\t\t\t\t    <div class=\"message__name\">{{ title }}</div>\n\t\t\t\t\t\t    <div class=\"message__text\">\n\t\t\t\t\t\t      {{#if last_message}}\n\t\t\t\t\t\t      <span class=\"message__direction\">Вы:</span>\n\t\t\t\t\t\t      {{/if}}\n\t\t\t\t\t\t      {{ last_message }}\n\t\t\t\t\t\t    </div>\n\t\t\t\t\t\t  </div>\n\t\t\t\t\t\t  <div class=\"message__status\">\n\t\t\t\t\t\t    <span class=\"message__time\">{{ created_by }}</span>\n\t\t\t\t\t\t    {{#if unread_count}}\n\t\t\t\t\t\t      <span class=\"message__amount\">{{ unread_count }}</span>\n\t\t\t\t\t\t    {{/if}}\n\t\t\t\t\t\t  </div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\n\t\t\t\t{{/chatPayload}}\n\n\t\t\t</ul>\n\t\t\t<div class=\"chat__footer\">\n\t\t\t\t{{{\n\t\t\t\t\tButton\n\t\t\t\t\tclass=\"chat__add-button\"\n\t\t\t\t\tonClick=onModalAddChat\n\t\t\t\t}}}\n\t\t\t\t{{{\n\t\t\t\t\tButton\n\t\t\t\t\tclass=\"chat__del-button\"\n\t\t\t\t\tonClick=onModalDelChat\n\t\t\t\t}}}\n\t\t\t</div>\n\t\t\t{{!-- <div>{{data.title}}</div> --}}\n\t\t</div>\n\t</div>\n\t{{{ MessagesList messageStore = user }}}\n\n\t{{{ actionChatModal type=\"modalMinusUser\"}}}\n\t{{{ actionChatModal type=\"modalPlusUser\" action=onSubmitAddUser }}}\n\t{{{ actionChatModal type=\"modalAddChat\" }}}\n\t{{{ actionChatModal type=\"modalDelChat\" }}}\n\n</main>\n";
 
 },{}],"9kAb2":[function() {},{}],"fsW0O":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13260,7 +13150,41 @@ class Search extends (0, _blockDefault.default) {
 },{"core/Block":"aWH7T","bundle-text:./template.hbs":"hk8ml","./search.scss":"7nPTJ","../../core":"9qbGm","../../components/input":"jnHpm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hk8ml":[function(require,module,exports) {
 module.exports = "<div class=\"search\">\r\n  {{{ Input type=\"text\" placeholder=\"Поиск\" class=\"search__input\" }}}\r\n</div>\r\n";
 
-},{}],"7nPTJ":[function() {},{}],"12sQ1":[function(require,module,exports) {
+},{}],"7nPTJ":[function() {},{}],"jnHpm":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _input.Input));
+var _input = require("./input");
+
+},{"./input":"l1Oy0","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"l1Oy0":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Input", ()=>Input);
+var _block = require("../../core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _inputScss = require("./input.scss");
+class Input extends (0, _blockDefault.default) {
+    constructor({ onInput , onBlur , onFocus , ...props }){
+        super({
+            ...props,
+            events: {
+                input: onInput,
+                blur: onBlur,
+                focus: onFocus
+            }
+        });
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"4ZNmj","./input.scss":"lmhui","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"4ZNmj":[function(require,module,exports) {
+module.exports = "<input\r\n\tclass=\"{{class}}\"\r\n\ttype=\"{{type}}\"\r\n\tname=\"{{name}}\"\r\n\tid=\"{{id}}\"\r\n\t{{#if label}} label=\"{{label}}\" {{/if}}\r\n\t{{#if placeholder}} placeholder=\"{{placeholder}}\" {{/if}}\r\n>\r\n";
+
+},{}],"lmhui":[function() {},{}],"12sQ1":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _message.Message));
@@ -13284,22 +13208,24 @@ var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
     return String(value) === searchId.id;
 });
 class Message extends (0, _blockDefault.default) {
-    constructor(messageStore){
-        super(messageStore);
+    constructor(messageStore1){
+        super(messageStore1);
     }
     render() {
+        console.log("message.ts ", messageStore);
         return 0, _templateHbsDefault.default;
     }
 }
 
 },{"core/Block":"aWH7T","bundle-text:./template.hbs":"67lGh","./message.scss":"1I55v","handlebars":"dH8Fg","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"67lGh":[function(require,module,exports) {
-module.exports = "<li class=\"message\">\r\n\t<a class=\"{{#if (theActiveChat messageStore.message.id)}}active{{/if}}\" href=\"chat?id={{messageStore.message.id}}\">\r\n\t\t<div class=\"message__circle\">\r\n\t\t\t<div class=\"message__circle-user\">\r\n\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t  <div class=\"message__about\">\r\n\t    <div class=\"message__name\">{{ messageStore.message.name }}</div>\r\n\t    <div class=\"message__text\">\r\n\t      {{#if messageStore.message.myMessage}}\r\n\t      <span class=\"message__direction\">Вы:</span>\r\n\t      {{/if}}\r\n\t      {{ messageStore.message.text }}\r\n\t    </div>\r\n\t  </div>\r\n\t  <div class=\"message__status\">\r\n\t    <span class=\"message__time\">{{ messageStore.message.time }}</span>\r\n\t    {{#if messageStore.message.count}}\r\n\t      <span class=\"message__amount\">{{ messageStore.message.count }}</span>\r\n\t    {{/if}}\r\n\t  </div>\r\n\t</a>\r\n</li>\r\n";
+module.exports = "<li class=\"message\">\n\t<a class=\"{{#if (theActiveChat messageStore.id)}}active{{/if}}\" href=\"chat?id={{messageStore.id}}\">\n\t\t<div class=\"message__circle\">\n\t\t\t<div class=\"message__circle-user\">\n\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\n\t\t\t</div>\n\t\t</div>\n\t  <div class=\"message__about\">\n\t    <div class=\"message__name\">{{ messageStore.title }}</div>\n\t    <div class=\"message__text\">\n\t      {{#if messageStore.myMessage}}\n\t      <span class=\"message__direction\">Вы:</span>\n\t      {{/if}}\n\t      {{ messageStore.text }}\n\t    </div>\n\t  </div>\n\t  <div class=\"message__status\">\n\t    <span class=\"message__time\">{{ messageStore.message.time }}</span>\n\t    {{#if messageStore.message.count}}\n\t      <span class=\"message__amount\">{{ messageStore.message.count }}</span>\n\t    {{/if}}\n\t  </div>\n\t</a>\n</li>\n";
 
 },{}],"1I55v":[function() {},{}],"b6P5O":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>(0, _messagesList.MessagesList));
+parcelHelpers.export(exports, "default", ()=>(0, _messagesListDefault.default));
 var _messagesList = require("./messagesList");
+var _messagesListDefault = parcelHelpers.interopDefault(_messagesList);
 
 },{"./messagesList":"edHYh","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"edHYh":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13315,6 +13241,7 @@ var _reducerChatModal = require("../../components/reducerChatModal");
 var _reducerChatModalDefault = parcelHelpers.interopDefault(_reducerChatModal);
 var _attach = require("../../components/attach");
 var _attachDefault = parcelHelpers.interopDefault(_attach);
+var _utils = require("utils");
 (0, _core.registerComponent)((0, _reducerChatModalDefault.default));
 (0, _core.registerComponent)((0, _attachDefault.default));
 class MessagesList extends (0, _blockDefault.default) {
@@ -13367,9 +13294,10 @@ class MessagesList extends (0, _blockDefault.default) {
         return 0, _templateHbsDefault.default;
     }
 }
+exports.default = (0, _utils.withStore)((0, _utils.withUser)(MessagesList));
 
-},{"core/Block":"aWH7T","bundle-text:./template.hbs":"V9rU8","./messagesList.scss":"9kPsv","../../core":"9qbGm","../../components/reducerChatModal":"dbC67","../../components/attach":"kopZz","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"V9rU8":[function(require,module,exports) {
-module.exports = "{{#if getChat}}\r\n\t<div class=\"chat-body\">\r\n\t\t<div class=\"chat-body__container\">\r\n\r\n\t\t\t<div class=\"chat-body__header\">\r\n\t\t\t\t<div class=\"message__circle\">\r\n\t\t\t\t\t<div class=\"message__circle-user\">\r\n\t\t\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\r\n\t\t\t\t\t</div>\r\n\t\t\t\t</div>\r\n\t\t\t\t<div class=\"message__name\">{{messageStore.message.name}}</div>\r\n\t\t\t\t{{{ reducerChatModal id=\"modalShowUser\" }}}\r\n\t\t\t</div>\r\n\r\n\t\t\t<div class=\"chat-body__history\">\r\n\r\n\t\t\t\t\t{{#each messageStore }}\r\n\t\t\t\t\t\t\t<div class=\"chat-body__message chat-body__message_my\">\r\n\t\t\t\t\t\t\t\t{{ message.text }}\r\n\t\t\t\t\t\t\t\t<span>{{ message.time }}</span>\r\n\t\t\t\t\t\t\t</div>\r\n\r\n\t\t\t\t\t\t\t<div class=\"chat-body__message\">\r\n\t\t\t\t\t\t\t\t{{ message.text }}\r\n\t\t\t\t\t\t\t\t<span>{{ message.time }}</span>\r\n\t\t\t\t\t\t\t</div>\r\n\t\t\t\t\t{{/each}}\r\n\r\n\t\t\t</div>\r\n\t\t\t<div class=\"chat-body__send\">\r\n\t\t\t\t{{{ Attach id=\"modalShowOther\" class=\"attach__image\" onClick=onClick }}}\r\n\t\t\t\t<form id=\"sendMessage\">\r\n\t\t\t\t\t{{{ Input type=\"text\" name=\"message\" placeholder=\"Сообщение\" class=\"search__input_message\" }}}\r\n\t\t\t\t\t{{{ Button class=\"chat-body__button\" onClick=onSendMessage label=\"→\"}}}\r\n\t\t\t\t</form>\r\n\t\t\t</div>\r\n\r\n\t\t</div>\r\n\t</div>\r\n{{else}}\r\n    <div class=\"chat-body__empty-message\">\r\n        <p>Выберите чат чтобы отправить сообщение</p>\r\n    </div>\r\n{{/if}}\r\n";
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"V9rU8","./messagesList.scss":"9kPsv","../../core":"9qbGm","../../components/reducerChatModal":"dbC67","../../components/attach":"kopZz","utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"V9rU8":[function(require,module,exports) {
+module.exports = "{{#if getChat}}\n\t<div class=\"chat-body\">\n\t\t<div class=\"chat-body__container\">\n\n\t\t\t<div class=\"chat-body__header\">\n\t\t\t\t<div class=\"message__circle\">\n\t\t\t\t\t<div class=\"message__circle-user\">\n\t\t\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"message__name\">{{messageStore.firstName}}</div>\n\t\t\t\t{{{ reducerChatModal id=\"modalShowUser\" }}}\n\t\t\t</div>\n\n\t\t\t<div class=\"chat-body__history\">\n\n\t\t\t\t\t{{#each messageStore }}\n\t\t\t\t\t\t\t<div class=\"chat-body__message chat-body__message_my\">\n\t\t\t\t\t\t\t\t{{ message.text }}\n\t\t\t\t\t\t\t\t<span>{{ message.time }}</span>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t<div class=\"chat-body__message\">\n\t\t\t\t\t\t\t\t{{ message.text }}\n\t\t\t\t\t\t\t\t<span>{{ message.time }}</span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t{{/each}}\n\n\t\t\t</div>\n\t\t\t<div class=\"chat-body__send\">\n\t\t\t\t{{{ Attach id=\"modalShowOther\" class=\"attach__image\" onClick=onClick }}}\n\t\t\t\t<form id=\"sendMessage\">\n\t\t\t\t\t{{{ Input type=\"text\" name=\"message\" placeholder=\"Сообщение\" class=\"search__input_message\" }}}\n\t\t\t\t\t{{{ Button class=\"chat-body__button\" onClick=onSendMessage label=\"→\"}}}\n\t\t\t\t</form>\n\t\t\t</div>\n\n\t\t</div>\n\t</div>\n{{else}}\n    <div class=\"chat-body__empty-message\">\n        <p>Выберите чат чтобы отправить сообщение</p>\n    </div>\n{{/if}}\n";
 
 },{}],"9kPsv":[function() {},{}],"dbC67":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13413,9 +13341,13 @@ class reducerChatModal extends (0, _blockDefault.default) {
                 event.preventDefault();
                 const myModalMinusUser = document.getElementById("modalMinusUser");
                 if (myModalMinusUser) myModalMinusUser.classList.toggle("show");
+            },
+            onActionAddChat: (event)=>{
+                event.preventDefault();
+                const myModalMinusUser = document.getElementById("modalAddChat");
+                if (myModalMinusUser) myModalMinusUser.classList.toggle("show");
             }
         });
-        console.log(this.props);
     }
     render() {
         return 0, _templateHbsDefault.default;
@@ -13423,7 +13355,7 @@ class reducerChatModal extends (0, _blockDefault.default) {
 }
 
 },{"core/Block":"aWH7T","bundle-text:./template.hbs":"dzRhC","./reducer.scss":"3Dyw5","../../core":"9qbGm","../buttonToogle":"c4ZEH","../actionChatModal":"7Reun","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"dzRhC":[function(require,module,exports) {
-module.exports = "<div class=\"kebab\">\r\n\t{{{ buttonToogle class=\"kebab__element kebab__element-reset\" onClick=onClick }}}\r\n\t<div class=\"kebab__modal\" id=\"{{id}}\">\r\n\t\t<div class=\"kebab__wrapper\">\r\n\t\t\t{{{actionChatModal type=\"addUser\" action=onActionPlusUser onClick=buttonAddUser }}}\r\n\t\t\t{{{actionChatModal id=\"ActionModalMinusUser\" type=\"delUser\" action=onActionMinusUser }}}\r\n\t\t</div>\r\n\t</div>\r\n\r\n</div>\r\n";
+module.exports = "<div class=\"kebab\">\n\t{{{ buttonToogle class=\"kebab__element kebab__element-reset\" onClick=onClick }}}\n\t<div class=\"kebab__modal\" id=\"{{id}}\">\n\t\t<div class=\"kebab__wrapper\">\n\t\t\t{{{actionChatModal type=\"buttonAddUser\" action=onActionPlusUser onClick=buttonAddUser }}}\n\t\t\t{{{actionChatModal id=\"ActionModalMinusUser\" type=\"buttonDelUser\" action=onActionMinusUser }}}\n\t\t</div>\n\t</div>\n\n</div>\n";
 
 },{}],"3Dyw5":[function() {},{}],"c4ZEH":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13468,34 +13400,58 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "actionChatModal", ()=>actionChatModal);
 var _block = require("core/Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
+var _core = require("../../core");
+var _close = require("../../components/close");
+var _closeDefault = parcelHelpers.interopDefault(_close);
+var _chatControllers = require("../../controllers/chatControllers");
+var _chatControllersDefault = parcelHelpers.interopDefault(_chatControllers);
+var _utils = require("utils");
 var _reducerScss = require("./reducer.scss");
+(0, _core.registerComponent)((0, _closeDefault.default));
 class actionChatModal extends (0, _blockDefault.default) {
-    constructor({ id , type , action  }){
+    constructor({ props , type , action  }){
         super({
-            id,
+            ...props,
             type,
             events: {
                 click: action
             }
         });
-        window.addEventListener("click", (event)=>{
-            console.log("window");
-            if (event.target instanceof Element && !event.target.closest(".kebab__element")) {
-                const myDropdown = document.getElementById("modalShowUser");
-                if (myDropdown && myDropdown.classList.contains("show")) myDropdown.classList.remove("show");
+        this.setProps({
+            onSubmitRemoveModal: ()=>{
+                const modalIds = {
+                    modalPlusUser: document.getElementById("modalPlusUser"),
+                    modalMinusUser: document.getElementById("modalMinusUser"),
+                    modalAddChat: document.getElementById("modalAddChat"),
+                    modalDelChat: document.getElementById("modalDelChat")
+                };
+                Object.values(modalIds).forEach((myDropdown)=>{
+                    if (myDropdown && myDropdown.classList.contains("show")) myDropdown.classList.remove("show");
+                });
+            },
+            onSubmitAddChat: async (event)=>{
+                event.preventDefault();
+                const title = this.element?.querySelector('input[name="title"]').value;
+                await (0, _chatControllersDefault.default).addUserToChat(title);
+            },
+            onSubmitDelChat: async (event)=>{
+                event.preventDefault();
+                const chatId = Number(this.element?.querySelector('input[name="chatId"]').value);
+                await (0, _chatControllersDefault.default).delUserToChat(chatId);
             }
-        // if (event.target instanceof Element && !event.target.closest('.kebab__modal-plus')) {
-        // 	console.log('кликы');
-        //   const myDropdown = document.getElementById('modalAddUser');
-        //   if (myDropdown && myDropdown.classList.contains('show')) {
-        //     myDropdown.classList.remove('show');
-        //   }
-        // }
         });
     }
+    async submitAddUser() {
+        const userData = {
+            usersId: [].concat(this.element?.querySelector('input[name="login"]').value),
+            chatId: Number(new URLSearchParams(window.location.search).get("id"))
+        };
+        console.log("searchUser props", this.props);
+    }
     render() {
+        // console.log("searchUser props 2", this.props);
         switch(this.props.type){
-            case "addUser":
+            case "buttonAddUser":
                 return `
       			<div  id="{{id}}" class="kebab__modal-plus">
 							<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -13506,7 +13462,7 @@ class actionChatModal extends (0, _blockDefault.default) {
 							Добавить пользователя
 						</div>
 	        `;
-            case "delUser":
+            case "buttonDelUser":
                 return `
 					<div  id="{{id}}" class="kebab__modal-minus">
 					<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -13516,13 +13472,137 @@ class actionChatModal extends (0, _blockDefault.default) {
 					  </svg>
 						Удалить пользователя
 					</div>`;
+            case "modalPlusUser":
+                return `
+					<div id="modalPlusUser" class="dialog" role="dialog">
+						<div class="dialog__body">
+							<div id="modalForm">
+								{{{ Close onClick=onSubmitRemoveModal }}}
+							  <div>
+									<label class="text-field__label">
+									<span>Добавить пользователя</span>
+										{{{ Input name="login" type="text" class="form__text-input" id="login_field" placeholder="Логин пользователя" }}}
+									</label>
+								</div>
+								{{{
+						      	Button
+						      	id="ActionModalPlusUser"
+						      	class="button"
+						      	label="Добавить"
+						      	onClick=onSubmitAddUser
+					    	}}}
+							</div>
+						</div>
+					</div>
+				`;
+            case "modalMinusUser":
+                return `
+					<div id="modalMinusUser" class="dialog" role="dialog">
+						<div class="dialog__body">
+							<div id="modalForm">
+								{{{ Close onClick=onSubmitRemoveModal }}}
+							  <div>
+									<label class="text-field__label">
+									<span>Удалить пользователя</span>
+										{{{ Input name="login" type="text" class="form__text-input" placeholder="логин" }}}
+									</label>
+								</div>
+								{{{
+						      	Button
+						      	id="ActionModalPlusUser"
+						      	class="button"
+						      	label="Удалить"
+						      	onClick=onSubmit
+					    	}}}
+							</div>
+						</div>
+					</div>
+				`;
+            case "modalAddChat":
+                return `
+					<div id="modalAddChat" class="dialog" role="dialog">
+						<div class="dialog__body">
+							<div id="modalForm">
+								{{{ Close onClick=onSubmitRemoveModal }}}
+							  <div>
+									<label class="text-field__label">
+									<span>Добавить чат</span>
+										{{{ Input name="title" type="text" class="form__text-input" placeholder="Введите название чата" }}}
+									</label>
+								</div>
+								{{{
+						      	Button
+						      	id="ActionModalAddChat"
+						      	class="button"
+						      	label="Добавить чат"
+						      	onClick=onSubmitAddChat
+					    	}}}
+							</div>
+						</div>
+					</div>
+				`;
+            case "modalDelChat":
+                return `
+					<div id="modalDelChat" class="dialog" role="dialog">
+						<div class="dialog__body">
+							<div id="modalForm">
+								{{{ Close onClick=onSubmitRemoveModal }}}
+							  <div>
+									<label class="text-field__label">
+									<span>Удалить чат</span>
+										{{{ Input name="chatId" type="text" class="form__text-input" placeholder="Введите ID чата" }}}
+									</label>
+								</div>
+								{{{
+						      	Button
+						      	id="ActionModalDelChat"
+						      	class="button"
+						      	label="Удалить чат"
+						      	onClick=onSubmitDelChat
+					    	}}}
+							</div>
+						</div>
+					</div>
+				`;
             default:
                 return "<div>default</div>";
         }
     }
 }
+exports.default = (0, _utils.withStore)((0, _utils.withUser)(actionChatModal));
 
-},{"core/Block":"aWH7T","./reducer.scss":"djmHi","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"djmHi":[function() {},{}],"kopZz":[function(require,module,exports) {
+},{"core/Block":"aWH7T","./reducer.scss":"djmHi","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","../../components/close":"iwq05","../../core":"9qbGm","../../controllers/chatControllers":"9Bhfw","utils":"hupOb"}],"djmHi":[function() {},{}],"iwq05":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _close.Close));
+var _close = require("./close");
+
+},{"./close":"fovyB","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"fovyB":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Close", ()=>Close);
+var _block = require("../../core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+class Close extends (0, _blockDefault.default) {
+    constructor({ onClick , ...props }){
+        super({
+            ...props,
+            events: {
+                click: onClick
+            }
+        });
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"fXZKp","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"fXZKp":[function(require,module,exports) {
+module.exports = "<span class=\"dialog__close--button\"></span>\n";
+
+},{}],"kopZz":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _attach.Attach));
@@ -13554,46 +13634,244 @@ class Attach extends (0, _blockDefault.default) {
 },{"core/Block":"aWH7T","bundle-text:./template.hbs":"892Oa","./attach.scss":"bQ74T","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"892Oa":[function(require,module,exports) {
 module.exports = "<div class=\"attach\">\r\n\t<button class=\"kebab__element-reset\">\r\n\t\t<svg width=\"32\" height=\"32\" viewBox=\"0 0 32 32\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M7.18662 13.5L14.7628 5.92389L15.7056 6.8667L8.12943 14.4428L7.18662 13.5Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M9.70067 16.0141L17.2768 8.43793L18.2196 9.38074L10.6435 16.9569L9.70067 16.0141Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M15.0433 21.3567L22.6195 13.7806L23.5623 14.7234L15.9861 22.2995L15.0433 21.3567Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M17.5574 23.8708L25.1335 16.2946L26.0763 17.2374L18.5002 24.8136L17.5574 23.8708Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M17.5574 23.8709C14.9423 26.486 10.7118 26.4954 8.10831 23.8919C5.50482 21.2884 5.51424 17.0579 8.12936 14.4428L7.18655 13.5C4.0484 16.6381 4.0371 21.7148 7.16129 24.839C10.2855 27.9632 15.3621 27.9518 18.5003 24.8137L17.5574 23.8709Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M22.6195 13.7806L23.5623 14.7234C26.003 12.2826 26.0118 8.3341 23.5819 5.90417C21.152 3.47424 17.2035 3.48303 14.7627 5.92381L15.7055 6.86662C17.6233 4.94887 20.7257 4.94196 22.6349 6.85119C24.5441 8.76042 24.5372 11.8628 22.6195 13.7806Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t    <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t\t          d=\"M9.70092 16.0144C7.95751 17.7578 7.95123 20.5782 9.68689 22.3138C11.4226 24.0495 14.2429 24.0432 15.9863 22.2998L15.0435 21.357C13.8231 22.5774 11.8489 22.5818 10.6339 21.3668C9.41894 20.1518 9.42334 18.1776 10.6437 16.9572L9.70092 16.0144Z\"\r\n\t\t          fill=\"#3369f3\"/>\r\n\t\t</svg>\r\n\t</button>\r\n\t<div class=\"attach__modal\" id=\"{{id}}\">\r\n\t\t<div class=\"attach__wrapper\">\r\n\t\t\t<div class=\"attach__modal-file\">\r\n\t\t\t\t<svg width=\"22\" height=\"22\" viewBox=\"0 0 22 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n\t\t        <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M4 1.5H18C19.3807 1.5 20.5 2.61929 20.5 4V14L14.5194 12.4052C13.5108 12.1362 12.4714 12 11.4275 12H10.5725C9.52864 12 8.48921 12.1362 7.48057 12.4052L1.5 14V4C1.5 2.61929 2.61929 1.5 4 1.5ZM0 4C0 1.79086 1.79086 0 4 0H18C20.2091 0 22 1.79086 22 4V18C22 20.2091 20.2091 22 18 22H4C1.79086 22 0 20.2091 0 18V4ZM8 6C8 7.10457 7.10457 8 6 8C4.89543 8 4 7.10457 4 6C4 4.89543 4.89543 4 6 4C7.10457 4 8 4.89543 8 6Z\" fill=\"#3369f3\"></path>\r\n\t\t    </svg>\r\n\t\t\t\tФото или видео\r\n\t\t\t</div>\r\n\t\t\t<div class=\"attach__modal-foto\">\r\n\t\t\t\t<svg width=\"32\" height=\"32\" viewBox=\"0 0 32 32\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M7.18662 13.5L14.7628 5.92389L15.7056 6.8667L8.12943 14.4428L7.18662 13.5Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M9.70067 16.0141L17.2768 8.43793L18.2196 9.38074L10.6435 16.9569L9.70067 16.0141Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M15.0433 21.3567L22.6195 13.7806L23.5623 14.7234L15.9861 22.2995L15.0433 21.3567Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M17.5574 23.8708L25.1335 16.2946L26.0763 17.2374L18.5002 24.8136L17.5574 23.8708Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M17.5574 23.8709C14.9423 26.486 10.7118 26.4954 8.10831 23.8919C5.50482 21.2884 5.51424 17.0579 8.12936 14.4428L7.18655 13.5C4.0484 16.6381 4.0371 21.7148 7.16129 24.839C10.2855 27.9632 15.3621 27.9518 18.5003 24.8137L17.5574 23.8709Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M22.6195 13.7806L23.5623 14.7234C26.003 12.2826 26.0118 8.3341 23.5819 5.90417C21.152 3.47424 17.2035 3.48303 14.7627 5.92381L15.7055 6.86662C17.6233 4.94887 20.7257 4.94196 22.6349 6.85119C24.5441 8.76042 24.5372 11.8628 22.6195 13.7806Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\"\r\n\t                d=\"M9.70092 16.0144C7.95751 17.7578 7.95123 20.5782 9.68689 22.3138C11.4226 24.0495 14.2429 24.0432 15.9863 22.2998L15.0435 21.357C13.8231 22.5774 11.8489 22.5818 10.6339 21.3668C9.41894 20.1518 9.42334 18.1776 10.6437 16.9572L9.70092 16.0144Z\"\r\n\t                fill=\"#3369f3\"/>\r\n\t      </svg>\r\n\t\t\t\tФайл\r\n\t\t\t</div>\r\n\t\t\t<div class=\"attach__modal-location\">\r\n\t\t\t\t<svg width=\"22\" height=\"22\" viewBox=\"0 0 22 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n\t          <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M20.5 11C20.5 16.2467 16.2467 20.5 11 20.5C5.75329 20.5 1.5 16.2467 1.5 11C1.5 5.75329 5.75329 1.5 11 1.5C16.2467 1.5 20.5 5.75329 20.5 11ZM22 11C22 17.0751 17.0751 22 11 22C4.92487 22 0 17.0751 0 11C0 4.92487 4.92487 0 11 0C17.0751 0 22 4.92487 22 11ZM11 14C12.6569 14 14 12.6569 14 11C14 9.34315 12.6569 8 11 8C9.34315 8 8 9.34315 8 11C8 12.6569 9.34315 14 11 14Z\" fill=\"#3369f3\"></path>\r\n\t      </svg>\r\n\t\t\t\tЛокация\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>\r\n";
 
-},{}],"bQ74T":[function() {},{}],"9Bhfw":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _httptransport = require("core/HTTPTransport");
-var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
-class chatController {
-    getUserChat = (body)=>(0, _httptransportDefault.default).get("/chats", body);
-    // getUserChat(body?: getUserChatPayload): Promise<unknown> {
-    // 	return transport.get("/chats");
-    // }
-    addUserToChat(id, userId) {
-        return (0, _httptransportDefault.default).put("/users", {
-            id,
-            userId
-        });
-    }
-    delUserToChat(id, userId) {
-        return (0, _httptransportDefault.default).delete("/users", {
-            id,
-            userId
-        });
-    }
-}
-const controllerChat = new chatController();
-exports.default = controllerChat;
-
-},{"core/HTTPTransport":"3s5Eb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7hYty":[function(require,module,exports) {
+},{}],"bQ74T":[function() {},{}],"7hYty":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "hasError", ()=>hasError);
-function hasError(response) {
-    if (response !== "OK") {
-        console.log("apiHasError.ts response", typeof response, response);
-        const getReason = JSON.parse(response);
-        console.log(getReason);
-        return getReason && getReason.reason;
+function hasError(errorResponse) {
+    console.log("apiHasError.ts errorResponse", errorResponse);
+    return errorResponse && errorResponse.reason;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"c8UUW":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _controledInput.ControledInput));
+var _controledInput = require("./controledInput");
+
+},{"./controledInput":"kwFuF","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"kwFuF":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ControledInput", ()=>ControledInput);
+var _block = require("core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _validation = require("core/validation");
+var _validationDefault = parcelHelpers.interopDefault(_validation);
+class ControledInput extends (0, _blockDefault.default) {
+    constructor({ ...props }){
+        super({
+            ...props,
+            onBlur: (e)=>{
+                const input = e.target;
+                const login = this.element?.querySelector('input[name="login"]');
+                const password = this.element?.querySelector('input[name="password"]');
+                const firstName = this.element?.querySelector('input[name="first_name"]');
+                const email = this.element?.querySelector('input[name="email"]');
+                const secondName = this.element?.querySelector('input[name="second_name"]');
+                const phone = this.element?.querySelector('input[name="phone"]');
+                const RepeatPassword = this.element?.querySelector('input[name="password"]');
+                // console.log("password", password);
+                // console.log("login", login);
+                const errorMessage = new (0, _validationDefault.default)().validate([
+                    {
+                        type: (0, _validation.validationFieldType).Login,
+                        value: login?.value
+                    },
+                    {
+                        type: (0, _validation.validationFieldType).Password,
+                        value: password?.value
+                    },
+                    {
+                        type: (0, _validation.validationFieldType).FirstName,
+                        value: firstName?.value
+                    },
+                    {
+                        type: (0, _validation.validationFieldType).SecondName,
+                        value: secondName?.value
+                    },
+                    {
+                        type: (0, _validation.validationFieldType).Email,
+                        value: email?.value
+                    },
+                    {
+                        type: (0, _validation.validationFieldType).Phone,
+                        value: phone?.value
+                    },
+                    {
+                        type: (0, _validation.validationFieldType).RepeatPassword,
+                        value: RepeatPassword?.value
+                    }
+                ]);
+                this.refs.error.innerHTML = errorMessage;
+            }
+        });
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hgR4b":[function(require,module,exports) {
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"ji1GX","core/validation":"bEseP","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"ji1GX":[function(require,module,exports) {
+module.exports = "<div class=\"controlled-input\">\r\n\t{{{\r\n\t\tInput\r\n\t\tclass=\"form__text-input\"\r\n\t\tonInput=onInput\r\n\t\tonFocus=onFocus\r\n\t\tonBlur=onBlur\r\n\t\tname=name\r\n\t\ttype=type\r\n\t\tplaceholder=\"{{placeholder}}\"\r\n\t}}}\r\n\t{{{ ErrorComponent ref=\"error\" text=error }}}\r\n</div>\r\n\r\n";
+
+},{}],"dtDez":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _error.ErrorComponent));
+var _error = require("./error");
+
+},{"./error":"lKh7V","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"lKh7V":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ErrorComponent", ()=>ErrorComponent);
+var _block = require("../../core/Block");
+var _blockDefault = parcelHelpers.interopDefault(_block);
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+class ErrorComponent extends (0, _blockDefault.default) {
+    constructor(props){
+        super(props);
+    }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+
+},{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"7uNnS","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"7uNnS":[function(require,module,exports) {
+module.exports = "<span class=\"alarm\">{{#if text}} {{text}} {{/if}}</span>\r\n";
+
+},{}],"ccw0C":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _splashDefault.default));
+var _splash = require("./splash");
+var _splashDefault = parcelHelpers.interopDefault(_splash);
+
+},{"./splash":"9RqlW","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"9RqlW":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "SplashPage", ()=>SplashPage);
+var _core = require("core");
+var _core1 = require("../../core");
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _layout = require("components/layout");
+var _layoutDefault = parcelHelpers.interopDefault(_layout);
+var _utils = require("utils");
+// console.log("Store ", new Store);
+(0, _core1.registerComponent)((0, _layoutDefault.default));
+class SplashPage extends (0, _core.Block) {
+    static componentName = "SplashPage";
+    constructor(props){
+        super(props);
+    }
+    // sideEffects() {
+    // 	console.log("init myMethod");
+    // }
+    render() {
+        return 0, _templateHbsDefault.default;
+    }
+}
+exports.default = (0, _utils.withStore)((0, _utils.withUser)(SplashPage));
+
+},{"core":"9qbGm","../../core":"9qbGm","bundle-text:./template.hbs":"4Y1T6","components/layout":"2MQqy","utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"4Y1T6":[function(require,module,exports) {
+module.exports = "{{{ Layout }}}\n";
+
+},{}],"2MQqy":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "default", ()=>(0, _layout.Layout));
+var _layout = require("./layout");
+
+},{"./layout":"h8TWG","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"h8TWG":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Layout", ()=>ComposedLayout);
+var _core = require("core");
+var _utils = require("utils");
+var _templateHbs = require("bundle-text:./template.hbs");
+var _templateHbsDefault = parcelHelpers.interopDefault(_templateHbs);
+var _layoutCss = require("./layout.css");
+class Layout extends (0, _core.Block) {
+    static componentName = "Layout";
+    constructor(props){
+        super(props);
+    }
+    render() {
+        // language=hbs
+        return 0, _templateHbsDefault.default;
+    }
+}
+const ComposedLayout = (0, _utils.withRouter)((0, _utils.withIsLoading)(Layout));
+
+},{"core":"9qbGm","utils":"hupOb","bundle-text:./template.hbs":"hKi3U","./layout.css":"flG3H","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hKi3U":[function(require,module,exports) {
+module.exports = "<div class=\"\">\n\t<div class=\"screen__header\">\n\t\t<div class=\"screen__title\">\n\t\t\tЗагрузка\n\t\t</div>\n\t</div>\n\t<div class=\"screen__logo\">\n\t</div>\n\t<div class=\"screen__content\" data-layout=1></div>\n</div>\n";
+
+},{}],"flG3H":[function() {},{}],"9ks70":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initRouter", ()=>initRouter);
+var _core = require("./core");
+var _utils = require("./utils");
+const routes = [
+    {
+        path: "/",
+        block: (0, _utils.Screens).Main,
+        shouldAuthorized: true
+    },
+    {
+        path: "#profile",
+        block: (0, _utils.Screens).Profile,
+        shouldAuthorized: false
+    },
+    {
+        path: "#chat",
+        block: (0, _utils.Screens).Chat,
+        shouldAuthorized: true
+    }, 
+];
+function initRouter(router, store) {
+    routes.forEach((route)=>{
+        router.use(route.path, ()=>{
+            const isAuthorized = Boolean(store.getState().user);
+            const currentScreen = Boolean(store.getState().screen);
+            console.log("isAuthorized", isAuthorized, currentScreen);
+            // console.log("init isAuthorized and currentScreen ", isAuthorized, currentScreen);
+            if (isAuthorized || !route.shouldAuthorized) {
+                store.dispatch({
+                    screen: route.block
+                });
+                return;
+            }
+            if (!currentScreen) store.dispatch({
+                screen: (0, _utils.Screens).Main
+            });
+        });
+    });
+    /**
+   * Глобальный слушатель изменений в сторе
+   * для переключения активного экрана
+   */ // router.start();
+    store.on("changed", (prevState, nextState)=>{
+        console.log("store changed ", nextState);
+        router.start();
+        // if (!prevState.appIsInited && nextState.appIsInited) {
+        // 	console.log("router ",router);
+        //   router.start();
+        // }
+        const Page = (0, _utils.getScreenComponent)(nextState?.screen);
+        // console.log("Page", Page);
+        // передадим название компонента для рендера
+        if (Page) (0, _core.renderDOM)(new Page({}));
+    });
+// const Page = getScreenComponent("signin");
+// передадим название компонента для рендера
+// renderDOM(new getScreenComponent("main"));
+}
+
+},{"./core":"9qbGm","./utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hgR4b":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "defaultState", ()=>defaultState);

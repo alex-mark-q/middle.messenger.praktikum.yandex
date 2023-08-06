@@ -5,6 +5,7 @@ import './messagesList.scss';
 import { registerComponent }  from '../../core';
 import reducerChatModal from '../../components/reducerChatModal';
 import Attach from '../../components/attach';
+import { withStore, withUser } from 'utils';
 
 import Input from '../../components/input';
 import Button from '../../components/button';
@@ -77,3 +78,5 @@ export class MessagesList extends Block<IMessageProps> {
   }
 
 }
+
+export default withStore(withUser(MessagesList));

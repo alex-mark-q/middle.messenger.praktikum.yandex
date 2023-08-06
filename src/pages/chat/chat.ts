@@ -3,16 +3,18 @@ import template from 'bundle-text:./template.hbs';
 import './chat.scss';
 import messages from './pages/404';
 import Handlebars from 'handlebars';
-import controllerChat from '../../controllers/chatControllers';
-import { chats } from '../../services/auth';
+
+import controllerUser from '../../controllers/userControllers';
+
 
 import { registerComponent }  from '../../core';
 import ProfileLink from '../../components/ProfileLink';
 import Search from '../../components/search';
 import Message from '../../components/message';
 import MessagesList from '../../layout/messagesList';
-import { withStore, withRouter, withIsLoading } from 'utils';
+import { withStore, withRouter, withIsLoading, withChat, withUser } from 'utils';
 import actionChatModal from '../../components/actionChatModal';
+import { addUserToChat } from "../../services/user";
 
 
 registerComponent(ProfileLink);
@@ -20,13 +22,6 @@ registerComponent(Search);
 registerComponent(Message);
 registerComponent(MessagesList);
 registerComponent(actionChatModal);
-
-Handlebars.registerHelper('chatPayload', function () {
-
-	let userChat = this.props.store.getState().chats;
-	console.log("chat", userChat);
-	return userChat;
-})
 
 interface MessengerProps {
 	store: Store<AppState>;
@@ -38,95 +33,102 @@ export class Chat extends Block {
 
 	constructor(props) {
 		super(props);
-		async function Chats() {
-			const dataChat = await chats();
-			console.log("chat dataChat", dataChat);
-			return dataChat;
-		}
 
 
 		this.setProps({
-			onSubmitAddUser:(event:Event) => {
-				console.log("click buttonAddUser");
-				event.preventDefault();
-				const myDropdown = document.getElementById('modalPlusUser');
-        if (myDropdown && myDropdown.classList.contains('show')) {
-          myDropdown.classList.remove('show');
-        }
-				events: {
-					click: () => {
-						controllerChat.addUserToChat();
-					}
-				}
-    	},
+			onSubmitCloseModal:() => {
+				const page = document.getElementsByClassName("page__chat");
+				const modal = document.getElementById("modalDelChat");
 
-	    onSubmitDelUser:(event:Event) => {
-				event.preventDefault();
-				const myDropdown = document.getElementById('modalMinusUser');
-        if (myDropdown && myDropdown.classList.contains('show')) {
-          myDropdown.classList.remove('show');
-        }
-				events: {
-					click: () => {
-						controllerChat.delUserToChat();
+				page.addEventListener("click", (event) => {
+					if(!event.target.closest("#modalDelChat").length) {
+						console.log("onSubmitHideModal", this);
+						this.onSubmitHideModal(modal);
 					}
-				}
+			  });
+
+			},
+	    onModalAddChat: (event:Event) => {
+				event.preventDefault();
+				const myModalAddChat = document.getElementById('modalAddChat');
+				this.onSubmitShowModal(myModalAddChat);
 	    },
-	    // chats: this.props.store.dispatch(chats)
-	    chats: Chats().then(function(result) {
-	    	console.log("result Promise", result);
-	    	return result;
-	    })
+	    onModalDelChat: () => {
+				const myModalDelChat = document.getElementById('modalDelChat');
+				this.onSubmitShowModal(myModalDelChat);
+	    },
+			onSubmitAddUser: async() => {
+				const userLogin = document.getElementById("login_field").value;
+				const chatId = Number(new URLSearchParams(window.location.search).get("id"));
+				if(userLogin && chatId) {
+					console.log("addUserToChat props", userLogin);
 
+					// addUserToChat(userLogin, chatId).finally(() => {
+					// 	console.log("addUserToChat props", this.props);
+
+					// })
+
+					const foo = async() => {
+						await this.props.store.dispatch(addUserToChat, userLogin);
+					}
+
+
+					new Promise(function(fulfilled, reject) {
+
+						return fulfilled(foo());
+
+					});
+
+					// console.log("addUserToChat(userLogin)",addUserToChat(userLogin))
+					// console.log("addUserToChat props", this.props);
+
+					// new Promise(function(resolve, reject) {
+					// 	resolve(addUserToChat(userLogin));
+					// }).then(() => {
+					// 	console.log("addUserToChat props", this.props);
+					// })
+
+				}
+			},
 
 		})
 
 	}
 
-	// init() {
+	onSubmitShowModal (element) {
+		if (element) {
+			element.classList.toggle('show');
+		}
+	}
+	onSubmitHideModal (element) {
+		if (element) {
+			element.classList.remove('show');
+		}
+	}
 
-	// 	this.props.getChats();
 
-	// 	async function main() {
-	// 		await getChats();
-	// 	}
-
-	// 	main();
-	// 	.then(function fulfilled(v){
-	// 		console.log("chats", v);
-	// 	},
-	// 	function rejected(reason){
-	// 	 // Ой, что-то пошло не так
-	// 	})
-
-	// 	let chats = async => {
-	// 		// const await getChats = getChats();
-	// 		this.setProps({
-	// 			chats: new Promise( function(resolve,reject) {
-	// 				return getChats();
-	// 			})
-	// 		});
-	// 	};
-	// 	// console.log("chats", chats);
-
-	// 	chats();
-	// }
 
 
 	render(): string {
-		console.log("Chat.ts this.props", this, window.store);
+		const chats = this.props.store.getState().chats;
+		const user = this.props.store.getState().user;
 
-		// const chats = async function(){
-		// 	return await this.props?.chats;
-		// };
-		// console.log("Chat.ts this.props chats", chats);
-		// chats().then(function(result) {
-		//   console.log("result ",result) // "Some User token"
-		// })
+		console.log("Chat.ts this.props", this, chats, user);
+
+		if(chats) {
+			Handlebars.registerHelper('chatPayload', function (ignore, opt) {
+				// console.log("chat registerHelper ", chats);
+				var results = '';
+				chats.forEach((item) => {
+					results += opt.fn(item);
+				});
+				return results;
+			})
+		}
 
     return template;
   }
 
 }
 
-export default withRouter(withStore(Chat));
+export default withRouter(withStore(withUser(withChat(Chat))));

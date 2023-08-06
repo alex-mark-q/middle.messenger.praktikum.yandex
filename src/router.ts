@@ -6,7 +6,7 @@ const routes = [
   {
     path: "/",
     block: Screens.Main,
-    shouldAuthorized: false,
+    shouldAuthorized: true,
   },
 	{
     path: "#profile",
@@ -18,11 +18,11 @@ const routes = [
     block: Screens.Chat,
     shouldAuthorized: true,
   },
-	{
-    path: '*',
-    block: Screens.Main,
-    shouldAuthorized: false,
-  },
+	// {
+  //   path: '*',
+  //   block: Screens.Main,
+  //   shouldAuthorized: false,
+  // },
 ];
 
 export function initRouter(router, store) {

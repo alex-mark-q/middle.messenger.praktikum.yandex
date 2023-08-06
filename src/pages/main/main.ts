@@ -62,7 +62,7 @@ export class Main extends Block {
 
       	this.setState(nextState);
 
-      	console.log("loginData", loginAuth, loginData);
+      	// console.log("loginData", loginAuth, loginData);
 
       	// controllerAuth.auth(loginData);
       	console.log("main.ts this.props", this.props);
@@ -76,7 +76,7 @@ export class Main extends Block {
   }
 
   render() {
-		console.log("Main.ts ", this, window.store);
+		// console.log("Main.ts ", this, window.store);
     return template;
   }
 }

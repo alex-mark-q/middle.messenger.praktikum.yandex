@@ -60,12 +60,12 @@ let headers = { 'Content-Type': 'application/json' };
 class HTTPTransport {
 
 	get (url, data = {}) {
-		console.log("Get Data", url, data);
+		// console.log("Get Data", url, data);
 		return this.request(url, {data, method: METHODS.GET});
 	};
 
 	post (url, data = {}) {
-		console.log("Post Data", url, data);
+		// console.log("Post Data", url, data);
 		return this.request(url, {data, method: METHODS.POST, headers});
 	};
 
@@ -73,12 +73,11 @@ class HTTPTransport {
 		return this.request(url, {data, method: METHODS.PUT}, data?.timeout);
 	};
 
-	del (url, data = {}) {
+	delete (url, data = {}) {
 		return this.request(url, {data, method: METHODS.DELETE}, data?.timeout);
 	};
 
 	request (url: string | URL, options: Options, timeout = 5000) {
-		console.log("Get Request", url, options);
 
 		const {headers = {}, method, data} = options;
 
@@ -95,9 +94,9 @@ class HTTPTransport {
 
 	    const xhr = new XMLHttpRequest();
 			const isGet = method === METHODS.GET;
-			if(isGet) {
-				console.log("isGet " , `${process.env.API_ENDPOINT}${url}${queryStringify(data)}`);
-			}
+			// if(isGet) {
+			// 	console.log("isGet " , `${process.env.API_ENDPOINT}${url}${queryStringify(data)}`);
+			// }
 
 	    xhr.open(
 				method, (isGet ? `${process.env.API_ENDPOINT}${url}${queryStringify(data)}` : `${process.env.API_ENDPOINT}${url}`),
@@ -117,7 +116,6 @@ class HTTPTransport {
 	    xhr.ontimeout = reject; //(rejectMessage.RejectTimeout);
 
 		  if (isGet) {
-		  	console.log("options request ", method, data);
 			  xhr.send();
 			} else {
 				// @ts-ignore

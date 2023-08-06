@@ -1,40 +1,29 @@
-import controllerAuth from '../controllers/authControllers';
-import controllerChat from '../controllers/chatControllers';
-import { transformChat, transformUser, apiHasError } from 'utils';
+import { Store } from 'core';
+import controllerAuth from "../controllers/authControllers";
+import controllerChat from "../controllers/chatControllers";
+import { transformChat, transformUser, apiHasError } from "utils";
+import { user } from "./user";
+import { chats } from "./chat";
+
 
 export const login = async(dispatch, state, action) => {
-
-	const dataResponse = await controllerAuth.auth(action);
-	console.log("auth.ts response", dataResponse);
-
-	const responseUser = await controllerAuth.user();
-	console.log("responseUser Data", responseUser);
-
-	if(apiHasError(dataResponse)) {
-		console.log("ошибка ");
-		dispatch({ isLoading: false, loginFormError: dataResponse.response });
-		return;
+	let dataResponse;
+	try {
+		dataResponse = await controllerAuth.auth(action);
+	} catch (error) {
+		console.log("ошибка ", apiHasError(error));
 	}
 
-	dispatch({ user: transformUser(responseUser) });
+	const getUser = new Store().getState().user;
+	if(!getUser) {
+		new Promise(function(resolve, reject) {
 
-	window.router.go('#chat');
+			resolve(dispatch(user));
 
-	// const dataChat = await controllerChat.getUserChat();
-	// console.log("chat dataChat", dataChat);
+		}).then(() => setTimeout(() => window.router.go('#chat'), 50));
 
-	// dispatch({ chats: dataChat });
-
-	// try {
-	// 	window.router.go('/chat');
-	// 	dispatch({ user: responseUser});
-	// } catch (error) {
-	// 	console.log("error", error);
-	// }
-	// if(responseUser) {
-
-	// }
-
+		dispatch(chats);
+	}
 
 
 };

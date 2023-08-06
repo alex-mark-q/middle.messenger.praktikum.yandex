@@ -33,10 +33,11 @@ export class Store<State extends Record<string, any>> extends EventBus {
     this.emit('changed', prevState, nextState);
   }
 
-  dispatch(nextStateOrAction: Partial<State> | Action<State>, payload?: any) {
+  public dispatch(nextStateOrAction: Partial<State> | Action<State>, payload?: any) {
     if (typeof nextStateOrAction === 'function') {
       nextStateOrAction(this.dispatch.bind(this), this.state, payload);
     } else {
+    	console.log("payload", nextStateOrAction);
       this.set({ ...this.state, ...nextStateOrAction });
     }
   }

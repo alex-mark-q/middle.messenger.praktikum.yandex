@@ -387,14 +387,23 @@ input::placeholder {
   color: #000;
   border-top: 1px solid #555;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
   padding: 12px 0;
   text-decoration: none;
   display: flex;
 }
 
+.message a > div:first-child {
+  flex-shrink: 0;
+}
+
 .message__about {
   width: 100%;
+  justify-content: center;
+  align-items: center;
   margin-left: 10px;
+  display: flex;
 }
 
 .message__name {
@@ -444,18 +453,18 @@ input::placeholder {
 }
 
 .message__circle {
+  height: 70px;
+  width: 70px;
   background-color: #efefef;
   border-radius: 50%;
   margin: 10px;
-  display: inline-block;
+  display: flex;
 }
 
 .message__circle-user {
   color: #fff;
   vertical-align: middle;
   text-align: center;
-  height: 100px;
-  width: 105px;
   font-size: 30px;
   text-decoration: none;
   display: table-cell;
@@ -516,6 +525,7 @@ input::placeholder {
 
 .dialog__body {
   width: 340px;
+  height: 180px;
   text-align: center;
   background: #fff;
   border-radius: 12px;
@@ -525,6 +535,16 @@ input::placeholder {
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 50px #00000080;
+}
+
+.dialog__body > div:first-child {
+  height: inherit;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  display: flex;
+  position: relative;
 }
 
 .dialog__content input {
@@ -543,6 +563,35 @@ input::placeholder {
   font-weight: bolder;
   position: relative;
   top: -23px;
+}
+
+.dialog__close--button {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  right: 15px;
+}
+
+.dialog__close--button:before {
+  content: "";
+  width: 100%;
+  height: 2px;
+  background: #3369f3;
+  position: absolute;
+  top: 50%;
+  transform: rotate(45deg);
+}
+
+.dialog__close--button:after {
+  content: "";
+  width: 100%;
+  height: 2px;
+  background: #3369f3;
+  position: absolute;
+  top: 50%;
+  transform: rotate(-45deg);
 }
 
 .kebab {
@@ -870,6 +919,69 @@ input::placeholder {
   display: flex;
 }
 
+.chat__footer {
+  width: 230px;
+  border-top: 1px solid #eaeaea;
+  justify-content: space-between;
+  padding: 35px 40px;
+  display: flex;
+  position: absolute;
+  bottom: 0;
+}
+
+.chat__add-button {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background: none;
+  border: 1px solid #3369f3;
+  border-radius: 50%;
+  position: relative;
+}
+
+.chat__add-button:after {
+  content: "";
+  width: 15px;
+  height: 1px;
+  background: #3369f3;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.chat__add-button:before {
+  content: "";
+  width: 15px;
+  height: 1px;
+  background: #3369f3;
+  position: absolute;
+  top: 50%;
+  left: 25%;
+  transform: rotate(90deg);
+}
+
+.chat__del-button {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  background: none;
+  border: 1px solid #3369f3;
+  border-radius: 50%;
+  position: relative;
+}
+
+.chat__del-button:before {
+  content: "";
+  width: 15px;
+  height: 1px;
+  background: #3369f3;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .chat-list {
   width: 310px;
   border-right: 1px solid #555;
@@ -1089,7 +1201,7 @@ label[for="password-input"] {
   margin-top: 12px;
 }
 
-#modalPlusUser, #modalMinusUser {
+#modalPlusUser, #modalMinusUser, #modalAddChat, #modalDelChat {
   display: none;
 }
 
@@ -1137,5 +1249,105 @@ label[for="password-input"] {
   font-weight: bolder;
   position: relative;
   top: -23px;
+}
+
+.screen {
+  width: var(--screen-width);
+  height: var(--screen-height);
+  background: var(--screen-background);
+  border-radius: 45px;
+  flex-direction: column;
+  margin: 5px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.screen__logo {
+  cursor: pointer;
+  position: absolute;
+  top: 25px;
+  left: 25px;
+}
+
+.screen_type_splash .screen__content {
+  background: #000;
+}
+
+.screen_loading:after {
+  content: "awesome loader...";
+  background: #fffffff5;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: absolute;
+  inset: 0;
+}
+
+.screen__loading-progress {
+  height: 3px;
+  width: 0%;
+  opacity: 1;
+  z-index: 999999;
+  background-color: red;
+  animation-name: slidein;
+  animation-duration: 15s;
+  animation-timing-function: ease-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+@keyframes slidein {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+.screen__loading {
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: hue;
+  background: #777;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.screen__header {
+  height: 70px;
+  text-align: center;
+  line-height: 70px;
+}
+
+.screen__title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.screen__content {
+  background: var(--screen-content-background);
+  border-radius: 50px 50px 0 0;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 15px;
+  display: flex;
+  overflow: hidden;
+}
+
+.screen_theme_full .screen__header {
+  height: 0;
+}
+
+.screen_theme_full .screen__content {
+  border-radius: 0;
+  justify-content: center;
+  align-items: center;
 }
 

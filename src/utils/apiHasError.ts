@@ -3,16 +3,8 @@ export type APIError = {
   reason: string;
 };
 
-export function hasError(response: any): response is APIError {
+export function hasError(errorResponse: any): errorResponse is APIError {
+  console.log("apiHasError.ts errorResponse", errorResponse);
 
-	if(response !== "OK") {
-		console.log("apiHasError.ts response", typeof response, response);
-		const getReason = JSON.parse(response);
-		console.log(getReason);
-
-	  return getReason && getReason.reason;
-
-	}
-
-
+  return errorResponse && errorResponse.reason;
 }

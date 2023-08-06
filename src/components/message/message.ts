@@ -20,6 +20,7 @@ export class Message extends Block<MessageProps> {
 	}
 
 	render(): string {
+		console.log("message.ts ", messageStore);
     return template;
   }
 }

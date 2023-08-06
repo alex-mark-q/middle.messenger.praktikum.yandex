@@ -1,11 +1,9 @@
 import controllerChat from '../controllers/chatControllers';
 import { transformChat, apiHasError } from 'utils';
 
-export default const chats = async(dispatch, state, action) => {
-	// return controllerChat.getUserChat();
-
+export const chats = async(dispatch, state, action) => {
 	const dataChat = await controllerChat.getUserChat();
-	console.log("chat dataChat", dataChat);
+	console.log("chat.ts dataChat", dataChat);
 
 	dispatch({ chats: dataChat });
 

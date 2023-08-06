@@ -117,6 +117,10 @@ export default class Block<P = any> {
     Object.assign(this.props, nextProps);
   };
 
+  public sideEffects () {
+  	return;
+  }
+
   setState = (nextState: any) => {
     if (!nextState) {
       return;
