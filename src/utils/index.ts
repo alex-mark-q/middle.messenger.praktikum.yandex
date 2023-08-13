@@ -6,4 +6,4 @@ export { withIsLoading } from './withIsLoading';
 export { withChat } from './withChat';
 export { Screens, getScreenComponent } from './screenList';
 export { hasError as apiHasError } from './apiHasError';
-
+export { Pro } from './promise';

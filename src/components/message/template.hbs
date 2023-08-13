@@ -1,5 +1,5 @@
 <li class="message">
-	<a class="{{#if (theActiveChat messageStore.id)}}active{{/if}}" href="chat?id={{messageStore.id}}">
+	<a class="{{#if (theActiveChat messageStore.id)}}active{{/if}}" href="chat?id={{messageStore.id}}" onClick=onClickEventListener>
 		<div class="message__circle">
 			<div class="message__circle-user">
 				{{!-- <img src="{{messageStore.message.url}}" alt="avatar" /> --}}

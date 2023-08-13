@@ -583,6 +583,7 @@ parcelHelpers.export(exports, "renderDOM", ()=>(0, _renderDOMDefault.default));
 parcelHelpers.export(exports, "HashRouter", ()=>(0, _hashRouter.HashRouter));
 parcelHelpers.export(exports, "Store", ()=>(0, _store.Store));
 parcelHelpers.export(exports, "Dispatch", ()=>(0, _store.Dispatch));
+parcelHelpers.export(exports, "WSTransport", ()=>(0, _wstransport.WSTransport));
 var _block = require("./Block");
 var _blockDefault = parcelHelpers.interopDefault(_block);
 var _registerComponent = require("./registerComponent");
@@ -591,8 +592,9 @@ var _renderDOM = require("./renderDOM");
 var _renderDOMDefault = parcelHelpers.interopDefault(_renderDOM);
 var _hashRouter = require("./HashRouter");
 var _store = require("./Store");
+var _wstransport = require("./WSTransport");
 
-},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./HashRouter":"h1zlA","./Store":"7b9cm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"aWH7T":[function(require,module,exports) {
+},{"./Block":"aWH7T","./registerComponent":"3TLc1","./renderDOM":"aP8PI","./HashRouter":"h1zlA","./Store":"7b9cm","./WSTransport":"e1Zbj","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"aWH7T":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _eventBus = require("./EventBus");
@@ -12306,6 +12308,36 @@ class Store extends (0, _eventBusDefault.default) {
     }
 }
 
+},{"./EventBus":"ezQjQ","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"e1Zbj":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "WSTransportEvents", ()=>WSTransportEvents);
+parcelHelpers.export(exports, "WSTransport", ()=>WSTransport);
+var _eventBus = require("./EventBus");
+var _eventBusDefault = parcelHelpers.interopDefault(_eventBus);
+let WSTransportEvents;
+(function(WSTransportEvents) {
+    WSTransportEvents["Connected"] = "connected";
+    WSTransportEvents["Error"] = "error";
+    WSTransportEvents["Message"] = "message";
+    WSTransportEvents["Close"] = "close";
+})(WSTransportEvents || (WSTransportEvents = {}));
+class WSTransport extends (0, _eventBusDefault.default) {
+    static WS_URL = "wss://ya-praktikum.tech/ws/chats";
+    constructor(endpoint){
+        super();
+        this.url = `${WSTransport.WS_URL}${endpoint}`;
+    }
+    connect() {
+        this.socket = new WebSocket(this.url);
+    }
+    subscribe(socket) {
+        this.socket.addEventListener("open", ()=>{
+            this.emit(WSTransportEvents.Connected);
+        });
+    }
+}
+
 },{"./EventBus":"ezQjQ","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"6jFfC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -12360,6 +12392,7 @@ parcelHelpers.export(exports, "withChat", ()=>(0, _withChat.withChat));
 parcelHelpers.export(exports, "Screens", ()=>(0, _screenList.Screens));
 parcelHelpers.export(exports, "getScreenComponent", ()=>(0, _screenList.getScreenComponent));
 parcelHelpers.export(exports, "apiHasError", ()=>(0, _apiHasError.hasError));
+parcelHelpers.export(exports, "Pro", ()=>(0, _promise.Pro));
 var _apiTransformers = require("./apiTransformers");
 var _withStore = require("./withStore");
 var _withUser = require("./withUser");
@@ -12368,8 +12401,9 @@ var _withIsLoading = require("./withIsLoading");
 var _withChat = require("./withChat");
 var _screenList = require("./screenList");
 var _apiHasError = require("./apiHasError");
+var _promise = require("./promise");
 
-},{"./apiTransformers":"8eLQ7","./withStore":"gWQPp","./withUser":"gSWfA","./withRouter":"9t1HO","./withIsLoading":"16ofE","./withChat":"9Uur4","./screenList":"7PHF3","./apiHasError":"7hYty","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"8eLQ7":[function(require,module,exports) {
+},{"./apiTransformers":"8eLQ7","./withStore":"gWQPp","./withUser":"gSWfA","./withRouter":"9t1HO","./withIsLoading":"16ofE","./withChat":"9Uur4","./screenList":"7PHF3","./apiHasError":"7hYty","./promise":"bHGJX","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"8eLQ7":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "transformUser", ()=>transformUser);
@@ -12908,7 +12942,7 @@ const addUserToChat = async (dispatch, state, action)=>{
     });
 };
 
-},{"../controllers/authControllers":"khdRE","../controllers/userControllers":"a3Ffs","utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","../controllers/chatControllers":"9Bhfw"}],"a3Ffs":[function(require,module,exports) {
+},{"../controllers/authControllers":"khdRE","../controllers/userControllers":"a3Ffs","../controllers/chatControllers":"9Bhfw","utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"a3Ffs":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _httptransport = require("core/HTTPTransport");
@@ -12926,8 +12960,31 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _httptransport = require("core/HTTPTransport");
 var _httptransportDefault = parcelHelpers.interopDefault(_httptransport);
+var _messageControllers = require("./messageControllers");
+var _messageControllersDefault = parcelHelpers.interopDefault(_messageControllers);
+var _promise = require("../utils/promise");
+var _promiseDefault = parcelHelpers.interopDefault(_promise);
 class chatController {
-    getUserChat = (body)=>(0, _httptransportDefault.default).get("/chats", body);
+    getUserChat = async (body)=>{
+        return (0, _promiseDefault.default).map([
+            await (0, _httptransportDefault.default).get("/chats", body)
+        ], function(pr, done) {
+            Promise.resolve(pr).then(function(v) {
+                done(v);
+            }, done);
+        }).then(function(vals) {
+            console.log(vals);
+            vals[0].map(async (chat)=>{
+                const tokenId = await chatController.getTokenChat(chat.id);
+                return (0, _messageControllersDefault.default).connect(chat.id, tokenId);
+            });
+            return vals;
+        });
+    // await Promise.all([
+    // 	transport.get("/chats", body),
+    // 	controllerMessage
+    // ])
+    };
     addUserToChat = (users, id)=>{
         console.log("body", users, id);
         return (0, _httptransportDefault.default).put("/chats/users", {
@@ -12940,11 +12997,46 @@ class chatController {
             chatId: id
         });
     };
+    static getTokenChat = async (id)=>{
+        return (0, _httptransportDefault.default).post(`/chats/token/${id}`);
+    };
 }
 const controllerChat = new chatController();
 exports.default = controllerChat;
 
-},{"core/HTTPTransport":"3s5Eb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"ipdHp":[function(require,module,exports) {
+},{"core/HTTPTransport":"3s5Eb","../utils/promise":"bHGJX","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","./messageControllers":"kzs82"}],"bHGJX":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class customPromise {
+    async map(vals, cb) {
+        return Promise.all(vals.map(function(val) {
+            return new Promise(function(resolve) {
+                cb(val, resolve);
+            });
+        }));
+    }
+}
+const Pro = new customPromise();
+exports.default = Pro;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"kzs82":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _core = require("core");
+class messageControllers {
+    async connect(id, tokenId) {
+        const userId = window.store.getState().user?.id; // .user.data.id;
+        // console.log("chatId getState", userId, id, tokenId);
+        if (userId && id && tokenId) {
+            const wsTransport = new (0, _core.WSTransport)(`/${userId}/${id}/${tokenId.token}`);
+            await wsTransport.connect();
+        }
+    }
+}
+const controllerMessage = new messageControllers();
+exports.default = controllerMessage;
+
+},{"core":"9qbGm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"ipdHp":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "chats", ()=>chats);
@@ -13052,22 +13144,12 @@ class Chat extends (0, _core.Block) {
                 const chatId = Number(new URLSearchParams(window.location.search).get("id"));
                 if (userLogin && chatId) {
                     console.log("addUserToChat props", userLogin);
-                    // addUserToChat(userLogin, chatId).finally(() => {
-                    // 	console.log("addUserToChat props", this.props);
-                    // })
                     const foo = async ()=>{
                         await this.props.store.dispatch((0, _user.addUserToChat), userLogin);
                     };
                     new Promise(function(fulfilled, reject) {
                         return fulfilled(foo());
                     });
-                // console.log("addUserToChat(userLogin)",addUserToChat(userLogin))
-                // console.log("addUserToChat props", this.props);
-                // new Promise(function(resolve, reject) {
-                // 	resolve(addUserToChat(userLogin));
-                // }).then(() => {
-                // 	console.log("addUserToChat props", this.props);
-                // })
                 }
             }
         });
@@ -13079,7 +13161,7 @@ class Chat extends (0, _core.Block) {
         if (element) element.classList.remove("show");
     }
     render() {
-        const chats = this.props.store.getState().chats;
+        const chats = this.props.store.getState().chats[0];
         const user = this.props.store.getState().user;
         console.log("Chat.ts this.props", this, chats, user);
         if (chats) (0, _handlebarsDefault.default).registerHelper("chatPayload", function(ignore, opt) {
@@ -13095,7 +13177,7 @@ class Chat extends (0, _core.Block) {
 }
 exports.default = (0, _utils.withRouter)((0, _utils.withStore)((0, _utils.withUser)((0, _utils.withChat)(Chat))));
 
-},{"core":"9qbGm","bundle-text:./template.hbs":"hj2Gs","./chat.scss":"9kAb2","handlebars":"dH8Fg","../../core":"9qbGm","../../components/ProfileLink":"fsW0O","../../components/search":"euWG7","../../components/message":"12sQ1","../../layout/messagesList":"b6P5O","utils":"hupOb","../../components/actionChatModal":"7Reun","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","../../services/user":"eEuXd"}],"hj2Gs":[function(require,module,exports) {
+},{"core":"9qbGm","bundle-text:./template.hbs":"hj2Gs","./chat.scss":"9kAb2","handlebars":"dH8Fg","../../core":"9qbGm","../../components/ProfileLink":"fsW0O","../../components/search":"euWG7","../../components/message":"12sQ1","../../layout/messagesList":"b6P5O","utils":"hupOb","../../components/actionChatModal":"7Reun","../../services/user":"eEuXd","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"hj2Gs":[function(require,module,exports) {
 module.exports = "<main class=\"page__chat\">\n\t<div class=\"chat\">\n\t\t<div class=\"chat-list\">\n\t\t\t{{{ ProfileLink }}}\n\t\t\t{{{ Search }}}\n\t\t\t<ul class=\"chat-list__message\">\n\n\n\t\t\t\t{{#chatPayload chats }}\n\n\t\t\t\t\t<li class=\"message\">\n\t\t\t\t\t\t<a class=\"{{#if (theActiveChat id)}}active{{/if}}\" href=\"chat?id={{id}}\">\n\t\t\t\t\t\t\t<div class=\"message__circle\">\n\t\t\t\t\t\t\t\t<div class=\"message__circle-user\">\n\t\t\t\t\t\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t  <div class=\"message__about\">\n\t\t\t\t\t\t    <div class=\"message__name\">{{ title }}</div>\n\t\t\t\t\t\t    <div class=\"message__text\">\n\t\t\t\t\t\t      {{#if last_message}}\n\t\t\t\t\t\t      <span class=\"message__direction\">Вы:</span>\n\t\t\t\t\t\t      {{/if}}\n\t\t\t\t\t\t      {{ last_message }}\n\t\t\t\t\t\t    </div>\n\t\t\t\t\t\t  </div>\n\t\t\t\t\t\t  <div class=\"message__status\">\n\t\t\t\t\t\t    <span class=\"message__time\">{{ created_by }}</span>\n\t\t\t\t\t\t    {{#if unread_count}}\n\t\t\t\t\t\t      <span class=\"message__amount\">{{ unread_count }}</span>\n\t\t\t\t\t\t    {{/if}}\n\t\t\t\t\t\t  </div>\n\t\t\t\t\t\t</a>\n\t\t\t\t\t</li>\n\n\t\t\t\t{{/chatPayload}}\n\n\t\t\t</ul>\n\t\t\t<div class=\"chat__footer\">\n\t\t\t\t{{{\n\t\t\t\t\tButton\n\t\t\t\t\tclass=\"chat__add-button\"\n\t\t\t\t\tonClick=onModalAddChat\n\t\t\t\t}}}\n\t\t\t\t{{{\n\t\t\t\t\tButton\n\t\t\t\t\tclass=\"chat__del-button\"\n\t\t\t\t\tonClick=onModalDelChat\n\t\t\t\t}}}\n\t\t\t</div>\n\t\t\t{{!-- <div>{{data.title}}</div> --}}\n\t\t</div>\n\t</div>\n\t{{{ MessagesList messageStore = user }}}\n\n\t{{{ actionChatModal type=\"modalMinusUser\"}}}\n\t{{{ actionChatModal type=\"modalPlusUser\" action=onSubmitAddUser }}}\n\t{{{ actionChatModal type=\"modalAddChat\" }}}\n\t{{{ actionChatModal type=\"modalDelChat\" }}}\n\n</main>\n";
 
 },{}],"9kAb2":[function() {},{}],"fsW0O":[function(require,module,exports) {
@@ -13202,6 +13284,19 @@ var _messageScss = require("./message.scss");
 var _handlebars = require("handlebars");
 var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
 (0, _handlebarsDefault.default).registerHelper("theActiveChat", function(value) {
+    // return Pro.map([searchId(), controllerMessage.connect()], function(pr, done) {
+    // 	Promise.resolve(pr).then(function(v) {
+    // 		done(v);
+    // 	}, done)
+    // }).then(function(vals) {
+    // 	// console.log(vals);
+    // 	return vals
+    // });
+    // function searchId() {
+    // 	return String(value) === new Proxy(new URLSearchParams(window.location.search), {
+    // 		get: (searchParams, name) => searchParams.get(String(name))
+    // 	}).id;
+    // }
     const searchId = new Proxy(new URLSearchParams(window.location.search), {
         get: (searchParams, name)=>searchParams.get(String(name))
     });
@@ -13210,6 +13305,12 @@ var _handlebarsDefault = parcelHelpers.interopDefault(_handlebars);
 class Message extends (0, _blockDefault.default) {
     constructor(messageStore1){
         super(messageStore1);
+    // this.setProps({
+    // 	onClickEventListener: async () => {
+    // 		console.log("message.ts click a");
+    // 		await controllerMessage.connect();
+    // 	}
+    // })
     }
     render() {
         console.log("message.ts ", messageStore);
@@ -13218,7 +13319,7 @@ class Message extends (0, _blockDefault.default) {
 }
 
 },{"core/Block":"aWH7T","bundle-text:./template.hbs":"67lGh","./message.scss":"1I55v","handlebars":"dH8Fg","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"67lGh":[function(require,module,exports) {
-module.exports = "<li class=\"message\">\n\t<a class=\"{{#if (theActiveChat messageStore.id)}}active{{/if}}\" href=\"chat?id={{messageStore.id}}\">\n\t\t<div class=\"message__circle\">\n\t\t\t<div class=\"message__circle-user\">\n\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\n\t\t\t</div>\n\t\t</div>\n\t  <div class=\"message__about\">\n\t    <div class=\"message__name\">{{ messageStore.title }}</div>\n\t    <div class=\"message__text\">\n\t      {{#if messageStore.myMessage}}\n\t      <span class=\"message__direction\">Вы:</span>\n\t      {{/if}}\n\t      {{ messageStore.text }}\n\t    </div>\n\t  </div>\n\t  <div class=\"message__status\">\n\t    <span class=\"message__time\">{{ messageStore.message.time }}</span>\n\t    {{#if messageStore.message.count}}\n\t      <span class=\"message__amount\">{{ messageStore.message.count }}</span>\n\t    {{/if}}\n\t  </div>\n\t</a>\n</li>\n";
+module.exports = "<li class=\"message\">\n\t<a class=\"{{#if (theActiveChat messageStore.id)}}active{{/if}}\" href=\"chat?id={{messageStore.id}}\" onClick=onClickEventListener>\n\t\t<div class=\"message__circle\">\n\t\t\t<div class=\"message__circle-user\">\n\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\n\t\t\t</div>\n\t\t</div>\n\t  <div class=\"message__about\">\n\t    <div class=\"message__name\">{{ messageStore.title }}</div>\n\t    <div class=\"message__text\">\n\t      {{#if messageStore.myMessage}}\n\t      <span class=\"message__direction\">Вы:</span>\n\t      {{/if}}\n\t      {{ messageStore.text }}\n\t    </div>\n\t  </div>\n\t  <div class=\"message__status\">\n\t    <span class=\"message__time\">{{ messageStore.message.time }}</span>\n\t    {{#if messageStore.message.count}}\n\t      <span class=\"message__amount\">{{ messageStore.message.count }}</span>\n\t    {{/if}}\n\t  </div>\n\t</a>\n</li>\n";
 
 },{}],"1I55v":[function() {},{}],"b6P5O":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -13571,7 +13672,7 @@ class actionChatModal extends (0, _blockDefault.default) {
 }
 exports.default = (0, _utils.withStore)((0, _utils.withUser)(actionChatModal));
 
-},{"core/Block":"aWH7T","./reducer.scss":"djmHi","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","../../components/close":"iwq05","../../core":"9qbGm","../../controllers/chatControllers":"9Bhfw","utils":"hupOb"}],"djmHi":[function() {},{}],"iwq05":[function(require,module,exports) {
+},{"core/Block":"aWH7T","../../core":"9qbGm","../../components/close":"iwq05","../../controllers/chatControllers":"9Bhfw","utils":"hupOb","./reducer.scss":"djmHi","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"iwq05":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _close.Close));
@@ -13602,7 +13703,7 @@ class Close extends (0, _blockDefault.default) {
 },{"../../core/Block":"aWH7T","bundle-text:./template.hbs":"fXZKp","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"fXZKp":[function(require,module,exports) {
 module.exports = "<span class=\"dialog__close--button\"></span>\n";
 
-},{}],"kopZz":[function(require,module,exports) {
+},{}],"djmHi":[function() {},{}],"kopZz":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _attach.Attach));

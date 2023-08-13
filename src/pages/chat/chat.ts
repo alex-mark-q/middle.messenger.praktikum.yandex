@@ -63,11 +63,6 @@ export class Chat extends Block {
 				if(userLogin && chatId) {
 					console.log("addUserToChat props", userLogin);
 
-					// addUserToChat(userLogin, chatId).finally(() => {
-					// 	console.log("addUserToChat props", this.props);
-
-					// })
-
 					const foo = async() => {
 						await this.props.store.dispatch(addUserToChat, userLogin);
 					}
@@ -78,16 +73,6 @@ export class Chat extends Block {
 						return fulfilled(foo());
 
 					});
-
-					// console.log("addUserToChat(userLogin)",addUserToChat(userLogin))
-					// console.log("addUserToChat props", this.props);
-
-					// new Promise(function(resolve, reject) {
-					// 	resolve(addUserToChat(userLogin));
-					// }).then(() => {
-					// 	console.log("addUserToChat props", this.props);
-					// })
-
 				}
 			},
 
@@ -110,7 +95,7 @@ export class Chat extends Block {
 
 
 	render(): string {
-		const chats = this.props.store.getState().chats;
+		const chats = this.props.store.getState().chats[0];
 		const user = this.props.store.getState().user;
 
 		console.log("Chat.ts this.props", this, chats, user);
@@ -122,6 +107,7 @@ export class Chat extends Block {
 				chats.forEach((item) => {
 					results += opt.fn(item);
 				});
+
 				return results;
 			})
 		}
