@@ -12324,17 +12324,32 @@ let WSTransportEvents;
 })(WSTransportEvents || (WSTransportEvents = {}));
 class WSTransport extends (0, _eventBusDefault.default) {
     static WS_URL = "wss://ya-praktikum.tech/ws/chats";
+    pingInterval = 0;
     constructor(endpoint){
         super();
         this.url = `${WSTransport.WS_URL}${endpoint}`;
     }
     connect() {
         this.socket = new WebSocket(this.url);
+        this.subscribe(this.socket);
+        this.setupPing();
+    }
+    send(data) {
+        if (!this.socket) throw new Error("Socket is not connected");
+        this.socket.send(JSON.stringify(data));
+    }
+    setupPing() {
+        this.pingInterval = window.setInterval(()=>{
+            this.send({
+                type: "ping"
+            });
+        }, 5000);
     }
     subscribe(socket) {
-        this.socket.addEventListener("open", ()=>{
-            this.emit(WSTransportEvents.Connected);
-        });
+        socket.addEventListener("open", (event)=>{});
+        socket.addEventListener("close", (event)=>{});
+        socket.addEventListener("error", (event)=>{});
+        socket.addEventListener("message", (event)=>{});
     }
 }
 
@@ -12976,7 +12991,7 @@ class chatController {
             console.log(vals);
             vals[0].map(async (chat)=>{
                 const tokenId = await chatController.getTokenChat(chat.id);
-                return (0, _messageControllersDefault.default).connect(chat.id, tokenId);
+                await (0, _messageControllersDefault.default).connect(chat.id, tokenId);
             });
             return vals;
         });
@@ -13004,7 +13019,35 @@ class chatController {
 const controllerChat = new chatController();
 exports.default = controllerChat;
 
-},{"core/HTTPTransport":"3s5Eb","../utils/promise":"bHGJX","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh","./messageControllers":"kzs82"}],"bHGJX":[function(require,module,exports) {
+},{"core/HTTPTransport":"3s5Eb","./messageControllers":"kzs82","../utils/promise":"bHGJX","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"kzs82":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _core = require("core");
+class messageControllers {
+    socket = new Map();
+    async connect(id, tokenId) {
+        const userId = window.store.getState().user?.id;
+        if (userId && id && tokenId) {
+            const wsTransport = new (0, _core.WSTransport)(`/${userId}/${id}/${tokenId.token}`);
+            this.socket.set(id, wsTransport);
+            await wsTransport.connect();
+        }
+    }
+    sendMessage(id, message) {
+        console.log("socket send message", this.socket);
+        const socket = this.socket.get(id);
+        console.log("socket send message", socket);
+        if (!socket) throw new Error(`Chat ${id} is not connected`);
+        socket.send({
+            type: "message",
+            content: message
+        });
+    }
+}
+const controllerMessage = new messageControllers();
+exports.default = controllerMessage;
+
+},{"core":"9qbGm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"bHGJX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 class customPromise {
@@ -13019,24 +13062,7 @@ class customPromise {
 const Pro = new customPromise();
 exports.default = Pro;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"kzs82":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _core = require("core");
-class messageControllers {
-    async connect(id, tokenId) {
-        const userId = window.store.getState().user?.id; // .user.data.id;
-        // console.log("chatId getState", userId, id, tokenId);
-        if (userId && id && tokenId) {
-            const wsTransport = new (0, _core.WSTransport)(`/${userId}/${id}/${tokenId.token}`);
-            await wsTransport.connect();
-        }
-    }
-}
-const controllerMessage = new messageControllers();
-exports.default = controllerMessage;
-
-},{"core":"9qbGm","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"ipdHp":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"ipdHp":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "chats", ()=>chats);
@@ -13343,6 +13369,9 @@ var _reducerChatModalDefault = parcelHelpers.interopDefault(_reducerChatModal);
 var _attach = require("../../components/attach");
 var _attachDefault = parcelHelpers.interopDefault(_attach);
 var _utils = require("utils");
+var _messageControllers = require("../../controllers/messageControllers");
+var _messageControllersDefault = parcelHelpers.interopDefault(_messageControllers);
+console.log("controllerMessage ", (0, _messageControllersDefault.default));
 (0, _core.registerComponent)((0, _reducerChatModalDefault.default));
 (0, _core.registerComponent)((0, _attachDefault.default));
 class MessagesList extends (0, _blockDefault.default) {
@@ -13368,8 +13397,9 @@ class MessagesList extends (0, _blockDefault.default) {
                 event.preventDefault();
                 const form = document.getElementById("sendMessage");
                 const input = form.elements.namedItem("message");
-                if (input.value) {
-                    const message = input.value;
+                const chatId = Number(new URLSearchParams(window.location.search).get("id"));
+                const message = input.value;
+                if (message) {
                     console.log(input.value);
                     const chat = document.querySelector(".chat-body__history");
                     const div = document.createElement("div");
@@ -13388,6 +13418,7 @@ class MessagesList extends (0, _blockDefault.default) {
                     chat.appendChild(div);
                     input.value = "";
                 }
+                if (message && chatId) (0, _messageControllersDefault.default).sendMessage(chatId, message);
             }
         });
     }
@@ -13397,7 +13428,7 @@ class MessagesList extends (0, _blockDefault.default) {
 }
 exports.default = (0, _utils.withStore)((0, _utils.withUser)(MessagesList));
 
-},{"core/Block":"aWH7T","bundle-text:./template.hbs":"V9rU8","./messagesList.scss":"9kPsv","../../core":"9qbGm","../../components/reducerChatModal":"dbC67","../../components/attach":"kopZz","utils":"hupOb","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"V9rU8":[function(require,module,exports) {
+},{"core/Block":"aWH7T","bundle-text:./template.hbs":"V9rU8","./messagesList.scss":"9kPsv","../../core":"9qbGm","../../components/reducerChatModal":"dbC67","../../components/attach":"kopZz","utils":"hupOb","../../controllers/messageControllers":"kzs82","@parcel/transformer-js/src/esmodule-helpers.js":"j7FRh"}],"V9rU8":[function(require,module,exports) {
 module.exports = "{{#if getChat}}\n\t<div class=\"chat-body\">\n\t\t<div class=\"chat-body__container\">\n\n\t\t\t<div class=\"chat-body__header\">\n\t\t\t\t<div class=\"message__circle\">\n\t\t\t\t\t<div class=\"message__circle-user\">\n\t\t\t\t\t\t{{!-- <img src=\"{{messageStore.message.url}}\" alt=\"avatar\" /> --}}\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"message__name\">{{messageStore.firstName}}</div>\n\t\t\t\t{{{ reducerChatModal id=\"modalShowUser\" }}}\n\t\t\t</div>\n\n\t\t\t<div class=\"chat-body__history\">\n\n\t\t\t\t\t{{#each messageStore }}\n\t\t\t\t\t\t\t<div class=\"chat-body__message chat-body__message_my\">\n\t\t\t\t\t\t\t\t{{ message.text }}\n\t\t\t\t\t\t\t\t<span>{{ message.time }}</span>\n\t\t\t\t\t\t\t</div>\n\n\t\t\t\t\t\t\t<div class=\"chat-body__message\">\n\t\t\t\t\t\t\t\t{{ message.text }}\n\t\t\t\t\t\t\t\t<span>{{ message.time }}</span>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t{{/each}}\n\n\t\t\t</div>\n\t\t\t<div class=\"chat-body__send\">\n\t\t\t\t{{{ Attach id=\"modalShowOther\" class=\"attach__image\" onClick=onClick }}}\n\t\t\t\t<form id=\"sendMessage\">\n\t\t\t\t\t{{{ Input type=\"text\" name=\"message\" placeholder=\"Сообщение\" class=\"search__input_message\" }}}\n\t\t\t\t\t{{{ Button class=\"chat-body__button\" onClick=onSendMessage label=\"→\"}}}\n\t\t\t\t</form>\n\t\t\t</div>\n\n\t\t</div>\n\t</div>\n{{else}}\n    <div class=\"chat-body__empty-message\">\n        <p>Выберите чат чтобы отправить сообщение</p>\n    </div>\n{{/if}}\n";
 
 },{}],"9kPsv":[function() {},{}],"dbC67":[function(require,module,exports) {

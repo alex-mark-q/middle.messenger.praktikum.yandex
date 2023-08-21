@@ -9,8 +9,9 @@ export enum WSTransportEvents {
 
 export class WSTransport extends EventBus {
 	static WS_URL = 'wss://ya-praktikum.tech/ws/chats';
-  protected url: string;
+
 	private socket: WebSocket | null;
+	private pingInterval: number = 0;
 
 	constructor(endpoint: string) {
 		super();
@@ -18,10 +19,29 @@ export class WSTransport extends EventBus {
 	}
 	public connect() {
 		this.socket = new WebSocket(this.url);
+		this.subscribe(this.socket);
+		this.setupPing();
 	}
+
+	public send(data: unknown) {
+    if (!this.socket) {
+      throw new Error('Socket is not connected');
+    }
+
+    this.socket.send(JSON.stringify(data));
+  }
+
+	private setupPing() {
+    this.pingInterval = window.setInterval(() => {
+      this.send({type: 'ping'});
+    }, 5000);
+
+  }
+
 	public subscribe(socket: WebSocket) {
-		this.socket.addEventListener("open", ()=> {
-			this.emit(WSTransportEvents.Connected);
-		});
+		socket.addEventListener("open", (event) => {});
+		socket.addEventListener("close", (event) => {});
+		socket.addEventListener("error", (event) => {});
+		socket.addEventListener("message", (event) => {});
 	}
 }

@@ -6,6 +6,9 @@ import { registerComponent }  from '../../core';
 import reducerChatModal from '../../components/reducerChatModal';
 import Attach from '../../components/attach';
 import { withStore, withUser } from 'utils';
+import controllerMessage from "../../controllers/messageControllers";
+
+console.log("controllerMessage ", controllerMessage);
 
 import Input from '../../components/input';
 import Button from '../../components/button';
@@ -48,8 +51,10 @@ export class MessagesList extends Block<IMessageProps> {
       	event.preventDefault();
       	const form = document.getElementById('sendMessage') as HTMLFormElement;
         const input = form.elements.namedItem('message') as HTMLInputElement;
-        if(input.value) {
-        	const message = input.value;
+        const chatId = Number(new URLSearchParams(window.location.search).get("id"));
+        const message = input.value;
+        if(message) {
+
         	console.log(input.value);
         	const chat = document.querySelector('.chat-body__history') as HTMLElement;
         	const div = document.createElement('div');
@@ -67,7 +72,12 @@ export class MessagesList extends Block<IMessageProps> {
         	`;
           chat.appendChild(div);
         	input.value = '';
+
         }
+        if(message && chatId) {
+        	controllerMessage.sendMessage(chatId, message);
+        }
+
       }
 
     });

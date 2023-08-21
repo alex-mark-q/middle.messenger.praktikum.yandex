@@ -24,7 +24,7 @@ class chatController {
 
 			vals[0].map(async (chat) => {
 					const tokenId = await chatController.getTokenChat(chat.id);
-					return controllerMessage.connect(chat.id, tokenId);
+					await controllerMessage.connect(chat.id, tokenId);
 				}
 			);
 			return vals;
