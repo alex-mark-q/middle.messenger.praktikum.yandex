@@ -1,8 +1,8 @@
 const METHODS = {
-		GET: 'GET',
-		POST: 'POST',
-		PUT: 'PUT',
-		DELETE: 'DELETE',
+	GET: 'GET',
+	POST: 'POST',
+	PUT: 'PUT',
+	DELETE: 'DELETE',
 };
 
 enum rejectMessage {
@@ -35,27 +35,54 @@ function queryStringify(data: Data<unknown>) {
   }, '?');
 }
 
+function onload(xhr: XMLHttpRequest, resolve: (value: (XMLHttpRequest | PromiseLike<XMLHttpRequest>)) => void, reject: (value: unknown) => void) {
+  return function () {
+    const startObject = xhr.responseText.trim().startsWith('{');
+    const startArray = xhr.responseText.trim().startsWith('[');
+
+    const endObject = xhr.responseText.trim().endsWith('}');
+    const endArray = xhr.responseText.trim().endsWith(']');
+
+    const isStartBracket = startObject || startArray;
+    const isEndBracket = endObject || endArray;
+
+    const isJson = isStartBracket && isEndBracket;
+    const badResponse = !xhr.status.toString().startsWith('2');
+
+    const done = badResponse ? reject : resolve;
+
+    done(isJson ? JSON.parse(xhr.responseText) : xhr.responseText);
+    xhr.abort();
+  };
+}
+
+let headers = { 'Content-Type': 'application/json' };
 class HTTPTransport {
-	get = (url, options = {}) => {
-		return this.request(url, {...options, method: METHODS.GET}, options?.timeout);
+
+	get (url, data = {}) {
+		// console.log("Get Data", url, data);
+		return this.request(url, {data, method: METHODS.GET});
 	};
 
-	post = (url, options = {}) => {
-		return this.request(url, {...options, method: METHODS.POST}, options?.timeout);
+	post (url, data = {}) {
+		// console.log("Post Data", url, data);
+		return this.request(url, {data, method: METHODS.POST, headers});
 	};
 
-	put = (url, options = {}) => {
-		return this.request(url, {...options, method: METHODS.PUT}, options?.timeout);
+	put (url, data = {}) {
+		return this.request(url, {data, method: METHODS.PUT}, data?.timeout);
 	};
 
-	delete = (url, options = {}) => {
-		return this.request(url, {...options, method: METHODS.DELETE}, options?.timeout);
+	delete (url, data = {}) {
+		return this.request(url, {data, method: METHODS.DELETE}, data?.timeout);
 	};
 
-	request = (url: string | URL, options: Options, timeout = 5000) => {
+	request (url: string | URL, options: Options, timeout = 5000) {
+
 		const {headers = {}, method, data} = options;
 
-		return new Promise(function(resolve, reject) {
+
+		const promise = new Promise(function(resolve, reject) {
 			if (!method) {
 				reject(rejectMessage.EmptyMethod);
 				return;
@@ -67,35 +94,35 @@ class HTTPTransport {
 
 	    const xhr = new XMLHttpRequest();
 			const isGet = method === METHODS.GET;
+			// if(isGet) {
+			// 	console.log("isGet " , `${process.env.API_ENDPOINT}${url}${queryStringify(data)}`);
+			// }
 
 	    xhr.open(
-				method,
-				isGet && !!data
-					? `${url}${queryStringify(data)}`
-					: url,
+				method, (isGet ? `${process.env.API_ENDPOINT}${url}${queryStringify(data)}` : `${process.env.API_ENDPOINT}${url}`),
 			);
 
 			Object.keys(headers).forEach(key => {
 				xhr.setRequestHeader(key, headers[key]);
 			});
 
-	    xhr.onload = function() {
-		    resolve(xhr);
-	    };
+	    xhr.onload = onload(xhr, resolve, reject);
 
-	    xhr.onabort = reject(rejectMessage.RejectRequest);
-	    xhr.onerror = reject(rejectMessage.RejectError);
+	    xhr.withCredentials = true;
+	    xhr.onabort = reject; //(throw new Error(rejectMessage.RejectRequest));
+	    xhr.onerror = reject; //(rejectMessage.RejectError);
 
 	    xhr.timeout = timeout;
-	    xhr.ontimeout = reject(rejectMessage.RejectTimeout);
+	    xhr.ontimeout = reject; //(rejectMessage.RejectTimeout);
 
-		  if (isGet || !data) {
+		  if (isGet) {
 			  xhr.send();
 			} else {
 				// @ts-ignore
-				xhr.send(data);
+				xhr.send(JSON.stringify(data));
 			}
 	  });
+	  return promise;
 	};
 }
 

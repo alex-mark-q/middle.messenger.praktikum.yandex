@@ -1,5 +1,12 @@
 import Block from 'core/Block';
+import { registerComponent }  from '../../core';
 import { Validation, validationFieldType} from 'core/validation';
+import Close from '../../components/close';
+import controllerChat from '../../controllers/chatControllers';
+import controllerUser from '../../controllers/userControllers';
+
+import { withStore, withRouter, withIsLoading, withUser } from 'utils';
+
 import template from 'bundle-text:./template.hbs';
 import './reducer.scss';
 
@@ -9,32 +16,55 @@ interface IActionProps {
 	action?: (event: Event) => void;
 }
 
+registerComponent(Close);
+
 export class actionChatModal extends Block<IActionProps> {
-  constructor({id, type, action}: IActionProps) {
-    super({id, type, events: {click: action}});
+  constructor({props, type, action}: IActionProps) {
+    super({ ...props, type, events: {click: action}});
 
-		window.addEventListener('click', (event) => {
-			console.log("window");
-      if (event.target instanceof Element && !event.target.closest('.kebab__element')) {
-        const myDropdown = document.getElementById('modalShowUser');
-        if (myDropdown && myDropdown.classList.contains('show')) {
-          myDropdown.classList.remove('show');
-        }
-      }
-			// if (event.target instanceof Element && !event.target.closest('.kebab__modal-plus')) {
-			// 	console.log('кликы');
-      //   const myDropdown = document.getElementById('modalAddUser');
-      //   if (myDropdown && myDropdown.classList.contains('show')) {
-      //     myDropdown.classList.remove('show');
-      //   }
-      // }
+    this.setProps({
+			onSubmitRemoveModal: () => {
 
-    });
+				const modalIds = {
+					modalPlusUser: document.getElementById('modalPlusUser'),
+					modalMinusUser: document.getElementById('modalMinusUser'),
+					modalAddChat: document.getElementById('modalAddChat'),
+					modalDelChat: document.getElementById('modalDelChat')
+				};
+
+				Object.values(modalIds).forEach((myDropdown) => {
+
+					if (myDropdown && myDropdown.classList.contains("show")) {
+						myDropdown.classList.remove("show");
+					}
+				});
+			},
+
+			onSubmitAddChat: async(event:Event) => {
+				event.preventDefault();
+				const title = this.element?.querySelector('input[name="title"]').value;
+				await controllerChat.addUserToChat(title);
+			},
+			onSubmitDelChat: async(event:Event) => {
+				event.preventDefault();
+				const chatId = Number(this.element?.querySelector('input[name="chatId"]').value);
+				await controllerChat.delUserToChat(chatId);
+			}
+    })
   }
 
+	async submitAddUser() {
+		const userData = {
+			usersId: [].concat(this.element?.querySelector('input[name="login"]').value as HTMLInputElement),
+			chatId: Number(new URLSearchParams(window.location.search).get("id"))
+		}
+		console.log("searchUser props", this.props);
+	}
+
   render(): string {
+  	// console.log("searchUser props 2", this.props);
     switch (this.props.type) {
-  	  case 'addUser':
+  	  case 'buttonAddUser':
 	      return `
       			<div  id="{{id}}" class="kebab__modal-plus">
 							<svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -45,7 +75,7 @@ export class actionChatModal extends Block<IActionProps> {
 							Добавить пользователя
 						</div>
 	        `;
-    	case 'delUser':
+    	case 'buttonDelUser':
 
       	return `
 					<div  id="{{id}}" class="kebab__modal-minus">
@@ -56,9 +86,103 @@ export class actionChatModal extends Block<IActionProps> {
 					  </svg>
 						Удалить пользователя
 					</div>`;
+			case "modalPlusUser" :
+				return `
+					<div id="modalPlusUser" class="dialog" role="dialog">
+						<div class="dialog__body">
+							<div id="modalForm">
+								{{{ Close onClick=onSubmitRemoveModal }}}
+							  <div>
+									<label class="text-field__label">
+									<span>Добавить пользователя</span>
+										{{{ Input name="login" type="text" class="form__text-input" id="login_field" placeholder="Логин пользователя" }}}
+									</label>
+								</div>
+								{{{
+						      	Button
+						      	id="ActionModalPlusUser"
+						      	class="button"
+						      	label="Добавить"
+						      	onClick=onSubmitAddUser
+					    	}}}
+							</div>
+						</div>
+					</div>
+				`;
+			case "modalMinusUser" :
+				return `
+					<div id="modalMinusUser" class="dialog" role="dialog">
+						<div class="dialog__body">
+							<div id="modalForm">
+								{{{ Close onClick=onSubmitRemoveModal }}}
+							  <div>
+									<label class="text-field__label">
+									<span>Удалить пользователя</span>
+										{{{ Input name="login" type="text" class="form__text-input" placeholder="логин" }}}
+									</label>
+								</div>
+								{{{
+						      	Button
+						      	id="ActionModalPlusUser"
+						      	class="button"
+						      	label="Удалить"
+						      	onClick=onSubmit
+					    	}}}
+							</div>
+						</div>
+					</div>
+				`;
+			case "modalAddChat":
+				return `
+					<div id="modalAddChat" class="dialog" role="dialog">
+						<div class="dialog__body">
+							<div id="modalForm">
+								{{{ Close onClick=onSubmitRemoveModal }}}
+							  <div>
+									<label class="text-field__label">
+									<span>Добавить чат</span>
+										{{{ Input name="title" type="text" class="form__text-input" placeholder="Введите название чата" }}}
+									</label>
+								</div>
+								{{{
+						      	Button
+						      	id="ActionModalAddChat"
+						      	class="button"
+						      	label="Добавить чат"
+						      	onClick=onSubmitAddChat
+					    	}}}
+							</div>
+						</div>
+					</div>
+				`;
+			case "modalDelChat":
+				return `
+					<div id="modalDelChat" class="dialog" role="dialog">
+						<div class="dialog__body">
+							<div id="modalForm">
+								{{{ Close onClick=onSubmitRemoveModal }}}
+							  <div>
+									<label class="text-field__label">
+									<span>Удалить чат</span>
+										{{{ Input name="chatId" type="text" class="form__text-input" placeholder="Введите ID чата" }}}
+									</label>
+								</div>
+								{{{
+						      	Button
+						      	id="ActionModalDelChat"
+						      	class="button"
+						      	label="Удалить чат"
+						      	onClick=onSubmitDelChat
+					    	}}}
+							</div>
+						</div>
+					</div>
+				`;
       default:
         return '<div>default</div>';
     }
 
   }
 }
+
+export default withStore(withUser(actionChatModal));

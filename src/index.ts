@@ -1,71 +1,66 @@
-require("babel-core/register");
+import "./vendor/index.scss";
 
-import { renderDOM, registerComponent }  from './core';
-import Main from './pages/main';
-import Chat from './pages/chat';
-import Profile from './pages/profile'
-import Signin from './pages/signin'
-import fourHundredFour from './pages/404';
-import fiveHundred from './pages/500'
+import { renderDOM, registerComponent, HashRouter, Store }  from "core";
+import { initApp } from './services/initApp';
 
-import './vendor/index.scss';
+import Button from "./components/button";
+import Input from "./components/input";
+import ControledInput from "./components/controledInput";
+import ErrorComponent from "./components/ErrorComponent";
+import SplashScreen from 'pages/splash';
 
-import Button from './components/button';
-import Login from './components/login';
-import Input from './components/input';
-import ControledInput from './components/controledInput';
-import ErrorComponent from './components/ErrorComponent';
-import storeChatRoom  from './store/chatRoom.json';
-import store404  from './store/404.json';
-import store500  from './store/500.json';
+
+import { initRouter } from "./router";
+import { defaultState } from './store';
 
 registerComponent(Button);
-registerComponent(Login);
 registerComponent(Input);
 registerComponent(ControledInput);
 registerComponent(ErrorComponent);
-registerComponent(Chat);
-registerComponent(Profile);
-registerComponent(Signin);
-registerComponent(fiveHundred);
 
 
-class App {
-  main() {
-		return new Main();
-  }
-  chat() {
-  	return new Chat(storeChatRoom);
-  }
-  signin() {
-  	return new Signin();
-  }
-  profile() {
-  	return new Profile();
-  }
-  error404() {
-  	return new fourHundredFour(store404);
-  }
-  error500() {
-  	return new Page500(store500);
+declare global {
+  interface Window {
+    store: Store<AppState>;
+    router: HashRouter;
   }
 }
-
-const pages = new App();
-
-function render(query: string, block: Block) {
-  const root = document.querySelector(query);
-  if (root && block) {
-    root.appendChild(block.getContent());
-  }
-  return root;
-}
-
-const checkPage = () => {
-  const pathname = window.location.pathname.slice(1);
-  return pathname in pages ? pathname : 'error404';
-};
 
 document.addEventListener('DOMContentLoaded', () => {
-  render('#app', pages[checkPage() as keyof typeof pages]());
+  const store = new Store(defaultState);
+  const router = new HashRouter();
+
+  /**
+   * Помещаем роутер и стор в глобальную область для доступа в хоках with*
+   * @warning Не использовать такой способ на реальный проектах
+   */
+
+  window.router = router;
+  window.store = store;
+
+
+  // store.dispatch(initApp(() => setTimeout(renderDOM(new SplashScreen({})),1000)));
+
+  renderDOM(new SplashScreen({}));
+
+  store.on('changed', (prevState, nextState) => {
+    if (process.env.DEBUG) {
+      console.log(
+        '%cstore updated',
+        'background: #222; color: #bada55',
+        nextState,
+      );
+    }
+  });
+
+  /**
+   * Инициализируем роутер
+   */
+
+  initRouter(router, store);
+
+  /**
+   * Загружаем данные для приложения
+   */
+  store.dispatch(initApp);
 });

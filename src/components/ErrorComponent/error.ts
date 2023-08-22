@@ -5,7 +5,11 @@ interface ErrorProps {
 	text?: string;
 }
 
-export class ErrorComponent extends Block<ErrorProps> {
+export class ErrorComponent extends Block {
+
+	constructor(props: ErrorProps) {
+    super(props);
+  }
 
   protected render():string {
     return template;

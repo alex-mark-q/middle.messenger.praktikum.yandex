@@ -14,12 +14,22 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 340px;
+    height: 180px;
     padding: 20px;
 		border-radius: 12px;
     background: $main;
     box-shadow: 0 0 50px rgb(0 0 0 / 50%);
     transform: translateX(100%);
     text-align: center;
+	}
+	&__body > div:first-child {
+		position: relative;
+		display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: inherit;
+    gap: 10px;
 	}
 	&__content {
 		input {
@@ -38,5 +48,31 @@
     font-size: 12px;
     position: relative;
 		top: -23px;
+	}
+	&__close--button {
+		width: 20px;
+    height: 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 15px;
+	}
+	&__close--button::before {
+		content: "";
+    width: 100%;
+    height: 2px;
+    background: $border-bottom-color;
+    position: absolute;
+    top: 50%;
+    transform: rotate(45deg);
+	}
+	&__close--button::after {
+		content: "";
+    width: 100%;
+    height: 2px;
+    background: $border-bottom-color;
+    position: absolute;
+    top: 50%;
+    transform: rotate(-45deg);
 	}
 }

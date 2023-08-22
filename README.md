@@ -1,31 +1,39 @@
-# Для разработки нужно версия NodeJS >=16. Запустить локально проект можно следующими командами:
+# Чат
 
-```
-yarn start
+* Макет в Figma: [https://www.figma.com/file/GYtBFev8rv4UY70nzyODSs/Chat_external_link-(Copy)?node-id=0%3A1&t=8kqjuSEsvNpGH4YL-0](https://www.figma.com/file/GYtBFev8rv4UY70nzyODSs/Chat_external_link-(Copy)?node-id=0%3A1&t=8kqjuSEsvNpGH4YL-0)
+* Опубликованное в Netlify приложение: [https://jazzy-griffin-f83301.netlify.app/](https://jazzy-griffin-f83301.netlify.app/)
 
-```
+## Что это?
 
-# Ресты для проверки
+Учебный проект, который выполняется в рамках обучения на курсе [Мидл фронтенд-разработчик](https://praktikum.yandex.ru/middle-frontend/) от [Яндекс.Практикум](https://praktikum.yandex.ru).
 
-1. http://localhost:3000/ - 				Страница Login
-2. http://localhost:3000/signin - 	Страница регистрации
-3. http://localhost:3000/chat - 		Страница чата
-4. http://localhost:3000/profile - 	Страница пользователя
-5. http://localhost:3000/dialog - 	Страница "модальное окно"
+### Сборка и запуск проекта
+* `npm run build`
+* `npm run start` - webpack serve
 
-## Использованные технологии
+## Спринт 1
 
-- html
-- css
-- постпроцессор scss
-- шаблонизатор handlebars
-- node-сервер express
+* Свёрстан макет приложения чат в Figma. [Ссылка на макет](https://www.figma.com/file/GYtBFev8rv4UY70nzyODSs/Chat_external_link-(Copy)?node-id=0%3A1&t=8kqjuSEsvNpGH4YL-0)
+* Настроена сборка с использованием [Parcel](https://parceljs.org/) и раздача статики сервером на Express
+* Свёрстаны основные страницы приложения с использованием шаблонизатора
+* Приложение автоматически деплоится на [Netlify](https://www.netlify.com/) из ветки `deploy`. [Ссылка на приложение](https://jazzy-griffin-f83301.netlify.app/)
 
-Ссылка на netlify https://jazzy-griffin-f83301.netlify.app/
-## Основные функции папки core
 
-# Шина событий EventEmitter - это модуль который позволяет нам публиковать события (например что компонент готов) и в других местах слушать другие события
+## Спринт 2
 
-# Класс BLOCK это функция от которого будут наследоваться наши компоненты (дает понимание как наш компонент рендериться)
+* Переход на TypeScript
+* Реализация шины событийной модели (`src/core/EventBus.ts`)
+* Реализация главного компонента (`src/core/Block.ts`)
+* Приложение переписано с учётом новых компонентов
+* На основных формах реализована клиентская валидация
 
-# renderDOM функция принимает на входе экземпляр нашего блока (компонент) и рендерит в ноду #root(DOM элемент)
+## Спринт 3
+
+* Реализация клиентского роутера (classes/Route.ts, classes/Router.ts)
+* Добавлен слой api
+* Использован WebSocket для сообщений чата
+* В приложении реализованы следующее возможности:
+    * Регистрация
+    * Логин
+    * Создание и удаление чата
+    * Отправка и получение текстовых сообщений

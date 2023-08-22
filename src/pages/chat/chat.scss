@@ -5,6 +5,63 @@
   margin: 0 auto;
   max-width: 1500px;
   background: $main;
+  &__footer {
+  	border-top: 1px solid #eaeaea;
+    justify-content: space-between;
+    padding: 35px 40px;
+    display: flex;
+		bottom: 0;
+    position: absolute;
+    width: 230px;
+  }
+  &__add-button {
+		width: 30px;
+    height: 30px;
+    border: 1px solid $border-bottom-color;
+    cursor: pointer;
+    background: 0 0;
+    border-radius: 50%;
+    position: relative;
+  }
+  &__add-button::after {
+  	content: "";
+    width: 15px;
+    height: 1px;
+    background: $border-bottom-color;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+  &__add-button::before {
+  	content: "";
+    width: 15px;
+    height: 1px;
+    background: $border-bottom-color;
+    position: absolute;
+    top: 50%;
+    left: 25%;
+    transform: rotate(90deg);
+  }
+  &__del-button {
+		width: 30px;
+    height: 30px;
+    border: 1px solid $border-bottom-color;
+    cursor: pointer;
+    background: 0 0;
+    border-radius: 50%;
+    position: relative;
+  }
+  &__del-button::before {
+  	content: "";
+    width: 15px;
+    height: 1px;
+    background: $border-bottom-color;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
 }
 .chat-list {
   width: 310px;

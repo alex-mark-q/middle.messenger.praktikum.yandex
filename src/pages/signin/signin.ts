@@ -8,6 +8,10 @@ import Input from '../../components/input';
 import Button from '../../components/button';
 import ControledInput from '../../components/controledInput';
 
+import { withRouter } from 'utils/withRouter';
+import { withStore } from 'utils/withStore';
+import { withIsLoading } from 'utils/withIsLoading';
+
 registerComponent(Input);
 registerComponent(ControledInput);
 
@@ -39,6 +43,9 @@ export class Signin extends Block<unknown> {
   }
 
   render() {
+  	console.log("Signin.ts", this.props);
     return template;
   }
 }
+
+export default withRouter(withStore(withIsLoading(Signin)));

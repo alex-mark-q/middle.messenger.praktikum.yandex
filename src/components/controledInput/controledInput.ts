@@ -22,7 +22,7 @@ export class ControledInput extends Block {
     	...props,
     	onBlur: (e: FocusEvent) => {
     		const input = e.target as HTMLInputElement;
-    		console.log(this.refs);
+
 				const login = this.element?.querySelector('input[name="login"]') as HTMLInputElement;
       	const password = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
       	const firstName = this.element?.querySelector('input[name="first_name"]') as HTMLInputElement;
@@ -30,6 +30,9 @@ export class ControledInput extends Block {
       	const secondName = this.element?.querySelector('input[name="second_name"]') as HTMLInputElement;
       	const phone = this.element?.querySelector('input[name="phone"]') as HTMLInputElement;
       	const RepeatPassword = this.element?.querySelector('input[name="password"]') as HTMLInputElement;
+
+      	// console.log("password", password);
+				// console.log("login", login);
 
     		const errorMessage = new Validation().validate([
     			{type: validationFieldType.Login, value: login?.value},
